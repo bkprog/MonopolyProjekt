@@ -6,6 +6,6 @@ public class main {
         obiekt.throwfunction();
     } */
   public static void main(String[] args) {
-       welcomeWindow hi = new welcomeWindow();
+      welcomeWindow hi = new welcomeWindow();
     }
 }
