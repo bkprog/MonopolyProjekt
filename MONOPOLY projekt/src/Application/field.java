@@ -1,24 +1,28 @@
 package Application;
 
-public class field {
-    int fieldNubmer;
-    String FieldName;
-    private int countryNumber;
-    private int price;
-    private int housePrice;
+import java.awt.*;
+import javax.swing.*;
 
-    public int getPrice(){
-        return this.price;
+
+public class field extends JPanel{
+//    String FieldName;
+
+//    public field(String name){
+//        FieldName = name;
+//    }
+
+    public void drawing(){
+        setVisible(true);
+
+        repaint();
     }
 
-    public int getHousePrice(){
-        return this.housePrice;
+    public void paintComponent(Graphics g){
+        super.paintComponent(g);
+        g.drawRect(20, 20, 200, 200);
+        g.setColor(Color.BLUE);
+        g.fillRect(20, 20, 200, 200);
     }
-
-    public field(String name){
-        FieldName = name;
-    }
-
 
 
 }

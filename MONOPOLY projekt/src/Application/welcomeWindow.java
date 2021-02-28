@@ -14,7 +14,6 @@ public class welcomeWindow extends JFrame {
         f.setTitle("Monopoly");
 
 
-
         JLabel logoGame = new JLabel("Monopoly");
         JButton playLocal = new JButton("Graj Lokalnie");
         JButton playOnline = new JButton("Graj Online");
