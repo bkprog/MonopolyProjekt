@@ -1,10 +1,10 @@
-package Application.ServerApplication;
+package Server;
 
+import java.net.*;
 import java.io.*;
-import java.net.ServerSocket;
-import java.net.Socket;
+import java.util.*;
 
-public class ServerMain  {
+public class Server {
     public static void main(String[] args){
         Socket player1 = null, player2 = null,player3 = null,player4 =null;
 
@@ -66,4 +66,6 @@ public class ServerMain  {
             System.out.println(e.getMessage());
         }
     }
+
+
 }

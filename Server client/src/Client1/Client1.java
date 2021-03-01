@@ -1,11 +1,10 @@
-package Application.ClientApplication;
+package Client1;
 
-import java.net.*;
 import java.io.*;
-import java.rmi.UnknownHostException;
+import java.net.Socket;
 import java.util.Scanner;
 
-public class ClientMain {
+public class Client1 {
     public static void main(String[] args){
         Socket connectionSocket = null;
         BufferedWriter serverOutput;
@@ -35,9 +34,7 @@ public class ClientMain {
                 }
                 opUserName = serverReply.substring(4);
                 System.out.println("You have been matched with " + opUserName);
-
                 break;
-
             }
         }
         catch (IOException ex){

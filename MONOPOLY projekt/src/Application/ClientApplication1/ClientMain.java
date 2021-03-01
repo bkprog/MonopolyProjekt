@@ -1,8 +1,7 @@
-package Application.ClientApplication;
+package Application.ClientApplication1;
 
-import java.net.*;
 import java.io.*;
-import java.rmi.UnknownHostException;
+import java.net.Socket;
 import java.util.Scanner;
 
 public class ClientMain {
