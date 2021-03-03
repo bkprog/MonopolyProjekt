@@ -14,24 +14,29 @@ public class Server {
 
         while(true){
             Scanner scanner = new Scanner(System.in);
-            System.out.println("Enter number of players: ");
-            String input = scanner.nextLine();
-            System.out.println("You enter: " + input);
+            String input;
+            do{
+
+                System.out.println("Enter number of players: ");
+                input = scanner.nextLine();
+
+            }while(Integer.parseInt(input)<1 && Integer.parseInt(input)>5);
+
+            System.out.println("Number of slots in game: " + input);
+
             try(ServerSocket serverSocket = new ServerSocket(2115)){
                 int numberOfPlayers = Integer.parseInt(input);
                 for(int i = 0; i<numberOfPlayers; i++){
-
                     if(i==0){
-                        System.out.println("Server is waiting for clients connection :)\n");
+                        System.out.println("Server is waiting for clients connection :)");
                     }
-
                     Socket client = serverSocket.accept();
                     socketList.add(client);
                     System.out.println( i+1 + " Client connected!");
-                    Session ss = new Session(client,socketList,i+1);
+                    Session ss = new Session(client,socketList,i+1,numberOfPlayers);
                     ss.start();
-
                 }
+
             }
             catch(IOException e){
                 System.out.println("Error: " + e.getMessage());
