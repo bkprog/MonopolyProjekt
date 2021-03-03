@@ -8,13 +8,14 @@ import java.util.ArrayList;
 
 public class Session extends Thread {
     private ArrayList<Socket> socketPlayers;
-    private ArrayList playersList = new ArrayList();
+    private ArrayList<Player> playersList;
+    //private ArrayList playersList = new ArrayList();
     private Socket client;
     int playerNumber;
     int numberOfPlayersInGame;
     int playersReady = 0;
 
-    public Session(Socket client, ArrayList<Socket> socketArray,int np,int numberOfPlayers){
+    public Session(Socket client, ArrayList<Socket> socketArray,int np,int numberOfPlayers,ArrayList<Player> playersList){
         this.client = client;
         this.socketPlayers = socketArray;
         playerNumber = np;
@@ -27,6 +28,11 @@ public class Session extends Thread {
             //czyta nickname gracza
             String playerName = socketIn.readUTF();
             System.out.println(playerNumber + " Player nickname is " + playerName);
+            Player newPlayer = new Player();
+            newPlayer.setPlayerName(playerName);
+            newPlayer.setPlayerNumber(playerNumber);
+            playersList.add(newPlayer);
+
 
             if(playerNumber>0 && playerNumber<numberOfPlayersInGame){
                 System.out.println("Server is waiting for clients connection :)");
