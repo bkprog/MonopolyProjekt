@@ -4,12 +4,7 @@ public class Player {
     private String name;
     private int playerNumber;
     private int cash;
-
-    public Player(String playerName,int no,int c){
-        this.name = playerName;
-        this.playerNumber = no;
-        this.cash = c;
-    }
+    boolean isInJail = false;
 
     public String getPlayerName(){
         return this.name;
