@@ -5,6 +5,15 @@ public class Player {
     private int playerNumber;
     private int cash;
     boolean isInJail = false;
+    int propertyId = 0;
+
+    public void setPropertyId(int propertyId){
+        this.propertyId = propertyId;
+    }
+
+    public int getPropertyId(){
+        return this.propertyId;
+    }
 
     public String getPlayerName(){
         return this.name;

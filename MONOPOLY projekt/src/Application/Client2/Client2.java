@@ -36,6 +36,15 @@ public class Client2 {
                     }while(readyCheck);
                     System.out.println("Great!!! You are ready!");
                 }
+                else if(info.equals("GameSettings") && (playersInGame == readyPlayers)){
+                    for(int i =0 ;i<playersInGame;i++){
+                        System.out.println("Player: ");
+                        System.out.println("Nickname: " + dIn.readUTF());
+                        System.out.println("Id player:" + dIn.readUTF());
+                        System.out.println("his cash: " + dIn.readUTF());
+                        System.out.println("Stand on: " + dIn.readUTF() + "\n");
+                    }
+                }
                 else if(info.equals("PlayersInGame")){
                     int number = dIn.readInt();
                     playersInGame = number;

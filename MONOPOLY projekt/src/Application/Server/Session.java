@@ -9,7 +9,6 @@ import java.util.ArrayList;
 public class Session extends Thread {
     private ArrayList<Socket> socketPlayers;
     private ArrayList<Player> playersList;
-    //private ArrayList playersList = new ArrayList();
     private Socket client;
     int playerNumber;
     int numberOfPlayersInGame;
@@ -20,6 +19,7 @@ public class Session extends Thread {
         this.socketPlayers = socketArray;
         playerNumber = np;
         numberOfPlayersInGame = numberOfPlayers;
+        this.playersList = playersList;
     }
 
     public void run(){
@@ -31,6 +31,8 @@ public class Session extends Thread {
             Player newPlayer = new Player();
             newPlayer.setPlayerName(playerName);
             newPlayer.setPlayerNumber(playerNumber);
+            newPlayer.setCash(2000);
+            newPlayer.setPropertyId(0);
             playersList.add(newPlayer);
 
 
@@ -55,6 +57,7 @@ public class Session extends Thread {
                 BroadcastReadyToOtherClients(socketPlayers,readyClient);
             }
 
+            sendSettingsPlayerArray(socketPlayers,playersList);
             //wysyła do klientów informacje o rozpoczeciu gry
             sendStartGame(socketPlayers);
             while(true){
@@ -66,11 +69,33 @@ public class Session extends Thread {
         }
     }
 
+    public void sendSettingsPlayerArray(ArrayList<Socket> socketPlayers,ArrayList<Player> playersList){
+        try{
+
+            for(int i = 0 ; i<socketPlayers.size();i++){
+                DataOutputStream socketOut = new DataOutputStream(socketPlayers.get(i).getOutputStream());
+                socketOut.writeUTF("GameSettings");
+                for( int j = 0 ; j<playersList.size();j++){
+                    socketOut.writeUTF(playersList.get(j).getPlayerName());
+                    socketOut.writeUTF(String.valueOf(playersList.get(j).getPlayerNumber()));
+                    socketOut.writeUTF(String.valueOf(playersList.get(j).getCash()));
+                    socketOut.writeUTF(String.valueOf(playersList.get(j).getPropertyId()));
+                }
+
+            }
+        }
+        catch(Exception ex){
+            System.out.println("Error sendingPlayersArray: " + ex.getMessage());
+        }
+    }
+
     public void sendStartGame(ArrayList<Socket> socketPlayers){
         try{
             for(Socket s : socketPlayers){
                 DataOutputStream socketOut = new DataOutputStream(s.getOutputStream());
                 socketOut.writeUTF("StartGame");
+//                ObjectOutputStream out = new ObjectOutputStream(s.getOutputStream());
+//                out.writeObject(playersList);
             }
         }
         catch(Exception ex){

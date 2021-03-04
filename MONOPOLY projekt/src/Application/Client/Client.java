@@ -10,6 +10,7 @@ public class Client {
     public static void main(String[] args){
         int readyPlayers = 0;
         int playersInGame = 0;
+        //ArrayList<Player> playersList = new ArrayList<>();
         String hostname = "localhost";
         Scanner scanner = new Scanner(System.in);
         System.out.println("Enter your nickname: ");
@@ -17,10 +18,12 @@ public class Client {
         try(Socket client = new Socket(hostname,2115)){
             DataInputStream dIn = new DataInputStream(client.getInputStream());
             DataOutputStream dOut = new DataOutputStream(client.getOutputStream());
+
             dOut.writeUTF(nickname);
             while(true){
                 String info = dIn.readUTF();
                 if(info.equals("ReadyCheck")){
+                    System.out.println(playersInGame);
                     System.out.println("All players joined the game time to ready check!!!");
                     boolean readyCheck = true;
                     do{
@@ -34,6 +37,15 @@ public class Client {
                     }while(readyCheck);
                     System.out.println("Great!!! You are ready!");
                 }
+                else if(info.equals("GameSettings") && (playersInGame == readyPlayers)){
+                    for(int i =0 ;i<playersInGame;i++){
+                        System.out.println("Player: ");
+                        System.out.println("Nickname: " + dIn.readUTF());
+                        System.out.println("Id player:" + dIn.readUTF());
+                        System.out.println("his cash: " + dIn.readUTF());
+                        System.out.println("Stand on: " + dIn.readUTF() + "\n");
+                    }
+                }
                 else if(info.equals("PlayersInGame")){
                     int number = dIn.readInt();
                     playersInGame = number;
@@ -46,6 +58,7 @@ public class Client {
                 else if((info.equals("StartGame")) && (playersInGame == readyPlayers)){
                     System.out.println("All Players are ready! Let's go!!!");
                     System.out.println("Game is starting...");
+
                     while(true){
 
                     }
