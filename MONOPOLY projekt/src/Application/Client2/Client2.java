@@ -1,9 +1,12 @@
 package Application.Client2;
 
+import Application.Client1.Player1;
+
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Client2 {
@@ -12,6 +15,7 @@ public class Client2 {
     public static void main(String[] args){
         int readyPlayers = 0;
         int playersInGame = 0;
+        ArrayList<Player2> playersList = new ArrayList<>();
         String hostname = "localhost";
         Scanner scanner = new Scanner(System.in);
         System.out.println("Enter your nickname: ");
@@ -19,10 +23,12 @@ public class Client2 {
         try(Socket client = new Socket(hostname,2115)){
             DataInputStream dIn = new DataInputStream(client.getInputStream());
             DataOutputStream dOut = new DataOutputStream(client.getOutputStream());
+
             dOut.writeUTF(nickname);
             while(true){
                 String info = dIn.readUTF();
                 if(info.equals("ReadyCheck")){
+                    System.out.println(playersInGame);
                     System.out.println("All players joined the game time to ready check!!!");
                     boolean readyCheck = true;
                     do{
@@ -38,11 +44,18 @@ public class Client2 {
                 }
                 else if(info.equals("GameSettings") && (playersInGame == readyPlayers)){
                     for(int i =0 ;i<playersInGame;i++){
-                        System.out.println("Player: ");
-                        System.out.println("Nickname: " + dIn.readUTF());
-                        System.out.println("Id player:" + dIn.readUTF());
-                        System.out.println("his cash: " + dIn.readUTF());
-                        System.out.println("Stand on: " + dIn.readUTF() + "\n");
+                        Player2 player = new Player2();
+                        player.setPlayerName(dIn.readUTF());
+                        player.setPlayerNumber(Integer.parseInt(dIn.readUTF()));
+                        player.setCash(Integer.parseInt(dIn.readUTF()));
+                        player.setPropertyId(Integer.parseInt(dIn.readUTF()));
+                        playersList.add(player);
+                    }
+                    for(int i = 0; i< playersList.size();i++){
+                        System.out.println("Name: " + playersList.get(i).getPlayerName());
+                        System.out.println("Player ID: " + playersList.get(i).getPlayerNumber());
+                        System.out.println("His cash: " + playersList.get(i).getCash());
+                        System.out.println("Stand on: " + playersList.get(i).getPropertyId());
                     }
                 }
                 else if(info.equals("PlayersInGame")){
@@ -57,6 +70,7 @@ public class Client2 {
                 else if((info.equals("StartGame")) && (playersInGame == readyPlayers)){
                     System.out.println("All Players are ready! Let's go!!!");
                     System.out.println("Game is starting...");
+
                     while(true){
 
                     }

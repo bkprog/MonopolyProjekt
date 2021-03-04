@@ -71,7 +71,6 @@ public class Session extends Thread {
 
     public void sendSettingsPlayerArray(ArrayList<Socket> socketPlayers,ArrayList<Player> playersList){
         try{
-
             for(int i = 0 ; i<socketPlayers.size();i++){
                 DataOutputStream socketOut = new DataOutputStream(socketPlayers.get(i).getOutputStream());
                 socketOut.writeUTF("GameSettings");
@@ -81,7 +80,6 @@ public class Session extends Thread {
                     socketOut.writeUTF(String.valueOf(playersList.get(j).getCash()));
                     socketOut.writeUTF(String.valueOf(playersList.get(j).getPropertyId()));
                 }
-
             }
         }
         catch(Exception ex){

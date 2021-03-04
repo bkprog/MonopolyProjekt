@@ -10,7 +10,7 @@ public class Client {
     public static void main(String[] args){
         int readyPlayers = 0;
         int playersInGame = 0;
-        //ArrayList<Player> playersList = new ArrayList<>();
+        ArrayList<Player> playersList = new ArrayList<>();
         String hostname = "localhost";
         Scanner scanner = new Scanner(System.in);
         System.out.println("Enter your nickname: ");
@@ -39,11 +39,18 @@ public class Client {
                 }
                 else if(info.equals("GameSettings") && (playersInGame == readyPlayers)){
                     for(int i =0 ;i<playersInGame;i++){
-                        System.out.println("Player: ");
-                        System.out.println("Nickname: " + dIn.readUTF());
-                        System.out.println("Id player:" + dIn.readUTF());
-                        System.out.println("his cash: " + dIn.readUTF());
-                        System.out.println("Stand on: " + dIn.readUTF() + "\n");
+                        Player player = new Player();
+                        player.setPlayerName(dIn.readUTF());
+                        player.setPlayerNumber(Integer.parseInt(dIn.readUTF()));
+                        player.setCash(Integer.parseInt(dIn.readUTF()));
+                        player.setPropertyId(Integer.parseInt(dIn.readUTF()));
+                        playersList.add(player);
+                    }
+                    for(int i = 0; i< playersList.size();i++){
+                        System.out.println("Name: " + playersList.get(i).getPlayerName());
+                        System.out.println("Player ID: " + playersList.get(i).getPlayerNumber());
+                        System.out.println("His cash: " + playersList.get(i).getCash());
+                        System.out.println("Stand on: " + playersList.get(i).getPropertyId());
                     }
                 }
                 else if(info.equals("PlayersInGame")){
