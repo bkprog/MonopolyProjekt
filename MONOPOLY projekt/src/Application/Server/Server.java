@@ -10,6 +10,7 @@ public class Server {
     private static ArrayList<Socket> socketList = new ArrayList<Socket>();
 //    private static int port = 2115;
     private static ArrayList<Player> playersList = new ArrayList<>();
+    private static ArrayList<Properties> propertiesList = new ArrayList<>();
 
     public static void main(String[] args){
 
@@ -35,7 +36,7 @@ public class Server {
                     Socket client = serverSocket.accept();
                     socketList.add(client);
                     System.out.println( i+1 + " Client connected!");
-                    Session ss = new Session(client,socketList,i+1,numberOfPlayers,playersList);
+                    Session ss = new Session(client,socketList,i+1,numberOfPlayers,playersList,propertiesList);
                     ss.start();
                 }
 

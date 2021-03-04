@@ -9,17 +9,19 @@ import java.util.ArrayList;
 public class Session extends Thread {
     private ArrayList<Socket> socketPlayers;
     private ArrayList<Player> playersList;
+    private ArrayList<Properties> propertiesList;
     private Socket client;
     int playerNumber;
     int numberOfPlayersInGame;
     int playersReady = 0;
 
-    public Session(Socket client, ArrayList<Socket> socketArray,int np,int numberOfPlayers,ArrayList<Player> playersList){
+    public Session(Socket client, ArrayList<Socket> socketArray,int np,int numberOfPlayers,ArrayList<Player> playersList,ArrayList<Properties> propertiesList){
         this.client = client;
         this.socketPlayers = socketArray;
         playerNumber = np;
         numberOfPlayersInGame = numberOfPlayers;
         this.playersList = playersList;
+        this.propertiesList = propertiesList;
     }
 
     public void run(){
@@ -67,6 +69,10 @@ public class Session extends Thread {
         catch(IOException ex){
             System.out.println("Session error: " + ex.getMessage());
         }
+    }
+
+    public void sendSettingPropertiesArray(ArrayList<Socket> socketPlayers,ArrayList<Properties> propertiesList){
+
     }
 
     public void sendSettingsPlayerArray(ArrayList<Socket> socketPlayers,ArrayList<Player> playersList){
