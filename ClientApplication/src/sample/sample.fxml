@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
-<?import javafx.scene.text.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.text.Text?>
 
-<StackPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1">
+<StackPane fx:id="stackpane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.Controller">
    <children>
       <Text layoutX="10.0" layoutY="10.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Player1" x="10.0" y="10.0" StackPane.alignment="TOP_LEFT">
          <StackPane.margin>
@@ -46,7 +47,7 @@
             <Insets left="70.0" top="70.0" />
          </StackPane.margin>
       </CheckBox>
-      <Button mnemonicParsing="false" text="Gotowy" StackPane.alignment="TOP_LEFT">
+      <Button fx:id="ReadyButton" mnemonicParsing="false" text="Gotowy" StackPane.alignment="TOP_LEFT">
          <StackPane.margin>
             <Insets left="200.0" top="35.0" />
          </StackPane.margin>
