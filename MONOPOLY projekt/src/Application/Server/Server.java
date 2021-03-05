@@ -1,9 +1,11 @@
 package Application.Server;
 
+import Application.Sources.Player;
+import Application.Sources.Properties;
+
 import java.io.IOException;
 import java.net.*;
 import java.util.*;
-import java.net.*;
 
 public class Server {
 

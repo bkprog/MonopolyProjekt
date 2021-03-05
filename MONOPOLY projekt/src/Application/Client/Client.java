@@ -1,5 +1,8 @@
 package Application.Client;
 
+
+import Application.Sources.Player;
+import Application.Sources.Properties;
 import java.net.*;
 import java.io.*;
 import java.util.*;

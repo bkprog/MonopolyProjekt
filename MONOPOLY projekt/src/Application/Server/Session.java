@@ -1,5 +1,8 @@
 package Application.Server;
 
+import Application.Sources.Player;
+import Application.Sources.Properties;
+
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;

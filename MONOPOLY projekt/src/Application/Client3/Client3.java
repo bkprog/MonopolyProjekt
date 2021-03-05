@@ -1,8 +1,7 @@
 package Application.Client3;
 
-import Application.Client.Properties;
-import Application.Client1.Player1;
-import Application.Client2.Player2;
+import Application.Sources.Properties;
+import Application.Sources.Player;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -17,7 +16,7 @@ public class Client3 {
     public static void main(String[] args){
         int readyPlayers = 0;
         int playersInGame = 0;
-        ArrayList<Player3> playersList = new ArrayList<>();
+        ArrayList<Player> playersList = new ArrayList<>();
         ArrayList<Properties> propertiesList = new ArrayList<>();
         String hostname = "localhost";
         Scanner scanner = new Scanner(System.in);
@@ -47,7 +46,7 @@ public class Client3 {
                 }
                 else if(info.equals("GameSettings") && (playersInGame == readyPlayers)){
                     for(int i =0 ;i<playersInGame;i++){
-                        Player3 player = new Player3();
+                        Player player = new Player();
                         player.setPlayerName(dIn.readUTF());
                         player.setPlayerNumber(Integer.parseInt(dIn.readUTF()));
                         player.setCash(Integer.parseInt(dIn.readUTF()));

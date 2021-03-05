@@ -1,6 +1,6 @@
-package Application.Client2;
+package Application.Sources;
 
-public class Player2 {
+public class Player {
     private String name;
     private int playerNumber;
     private int cash;

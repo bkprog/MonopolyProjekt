@@ -1,6 +1,6 @@
-package Application.Client3;
+package Application.Sources;
 
-public class Properties3 {
+public class Properties {
     private String Name;
     private int paymentForStay;
     private int IDproperty;
@@ -8,7 +8,7 @@ public class Properties3 {
     private String countryName;
     private int ownerID = 0;
 
-    public Properties3(){
+    public Properties(){
         this.IDproperty = 0;
         this.Name = " ";
         this.paymentForStay = 0;
@@ -16,7 +16,7 @@ public class Properties3 {
         this.buyCost = 0;
     }
 
-    public Properties3(int IDproperty, int paymentForStay, String nameProperty, String countryName, int buyCost) {
+    public Properties(int IDproperty,int paymentForStay, String nameProperty,String countryName,int buyCost){
         this.IDproperty = IDproperty;
         this.Name = nameProperty;
         this.paymentForStay = paymentForStay;
@@ -24,51 +24,52 @@ public class Properties3 {
         this.buyCost = buyCost;
     }
 
-    public String getNameProperty() {
+    public String getNameProperty(){
         return this.Name;
     }
 
-    public int getPaymentForStay() {
+    public int getPaymentForStay(){
         return this.paymentForStay;
     }
 
-    public int getIDproperty() {
+    public int getIDproperty(){
         return this.IDproperty;
     }
 
-    public int getBuyCost() {
+    public int getBuyCost(){
         return this.buyCost;
     }
 
-    public String getCountryName() {
+    public String getCountryName(){
         return this.countryName;
     }
 
-    public int getOwnerID() {
+    public int getOwnerID(){
         return this.ownerID;
     }
 
-    public void setNameProperty(String nameProperty) {
+    public void setNameProperty(String nameProperty){
         this.Name = nameProperty;
     }
 
-    public void setPaymentForStay(int paymentForStay) {
+    public void setPaymentForStay(int paymentForStay){
         this.paymentForStay = paymentForStay;
     }
 
-    public void setIDproperty(int IdPropertyrty) {
+    public void setIDproperty(int IdPropertyrty){
         this.IDproperty = IdPropertyrty;
     }
 
-    public void setBuyCost(int buyCost) {
+    public void setBuyCost(int buyCost){
         this.buyCost = buyCost;
     }
 
-    public void setCountryName(String countryName) {
+    public void setCountryName(String countryName){
         this.countryName = countryName;
     }
 
-    public void setOwnerID(int ownerID) {
+    public void setOwnerID(int ownerID){
         this.ownerID = ownerID;
     }
+
 }
