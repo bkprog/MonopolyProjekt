@@ -22,7 +22,7 @@ public class Server {
                 System.out.println("Enter number of players: ");
                 input = scanner.nextLine();
 
-            }while(Integer.parseInt(input)<1 && Integer.parseInt(input)>5);
+            }while(Integer.parseInt(input)<2 || Integer.parseInt(input)>4);
 
             System.out.println("Number of slots in game: " + input);
 

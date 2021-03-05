@@ -1,4 +1,4 @@
-package Application.Server;
+package Application.Client;
 
 public class Properties {
     private String Name;
@@ -7,6 +7,14 @@ public class Properties {
     private int buyCost;
     private String countryName;
     private int ownerID = 0;
+
+    public Properties(){
+        this.IDproperty = 0;
+        this.Name = " ";
+        this.paymentForStay = 0;
+        this.countryName = " ";
+        this.buyCost = 0;
+    }
 
     public Properties(int IDproperty,int paymentForStay, String nameProperty,String countryName,int buyCost){
         this.IDproperty = IDproperty;
@@ -40,12 +48,29 @@ public class Properties {
         return this.ownerID;
     }
 
+    public void setNameProperty(String nameProperty){
+        this.Name = nameProperty;
+    }
+
+    public void setPaymentForStay(int paymentForStay){
+        this.paymentForStay = paymentForStay;
+    }
+
     public void setIDproperty(int IdPropertyrty){
         this.IDproperty = IdPropertyrty;
     }
 
-    public void setNameProperty(String nameProperty){
-        this.Name = nameProperty;
+    public void setBuyCost(int buyCost){
+        this.buyCost = buyCost;
     }
+
+    public void setCountryName(String countryName){
+        this.countryName = countryName;
+    }
+
+    public void setOwnerID(int ownerID){
+        this.ownerID = ownerID;
+    }
+
 
 }

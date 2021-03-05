@@ -1,5 +1,6 @@
 package Application.Client2;
 
+import Application.Client.Properties;
 import Application.Client1.Player1;
 
 import java.io.DataInputStream;
@@ -16,6 +17,7 @@ public class Client2 {
         int readyPlayers = 0;
         int playersInGame = 0;
         ArrayList<Player2> playersList = new ArrayList<>();
+        ArrayList<Properties> propertiesList = new ArrayList<>();
         String hostname = "localhost";
         Scanner scanner = new Scanner(System.in);
         System.out.println("Enter your nickname: ");
@@ -57,6 +59,28 @@ public class Client2 {
                         System.out.println("His cash: " + playersList.get(i).getCash());
                         System.out.println("Stand on: " + playersList.get(i).getPropertyId());
                     }
+                }
+                else if(info.equals("PropertiesSettings")&& (playersInGame == readyPlayers)){
+                    for(int i =0 ;i<40;i++){
+                        Properties property = new Properties();
+                        property.setNameProperty(dIn.readUTF());
+                        property.setPaymentForStay(Integer.parseInt(dIn.readUTF()));
+                        property.setIDproperty(Integer.parseInt(dIn.readUTF()));
+                        property.setBuyCost(Integer.parseInt(dIn.readUTF()));
+                        property.setCountryName(dIn.readUTF());
+                        property.setOwnerID(Integer.parseInt(dIn.readUTF()));
+                        propertiesList.add(property);
+                    }
+                    for(int i=0;i<propertiesList.size();i++){
+                        System.out.println("\n");
+                        System.out.println("Field number " + propertiesList.get(i).getIDproperty());
+                        System.out.println("Country name: " + propertiesList.get(i).getCountryName());
+                        System.out.println("Property name: " + propertiesList.get(i).getNameProperty());
+                        System.out.println("Buy cost: " + propertiesList.get(i).getBuyCost());
+                        System.out.println("Payment for stay: " + propertiesList.get(i).getPaymentForStay());
+                        System.out.println("\n");
+                    }
+
                 }
                 else if(info.equals("PlayersInGame")){
                     int number = dIn.readInt();

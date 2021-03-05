@@ -58,8 +58,10 @@ public class Session extends Thread {
                 //wysyla informacje o tym ze gracz jest gotowy do gry
                 BroadcastReadyToOtherClients(socketPlayers,readyClient);
             }
-
+            //setStartGame(socketPlayers,propertiesList,playersList);
             sendSettingsPlayerArray(socketPlayers,playersList);
+            propertiesList = setAllProperties(propertiesList);
+            sendSettingPropertiesArray(socketPlayers,propertiesList);
             //wysyła do klientów informacje o rozpoczeciu gry
             sendStartGame(socketPlayers);
             while(true){
@@ -71,8 +73,29 @@ public class Session extends Thread {
         }
     }
 
-    public void sendSettingPropertiesArray(ArrayList<Socket> socketPlayers,ArrayList<Properties> propertiesList){
+//    public void setStartGame(ArrayList<Socket> socketPlayers,ArrayList<Properties> propertiesList,ArrayList<Player> playersList){
+//        sendSettingsPlayerArray(socketPlayers,playersList);
+//        sendSettingPropertiesArray(socketPlayers,propertiesList);
+//    }
 
+    public void sendSettingPropertiesArray(ArrayList<Socket> socketPlayers,ArrayList<Properties> propertiesList){
+        try{
+            for(Socket s : socketPlayers){
+                DataOutputStream socketOut = new DataOutputStream(s.getOutputStream());
+                socketOut.writeUTF("PropertiesSettings");
+                for(int i = 0; i< propertiesList.size();i++){
+                    socketOut.writeUTF(propertiesList.get(i).getNameProperty());
+                    socketOut.writeUTF(String.valueOf(propertiesList.get(i).getPaymentForStay()));
+                    socketOut.writeUTF(String.valueOf(propertiesList.get(i).getIDproperty()));
+                    socketOut.writeUTF(String.valueOf(propertiesList.get(i).getBuyCost()));
+                    socketOut.writeUTF(propertiesList.get(i).getCountryName());
+                    socketOut.writeUTF(String.valueOf(propertiesList.get(i).getOwnerID()));
+                }
+            }
+        }
+        catch(Exception e){
+            System.out.println("Error sendingPropertiesArray: " + e.getMessage());
+        }
     }
 
     public void sendSettingsPlayerArray(ArrayList<Socket> socketPlayers,ArrayList<Player> playersList){
@@ -86,6 +109,7 @@ public class Session extends Thread {
                     socketOut.writeUTF(String.valueOf(playersList.get(j).getCash()));
                     socketOut.writeUTF(String.valueOf(playersList.get(j).getPropertyId()));
                 }
+
             }
         }
         catch(Exception ex){
@@ -175,6 +199,7 @@ public class Session extends Thread {
     }
 
     public ArrayList<Properties> setAllProperties(ArrayList<Properties> propertiesList){
+
         Properties property1 = new Properties(1,0,"Go","NONE",0);
         Properties property2 = new Properties(2,10,"Saloniki","Grecja",120);
         Properties property3 = new Properties(3,0,"BlueQuestionMark","NONE",0);
