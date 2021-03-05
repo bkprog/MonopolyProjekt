@@ -72,7 +72,7 @@ public class Session extends Thread {
             //wysyła do klientów informacje o rozpoczeciu gry
             int index = 1;
             int indexSoket = 1;
-            for(int i=0;i<20;i++){
+            while (true){
                 sendStartGame(socketPlayers,index);
                 String readyTour = socketIn.readUTF();
                 if(client == socketPlayers.get(indexSoket)){
@@ -94,8 +94,7 @@ public class Session extends Thread {
                 }
             }
 
-            while(true){
-            }
+
         }
         catch(IOException ex){
             System.out.println("Session error: " + ex.getMessage());

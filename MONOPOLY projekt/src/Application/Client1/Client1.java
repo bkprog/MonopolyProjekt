@@ -2,6 +2,7 @@ package Application.Client1;
 
 import Application.Sources.Player;
 import Application.Sources.Properties;
+import Application.Sources.Dice;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -19,6 +20,7 @@ public class Client1 {
         int numbertour = 1;
         int readyTour = 0;
         boolean gameSettingsReady = false;
+        Dice dice = new Dice();
         ArrayList<Player> playersList = new ArrayList<>();
         ArrayList<Properties> propertiesList = new ArrayList<>();
         String hostname = "localhost";
@@ -113,7 +115,13 @@ public class Client1 {
                     System.out.println("Buy cost: " + property.getBuyCost());
                     System.out.println("Payment for stay: " + property.getPaymentForStay());
 
+
                     if(checkTourIndexPlayer(playersList,numbertour,nickname)){
+                        int dice1 = dice.throwfunction();
+                        int dice2 = dice.throwfunction();
+                        System.out.println("First dice: " + dice1);
+                        System.out.println("Secound dice: " + dice2);
+                        System.out.println("Sum of dices: " + (dice2 + dice1));
                         System.out.println("Players are waiting for you enter some text...");
                         scanner.nextLine();
                         dOut.writeUTF("readyTour");
@@ -121,6 +129,7 @@ public class Client1 {
                     }
                     else{
                         System.out.println("Oponents move wait for your turn!");
+                        System.out.println("[Press Enter]");
                         scanner.nextLine();
                         dOut.writeUTF("readyTour");
                         readyTour++;
