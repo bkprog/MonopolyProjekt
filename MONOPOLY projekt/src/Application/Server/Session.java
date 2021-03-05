@@ -71,11 +71,26 @@ public class Session extends Thread {
 
             //wysyła do klientów informacje o rozpoczeciu gry
             int index = 1;
+            int indexSoket = 1;
             for(int i=0;i<20;i++){
                 sendStartGame(socketPlayers,index);
+                String readyTour = socketIn.readUTF();
+                if(client == socketPlayers.get(indexSoket)){
+                    if(readyTour.equals("readyTour")){
+                        System.out.println("Client ready");
+                    }
+                }
+                else{
+                    setTour(socketPlayers);
+                    if(readyTour.equals("readyTour")){
+                        System.out.println("o ready");
+                    }
+                }
+
                 index++;
-                if(index>playersList.size()){
+                if(index>numberOfPlayersInGame){
                     index = 1;
+                    indexSoket = 0;
                 }
             }
 
@@ -87,7 +102,7 @@ public class Session extends Thread {
         }
     }
 
-    public void setTour(ArrayList<Socket> socketPlayers,int tour){
+    public void setTour(ArrayList<Socket> socketPlayers){
         try {
             for(Socket s : socketPlayers){
                 if(s == client){
@@ -96,7 +111,7 @@ public class Session extends Thread {
                 }
                 else{
                     DataOutputStream so = new DataOutputStream(s.getOutputStream());
-                    so.writeUTF(String.valueOf(tour));
+                    so.writeUTF("endTour");
                 }
 
             }
