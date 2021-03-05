@@ -30,60 +30,56 @@ public class Session extends Thread {
     public void run(){
         try{
             DataInputStream socketIn = new DataInputStream(client.getInputStream());
-            //czyta nickname gracza
-            String playerName = socketIn.readUTF();
-            System.out.println(playerNumber + " Player nickname is " + playerName);
-            Player newPlayer = new Player();
-            newPlayer.setPlayerName(playerName);
-            newPlayer.setPlayerNumber(playerNumber);
-            newPlayer.setCash(2000);
-            newPlayer.setPropertyId(0);
-            playersList.add(newPlayer);
+            do {
+
+                //czyta nickname gracza
+                String playerName = socketIn.readUTF();
+                System.out.println(playerNumber + " Player nickname is " + playerName);
+                Player newPlayer = new Player();
+                newPlayer.setPlayerName(playerName);
+                newPlayer.setPlayerNumber(playerNumber);
+                newPlayer.setCash(2000);
+                newPlayer.setPropertyId(0);
+                playersList.add(newPlayer);
 
 
-            if(playerNumber>0 && playerNumber<numberOfPlayersInGame){
-                System.out.println("Server is waiting for clients connection :)");
-            }
+                if(playerNumber>0 && playerNumber<numberOfPlayersInGame){
+                    System.out.println("Server is waiting for clients connection :)");
+                }
 
-            String information = "Player " + playerName + " joined to your session!";
+                String information = "Player " + playerName + " joined to your session!";
 
-            //pisze do klientów informacje jeśli klient się polaczyl
-            Broadcast(socketPlayers,information);
+                //pisze do klientów informacje jeśli klient się polaczyl
+                Broadcast(socketPlayers,information);
 
-            //sprawdza czy wszyscy gracze sa gotowi do gry
-            BroadcastReady(socketPlayers,numberOfPlayersInGame);
+                //sprawdza czy wszyscy gracze sa gotowi do gry
+                BroadcastReady(socketPlayers,numberOfPlayersInGame);
 
-            //wysyła informacje o iliści graczy w grze
-            sendInformationOfNumberOfPlayers(socketPlayers);
+                //wysyła informacje o iliści graczy w grze
+                sendInformationOfNumberOfPlayers(socketPlayers);
 
-            String readyClient = socketIn.readUTF();
-            if(readyClient.startsWith("ReadyCheck")){
-                //wysyla informacje o tym ze gracz jest gotowy do gry
-                BroadcastReadyToOtherClients(socketPlayers,readyClient);
-            }
-            //setStartGame(socketPlayers,propertiesList,playersList);
-            sendSettingsPlayerArray(socketPlayers,playersList);
-            propertiesList = setAllProperties(propertiesList);
-            sendSettingPropertiesArray(socketPlayers,propertiesList);
+                String readyClient = socketIn.readUTF();
+                if(readyClient.startsWith("ReadyCheck")){
+                    //wysyla informacje o tym ze gracz jest gotowy do gry
+                    BroadcastReadyToOtherClients(socketPlayers,readyClient);
+                }
+                //setStartGame(socketPlayers,propertiesList,playersList);
+                sendSettingsPlayerArray(socketPlayers,playersList);
+                propertiesList = setAllProperties(propertiesList);
+                sendSettingPropertiesArray(socketPlayers,propertiesList);
+            }while(false);
+
             //wysyła do klientów informacje o rozpoczeciu gry
             int index = 1;
-            sendStartGame(socketPlayers,index);
-            if(client == socketPlayers.get(index-1)){
-                socketIn.readUTF();
-                catchPlayerMove(socketPlayers);
-            }
-            else{
-                socketIn.readUTF();
+            for(int i=0;i<20;i++){
+                sendStartGame(socketPlayers,index);
+                index++;
+                if(index>playersList.size()){
+                    index = 1;
+                }
             }
 
-
-            //sendIndexOfCurrentPlayer(socketPlayers,index);
             while(true){
-//                sendIndexOfCurrentPlayer(socketPlayers,index);
-//                index++;
-//                if(index>=numberOfPlayersInGame)
-//                    index = 0;
-//                break;
             }
         }
         catch(IOException ex){
@@ -91,10 +87,42 @@ public class Session extends Thread {
         }
     }
 
+    public void setTour(ArrayList<Socket> socketPlayers,int tour){
+        try {
+            for(Socket s : socketPlayers){
+                if(s == client){
+//                    DataOutputStream co =new DataOutputStream(client.getOutputStream());
+//                    co.writeUTF(String.valueOf(tour));
+                }
+                else{
+                    DataOutputStream so = new DataOutputStream(s.getOutputStream());
+                    so.writeUTF(String.valueOf(tour));
+                }
+
+            }
+        }
+        catch (Exception e) {
+        }
+
+    }
 //    public void setStartGame(ArrayList<Socket> socketPlayers,ArrayList<Properties> propertiesList,ArrayList<Player> playersList){
 //        sendSettingsPlayerArray(socketPlayers,playersList);
 //        sendSettingPropertiesArray(socketPlayers,propertiesList);
 //    }
+    public void sendStartGame(ArrayList<Socket> socketPlayers,int tour){
+        try{
+            for(Socket s : socketPlayers){
+                if(s != client){
+                    DataOutputStream socketOut = new DataOutputStream(s.getOutputStream());
+                    socketOut.writeUTF("StartGame");
+                    socketOut.writeUTF(String.valueOf(tour));
+                }
+            }
+        }
+        catch(Exception ex){
+            System.out.println("Error sending info about start game: " + ex.getMessage());
+        }
+    }
 
     public void sendSettingPropertiesArray(ArrayList<Socket> socketPlayers,ArrayList<Properties> propertiesList){
         try{
@@ -152,20 +180,7 @@ public class Session extends Thread {
         }
     }
 
-    public void sendStartGame(ArrayList<Socket> socketPlayers,int index){
-        try{
-            for(Socket s : socketPlayers){
-                DataOutputStream socketOut = new DataOutputStream(s.getOutputStream());
-                socketOut.writeUTF("StartGame");
-                socketOut.writeUTF(String.valueOf(index));
-//                ObjectOutputStream out = new ObjectOutputStream(s.getOutputStream());
-//                out.writeObject(playersList);
-            }
-        }
-        catch(Exception ex){
-            System.out.println("Error sending info about start game: " + ex.getMessage());
-        }
-    }
+
 
     public void sendInformationOfNumberOfPlayers(ArrayList<Socket> socketPlayers){
         try{

@@ -16,6 +16,8 @@ public class Client3 {
     public static void main(String[] args){
         int readyPlayers = 0;
         int playersInGame = 0;
+        int numbertour = 1;
+        boolean gameSettingsReady = false;
         ArrayList<Player> playersList = new ArrayList<>();
         ArrayList<Properties> propertiesList = new ArrayList<>();
         String hostname = "localhost";
@@ -93,11 +95,29 @@ public class Client3 {
 
                 }
                 else if((info.equals("StartGame")) && (playersInGame == readyPlayers)){
-                    System.out.println("All Players are ready! Let's go!!!");
-                    System.out.println("Game is starting...");
 
-                    while(true){
+                    if(!gameSettingsReady){
+                        System.out.println("All Players are ready! Let's go!!!");
+                        System.out.println("Game is starting...");
+                        gameSettingsReady = true;
+                    }
+                    numbertour = Integer.parseInt(dIn.readUTF());
+                    System.out.println("tura numer: " + numbertour);
+                    System.out.println("nick: " + nickname);
 
+                    if(checkTourIndexPlayer(playersList,numbertour,nickname)){
+                        System.out.println("Players are waiting for you enter some text...");
+//                        System.out.println(numbertour);
+//                        numbertour +=1;
+//                        dOut.writeUTF(scanner.nextLine());
+                    }
+                    else{
+//                        System.out.println(numbertour);
+                        System.out.println("Oponents move wait for your turn!");
+//                        System.out.println(dIn.readUTF());
+//                        numbertour +=1;
+//                        System.out.println(dIn.readUTF());
+//                        //dOut.writeUTF("elo");
                     }
                 }
                 else if(info.startsWith("You have") || info.startsWith("Player ")){
@@ -110,5 +130,16 @@ public class Client3 {
             System.out.println("Error: " + ex.getMessage());
         }
 
+    }
+    public static boolean checkTourIndexPlayer(ArrayList<Player> players,int index,String nickname){
+        Player myProfile = new Player();
+        for(Player p : players){
+            if(p.getPlayerName().equals(nickname))
+                myProfile = p;
+        }
+        if(myProfile.getPlayerNumber() == index)
+            return true;
+        else
+            return false;
     }
 }

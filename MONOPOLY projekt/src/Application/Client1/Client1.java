@@ -16,6 +16,7 @@ public class Client1 {
     public static void main(String[] args){
         int readyPlayers = 0;
         int playersInGame = 0;
+        int numbertour = 1;
         boolean gameSettingsReady = false;
         ArrayList<Player> playersList = new ArrayList<>();
         ArrayList<Properties> propertiesList = new ArrayList<>();
@@ -53,12 +54,12 @@ public class Client1 {
                         player.setPropertyId(Integer.parseInt(dIn.readUTF()));
                         playersList.add(player);
                     }
-                    for(int i = 0; i< playersList.size();i++){
-                        System.out.println("Name: " + playersList.get(i).getPlayerName());
-                        System.out.println("Player ID: " + playersList.get(i).getPlayerNumber());
-                        System.out.println("His cash: " + playersList.get(i).getCash());
-                        System.out.println("Stand on: " + playersList.get(i).getPropertyId());
-                    }
+//                    for(int i = 0; i< playersList.size();i++){
+//                        System.out.println("Name: " + playersList.get(i).getPlayerName());
+//                        System.out.println("Player ID: " + playersList.get(i).getPlayerNumber());
+//                        System.out.println("His cash: " + playersList.get(i).getCash());
+//                        System.out.println("Stand on: " + playersList.get(i).getPropertyId());
+//                    }
                 }
                 else if(info.equals("PropertiesSettings")&& (playersInGame == readyPlayers)){
                     for(int i =0 ;i<40;i++){
@@ -71,15 +72,15 @@ public class Client1 {
                         property.setOwnerID(Integer.parseInt(dIn.readUTF()));
                         propertiesList.add(property);
                     }
-                    for(int i=0;i<propertiesList.size();i++){
-                        System.out.println("\n");
-                        System.out.println("Field number " + propertiesList.get(i).getIDproperty());
-                        System.out.println("Country name: " + propertiesList.get(i).getCountryName());
-                        System.out.println("Property name: " + propertiesList.get(i).getNameProperty());
-                        System.out.println("Buy cost: " + propertiesList.get(i).getBuyCost());
-                        System.out.println("Payment for stay: " + propertiesList.get(i).getPaymentForStay());
-                        System.out.println("\n");
-                    }
+//                    for(int i=0;i<propertiesList.size();i++){
+//                        System.out.println("\n");
+//                        System.out.println("Field number " + propertiesList.get(i).getIDproperty());
+//                        System.out.println("Country name: " + propertiesList.get(i).getCountryName());
+//                        System.out.println("Property name: " + propertiesList.get(i).getNameProperty());
+//                        System.out.println("Buy cost: " + propertiesList.get(i).getBuyCost());
+//                        System.out.println("Payment for stay: " + propertiesList.get(i).getPaymentForStay());
+//                        System.out.println("\n");
+//                    }
 
                 }
                 else if(info.equals("PlayersInGame")){
@@ -92,38 +93,30 @@ public class Client1 {
 
                 }
                 else if((info.equals("StartGame")) && (playersInGame == readyPlayers)){
+
                     if(!gameSettingsReady){
                         System.out.println("All Players are ready! Let's go!!!");
                         System.out.println("Game is starting...");
                         gameSettingsReady = true;
                     }
+                    numbertour = Integer.parseInt(dIn.readUTF());
+                    System.out.println("tura numer: " + numbertour);
+                    System.out.println("nick: " + nickname);
 
-                    if(checkTourIndexPlayer(playersList,Integer.parseInt(dIn.readUTF()),nickname)){
+                    if(checkTourIndexPlayer(playersList,numbertour,nickname)){
                         System.out.println("Players are waiting for you enter some text...");
-                        dOut.writeUTF(scanner.nextLine());
+//                        System.out.println(numbertour);
+//                        numbertour +=1;
+//                        dOut.writeUTF(scanner.nextLine());
                     }
                     else{
+//                        System.out.println(numbertour);
                         System.out.println("Oponents move wait for your turn!");
-                        System.out.println(dIn.readUTF());
-                        dOut.writeUTF("elo");
+//                        System.out.println(dIn.readUTF());
+//                        numbertour +=1;
+//                        System.out.println(dIn.readUTF());
+//                        //dOut.writeUTF("elo");
                     }
-
-//                    while(true){
-////                        String serverinfo = dIn.readUTF();
-////                        if(serverinfo.equals("playerIndex")){
-////                            int serverResponse = Integer.parseInt(dIn.readUTF());
-////                            if(checkTourIndexPlayer(playersList,serverResponse,nickname)){
-////                                System.out.println("Players are waiting for you enter some text... ");
-//////                            String clientInput = scanner.nextLine();
-//////                            dOut.writeUTF(clientInput);
-//////                            dIn.readUTF();
-////                            }
-////                            else {
-////                                System.out.println("Oponents move wait for your turn!");
-//////                            dIn.readUTF();
-////                            }
-////                        }
-//                    }
                 }
                 else if((info.equals("Game")) && (playersInGame == readyPlayers) && (gameSettingsReady)){
                     String serverinfo = dIn.readUTF();
