@@ -16,6 +16,7 @@ public class Client1 {
     public static void main(String[] args){
         int readyPlayers = 0;
         int playersInGame = 0;
+        boolean gameSettingsReady = false;
         ArrayList<Player> playersList = new ArrayList<>();
         ArrayList<Properties> propertiesList = new ArrayList<>();
         String hostname = "localhost";
@@ -30,7 +31,6 @@ public class Client1 {
             while(true){
                 String info = dIn.readUTF();
                 if(info.equals("ReadyCheck")){
-                    System.out.println(playersInGame);
                     System.out.println("All players joined the game time to ready check!!!");
                     boolean readyCheck = true;
                     do{
@@ -92,12 +92,44 @@ public class Client1 {
 
                 }
                 else if((info.equals("StartGame")) && (playersInGame == readyPlayers)){
-                    System.out.println("All Players are ready! Let's go!!!");
-                    System.out.println("Game is starting...");
-
-                    while(true){
-
+                    if(!gameSettingsReady){
+                        System.out.println("All Players are ready! Let's go!!!");
+                        System.out.println("Game is starting...");
+                        gameSettingsReady = true;
                     }
+
+                    if(checkTourIndexPlayer(playersList,Integer.parseInt(dIn.readUTF()),nickname)){
+                        System.out.println("Players are waiting for you enter some text...");
+                        dOut.writeUTF(scanner.nextLine());
+                    }
+                    else{
+                        System.out.println("Oponents move wait for your turn!");
+                        System.out.println(dIn.readUTF());
+                        dOut.writeUTF("elo");
+                    }
+
+//                    while(true){
+////                        String serverinfo = dIn.readUTF();
+////                        if(serverinfo.equals("playerIndex")){
+////                            int serverResponse = Integer.parseInt(dIn.readUTF());
+////                            if(checkTourIndexPlayer(playersList,serverResponse,nickname)){
+////                                System.out.println("Players are waiting for you enter some text... ");
+//////                            String clientInput = scanner.nextLine();
+//////                            dOut.writeUTF(clientInput);
+//////                            dIn.readUTF();
+////                            }
+////                            else {
+////                                System.out.println("Oponents move wait for your turn!");
+//////                            dIn.readUTF();
+////                            }
+////                        }
+//                    }
+                }
+                else if((info.equals("Game")) && (playersInGame == readyPlayers) && (gameSettingsReady)){
+                    String serverinfo = dIn.readUTF();
+                    System.out.println(serverinfo);
+                    int serverResponse = Integer.parseInt(dIn.readUTF());
+                    System.out.println(serverResponse);
                 }
                 else if(info.startsWith("You have") || info.startsWith("Player ")){
                     System.out.println(info);
@@ -109,5 +141,16 @@ public class Client1 {
             System.out.println("Error: " + ex.getMessage());
         }
 
+    }
+    public static boolean checkTourIndexPlayer(ArrayList<Player> players,int index,String nickname){
+        Player myProfile = new Player();
+        for(Player p : players){
+            if(p.getPlayerName().equals(nickname))
+                myProfile = p;
+        }
+        if(myProfile.getPlayerNumber() == index)
+            return true;
+        else
+            return false;
     }
 }

@@ -96,7 +96,14 @@ public class Client2 {
                     System.out.println("Game is starting...");
 
                     while(true){
-
+                        if(dIn.readUTF().equals("YourTurn")){
+                            System.out.println("Players are waiting for you enter some text... ");
+                            String clientInput = scanner.nextLine();
+                            dOut.writeUTF(clientInput);
+                        }
+                        else{
+                            System.out.println("Oponents move wait for your turn!");
+                        }
                     }
                 }
                 else if(info.startsWith("You have") || info.startsWith("Player ")){

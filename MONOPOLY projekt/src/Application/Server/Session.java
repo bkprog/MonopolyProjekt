@@ -55,9 +55,9 @@ public class Session extends Thread {
 
             //wysyła informacje o iliści graczy w grze
             sendInformationOfNumberOfPlayers(socketPlayers);
+
             String readyClient = socketIn.readUTF();
             if(readyClient.startsWith("ReadyCheck")){
-
                 //wysyla informacje o tym ze gracz jest gotowy do gry
                 BroadcastReadyToOtherClients(socketPlayers,readyClient);
             }
@@ -66,9 +66,24 @@ public class Session extends Thread {
             propertiesList = setAllProperties(propertiesList);
             sendSettingPropertiesArray(socketPlayers,propertiesList);
             //wysyła do klientów informacje o rozpoczeciu gry
-            sendStartGame(socketPlayers);
-            while(true){
+            int index = 1;
+            sendStartGame(socketPlayers,index);
+            if(client == socketPlayers.get(index-1)){
+                socketIn.readUTF();
+                catchPlayerMove(socketPlayers);
+            }
+            else{
+                socketIn.readUTF();
+            }
 
+
+            //sendIndexOfCurrentPlayer(socketPlayers,index);
+            while(true){
+//                sendIndexOfCurrentPlayer(socketPlayers,index);
+//                index++;
+//                if(index>=numberOfPlayersInGame)
+//                    index = 0;
+//                break;
             }
         }
         catch(IOException ex){
@@ -120,11 +135,29 @@ public class Session extends Thread {
         }
     }
 
-    public void sendStartGame(ArrayList<Socket> socketPlayers){
+    public void catchPlayerMove(ArrayList<Socket> socketPlayers){
+        try{
+            for(Socket s : socketPlayers){
+                if(s != client){
+                    DataOutputStream socketOut = new DataOutputStream(s.getOutputStream());
+                    socketOut.writeUTF("HaHa");
+                }
+               // socketOut.writeUTF(String.valueOf(index));
+//                ObjectOutputStream out = new ObjectOutputStream(s.getOutputStream());
+//                out.writeObject(playersList);
+            }
+        }
+        catch(Exception ex){
+            System.out.println("Error sending info about start game: " + ex.getMessage());
+        }
+    }
+
+    public void sendStartGame(ArrayList<Socket> socketPlayers,int index){
         try{
             for(Socket s : socketPlayers){
                 DataOutputStream socketOut = new DataOutputStream(s.getOutputStream());
                 socketOut.writeUTF("StartGame");
+                socketOut.writeUTF(String.valueOf(index));
 //                ObjectOutputStream out = new ObjectOutputStream(s.getOutputStream());
 //                out.writeObject(playersList);
             }
