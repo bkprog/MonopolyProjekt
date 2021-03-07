@@ -111,9 +111,9 @@ public class Client1 {
                             String idPropertyString = moveInfo.substring(2);
                             idProperty = Integer.parseInt(idPropertyString);
                         }
-
                         System.out.println("Id player: " + idPlayer + " idProperty: " + idProperty);
-                        System.out.println(info);
+                    updatePlayerMove(playersList,idPlayer,idProperty);
+                    System.out.println(info);
                 }
 
                 else if((info.startsWith("StartGame")) && (playersInGame == readyPlayers)){
@@ -131,20 +131,24 @@ public class Client1 {
                         int dice2 = dice.throwfunction();
                         Properties property = new Properties();
                         Player myProfile = new Player();
+                        Player opProfile = new Player();
                         myProfile = getPlayer(playersList,nickname);
+                        opProfile = getPlayer(playersList,"2k");
                         property = propertiesList.get(myProfile.getPropertyId());
                         System.out.println(" ");
                         System.out.println("First dice: " + dice1);
                         System.out.println("Secound dice: " + dice2);
                         System.out.println("Sum of dices: " + (dice2 + dice1));
-                        System.out.println(" ");
-                        System.out.println("Player " + myProfile.getPlayerName() + " stands on: ");
-                        System.out.println(" ");
-                        System.out.println("Cityname: " + property.getNameProperty());
-                        System.out.println("Country name: " + property.getCountryName());
-                        System.out.println("Buy cost: " + property.getBuyCost());
-                        System.out.println("Payment for stay: " + property.getPaymentForStay());
-                        System.out.println(" ");
+
+                        System.out.println("Oponent property position: " + opProfile.getPropertyId());
+//                        System.out.println(" ");
+//                        System.out.println("Player " + myProfile.getPlayerName() + " stands on: ");
+//                        System.out.println(" ");
+//                        System.out.println("Cityname: " + property.getNameProperty());
+//                        System.out.println("Country name: " + property.getCountryName());
+//                        System.out.println("Buy cost: " + property.getBuyCost());
+//                        System.out.println("Payment for stay: " + property.getPaymentForStay());
+//                        System.out.println(" ");
                         int newPosition = dice1+dice2+myProfile.getPropertyId();
                         if(newPosition>40){
                             newPosition = newPosition - 40;
@@ -159,6 +163,7 @@ public class Client1 {
                         System.out.println("Country name: " + property.getCountryName());
                         System.out.println("Buy cost: " + property.getBuyCost());
                         System.out.println("Payment for stay: " + property.getPaymentForStay());
+                        System.out.println("Property id: " + property.getIDproperty());
                         System.out.println(" ");
                         System.out.println("Players are waiting for you enter some text...");
                         scanner.nextLine();
@@ -189,6 +194,14 @@ public class Client1 {
             System.out.println("Error: " + ex.getMessage());
         }
 
+    }
+
+    public static void updatePlayerMove(ArrayList<Player> players,int idPlayer, int idProperty){
+        for(Player p : players){
+            if (p.getPlayerNumber() == idPlayer){
+                p.setPropertyId(idProperty);
+            }
+        }
     }
 
     public static Player getPlayer(ArrayList<Player> players,String nickName){
