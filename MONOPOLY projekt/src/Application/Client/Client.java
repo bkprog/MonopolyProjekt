@@ -96,7 +96,22 @@ public class Client {
                     readyPlayers++;
 
                 }
-                else if((info.equals("StartGame")) && (playersInGame == readyPlayers)){
+                else if(info.startsWith("UpdateMove ")){
+                    String moveInfo = info.substring(11);
+                    int idPlayer = Character.getNumericValue(moveInfo.charAt(0));
+                    int idProperty;
+                        if(moveInfo.substring(2).length()>2){
+                            idProperty = Integer.parseInt(moveInfo.substring(2));
+                        }
+                        else{
+                            String idPropertyString = moveInfo.substring(2);
+                            idProperty = Integer.parseInt(idPropertyString);
+                        }
+                        System.out.println("Id player: " + idPlayer + " idProperty: " + idProperty);
+                    System.out.println(info);
+                }
+
+                else if((info.startsWith("StartGame")) && (playersInGame == readyPlayers)){
                     if(!gameSettingsReady){
                         System.out.println("All Players are ready! Let's go!!!");
                         System.out.println("Game is starting...");
@@ -142,14 +157,14 @@ public class Client {
                         System.out.println(" ");
                         System.out.println("Players are waiting for you enter some text...");
                         scanner.nextLine();
-                        dOut.writeUTF("readyTour");
+                        dOut.writeUTF("readyTour " + numbertour + " " + myProfile.getPropertyId());
                         readyTour++;
                     }
                     else{
                         System.out.println("Oponents move wait for your turn!");
                         System.out.println("[Press Enter]");
                         scanner.nextLine();
-                        dOut.writeUTF("readyTour");
+                        dOut.writeUTF("readyTour ");
                         readyTour++;
                     }
                 }

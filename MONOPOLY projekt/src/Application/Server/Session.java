@@ -75,30 +75,19 @@ public class Session extends Thread {
             boolean firstRound = true;
             int readyTourCheck = 0;
             while (true){
-//                if(readyTourCheck>2)
-//                    readyTourCheck = 1;
                 if(firstRound || readyTourCheck > 0){
                     sendStartGame(socketPlayers,index);
                     firstRound = false;
                 }
                 String readyTour = socketIn.readUTF();
-                if(readyTour.equals("readyTour")){
+                if(readyTour.startsWith("readyTour ")){
+                    if(readyTour.length()>10){
+                        String moveInfo = readyTour.substring(10);
+                        updateMove(socketPlayers,moveInfo);
+                    }
                     readyTourCheck += 1;
                     System.out.println(readyTourCheck);
                 }
-
-//                if(client == socketPlayers.get(indexSoket)){
-//                    //readyTourCheck++;
-//                    if(readyTour.equals("readyTour")){
-//                        System.out.println("Client ready");
-//                    }
-//                }
-//                else{
-//                    //setTour(socketPlayers);
-//                    if(readyTour.equals("readyTour")){
-//                        System.out.println("o ready");
-//                    }
-//                }
 
                 index++;
                 if(index>numberOfPlayersInGame){
@@ -114,28 +103,24 @@ public class Session extends Thread {
         }
     }
 
-    public void setTour(ArrayList<Socket> socketPlayers){
-        try {
-            for(Socket s : socketPlayers){
-                if(s == client){
-//                    DataOutputStream co =new DataOutputStream(client.getOutputStream());
-//                    co.writeUTF(String.valueOf(tour));
-                }
-                else{
-                    DataOutputStream so = new DataOutputStream(s.getOutputStream());
-                    so.writeUTF("endTour");
-                }
-
-            }
-        }
-        catch (Exception e) {
-        }
-
-    }
 //    public void setStartGame(ArrayList<Socket> socketPlayers,ArrayList<Properties> propertiesList,ArrayList<Player> playersList){
 //        sendSettingsPlayerArray(socketPlayers,playersList);
 //        sendSettingPropertiesArray(socketPlayers,propertiesList);
 //    }
+    public void updateMove(ArrayList<Socket> socketPlayers,String move){
+        try{
+            for(Socket s : socketPlayers){
+                if(s != client){
+                    DataOutputStream socketOut = new DataOutputStream(s.getOutputStream());
+                    socketOut.writeUTF("UpdateMove " + move);
+                }
+            }
+        }
+        catch(Exception ex){
+            System.out.println("Error sending info about start game: " + ex.getMessage());
+        }
+    }
+
     public void sendStartGame(ArrayList<Socket> socketPlayers,int tour){
         try{
             for(Socket s : socketPlayers){
