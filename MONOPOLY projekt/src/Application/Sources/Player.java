@@ -23,6 +23,10 @@ public class Player {
         this.name = newName;
     }
 
+    public void setInJail(boolean isInJail){
+        this.isInJail = isInJail;
+    }
+
     public int getCash(){
         return this.cash;
     }

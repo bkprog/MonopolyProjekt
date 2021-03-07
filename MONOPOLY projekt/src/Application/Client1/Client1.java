@@ -155,6 +155,11 @@ public class Client1 {
                             myProfile.setCash(myProfile.getCash() + 200);
                             System.out.println("You pass Go property your cash is now: " + myProfile.getCash());
                         }
+                        if(newPosition == 31){
+                            newPosition = 11;
+                            System.out.println("You go to Jail!");
+                            myProfile.setInJail(true);
+                        }
                         myProfile.setPropertyId(newPosition);
                         property = propertiesList.get(myProfile.getPropertyId());
                         System.out.println("Player " + myProfile.getPlayerName() + " now standing on: ");
@@ -167,7 +172,7 @@ public class Client1 {
                         System.out.println(" ");
                         System.out.println("Players are waiting for you enter some text...");
                         scanner.nextLine();
-                        dOut.writeUTF("readyTour " + myProfile.getPlayerNumber() + " " + myProfile.getPropertyId());
+                        dOut.writeUTF("readyTour " + myProfile.getPlayerNumber() + " " + (myProfile.getPropertyId()+1));
                         readyTour++;
                     }
                     else{
