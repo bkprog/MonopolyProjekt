@@ -72,20 +72,33 @@ public class Session extends Thread {
             //wysyła do klientów informacje o rozpoczeciu gry
             int index = 1;
             int indexSoket = 1;
+            boolean firstRound = true;
+            int readyTourCheck = 0;
             while (true){
-                sendStartGame(socketPlayers,index);
+//                if(readyTourCheck>2)
+//                    readyTourCheck = 1;
+                if(firstRound || readyTourCheck > 0){
+                    sendStartGame(socketPlayers,index);
+                    firstRound = false;
+                }
                 String readyTour = socketIn.readUTF();
-                if(client == socketPlayers.get(indexSoket)){
-                    if(readyTour.equals("readyTour")){
-                        System.out.println("Client ready");
-                    }
+                if(readyTour.equals("readyTour")){
+                    readyTourCheck += 1;
+                    System.out.println(readyTourCheck);
                 }
-                else{
-                    setTour(socketPlayers);
-                    if(readyTour.equals("readyTour")){
-                        System.out.println("o ready");
-                    }
-                }
+
+//                if(client == socketPlayers.get(indexSoket)){
+//                    //readyTourCheck++;
+//                    if(readyTour.equals("readyTour")){
+//                        System.out.println("Client ready");
+//                    }
+//                }
+//                else{
+//                    //setTour(socketPlayers);
+//                    if(readyTour.equals("readyTour")){
+//                        System.out.println("o ready");
+//                    }
+//                }
 
                 index++;
                 if(index>numberOfPlayersInGame){

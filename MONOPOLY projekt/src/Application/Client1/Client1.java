@@ -19,6 +19,7 @@ public class Client1 {
         int playersInGame = 0;
         int numbertour = 1;
         int readyTour = 0;
+        boolean firstRound = true;
         boolean gameSettingsReady = false;
         Dice dice = new Dice();
         ArrayList<Player> playersList = new ArrayList<>();
@@ -95,8 +96,8 @@ public class Client1 {
                     readyPlayers++;
 
                 }
-                else if((info.equals("StartGame")) && (playersInGame == readyPlayers)){
 
+                else if((info.equals("StartGame")) && (playersInGame == readyPlayers)){
                     if(!gameSettingsReady){
                         System.out.println("All Players are ready! Let's go!!!");
                         System.out.println("Game is starting...");

@@ -18,6 +18,7 @@ public class Client {
         int playersInGame = 0;
         int numbertour = 1;
         int readyTour = 0;
+        boolean firstRound = true;
         boolean gameSettingsReady = false;
         Dice dice = new Dice();
         ArrayList<Player> playersList = new ArrayList<>();
@@ -96,7 +97,6 @@ public class Client {
 
                 }
                 else if((info.equals("StartGame")) && (playersInGame == readyPlayers)){
-
                     if(!gameSettingsReady){
                         System.out.println("All Players are ready! Let's go!!!");
                         System.out.println("Game is starting...");
@@ -108,12 +108,13 @@ public class Client {
                     System.out.println("Player is standing on: ");
 
                     Properties property = new Properties();
-                    property = propertiesList.get(35);
+                    property = propertiesList.get(0);
 
                     System.out.println("Cityname: " + property.getNameProperty());
                     System.out.println("Country name: " + property.getCountryName());
                     System.out.println("Buy cost: " + property.getBuyCost());
                     System.out.println("Payment for stay: " + property.getPaymentForStay());
+
 
                     if(checkTourIndexPlayer(playersList,numbertour,nickname)){
                         int dice1 = dice.throwfunction();
