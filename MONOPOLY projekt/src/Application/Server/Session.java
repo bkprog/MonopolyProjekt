@@ -293,7 +293,7 @@ public class Session extends Thread {
         Properties property13 = new Properties(13,10,"Elektrownia","NONE",300);
         Properties property14 = new Properties(14,20,"Sewilla","Hiszpania",280);
         Properties property15 = new Properties(15,25,"Madryt","Hiszpania",320);
-        Properties property16 = new Properties(16,50,"Linie Kolejowe Północne","NONE",400);
+        Properties property16 = new Properties(16,50,"Linie Kolejowe Wschodnie","NONE",400);
         Properties property17 = new Properties(17,30,"Liverpool","Anglia",360);
         Properties property18 = new Properties(18,0,"BlueQuestionMark","NONE",0);
         Properties property19 = new Properties(19,30,"Glasgow","Anglia",360);
@@ -303,7 +303,7 @@ public class Session extends Thread {
         Properties property23 = new Properties(23,0,"RedQuestionMark","NONE",0);
         Properties property24 = new Properties(24,35,"Bruksela","Benelux",440);
         Properties property25 = new Properties(25,40,"Amsterdam","Benelux",480);
-        Properties property26 = new Properties(26,50,"Linie Kolejowe Zachodnie","NONE",400);
+        Properties property26 = new Properties(26,50,"Linie Kolejowe Północne","NONE",400);
         Properties property27 = new Properties(27,45,"Malmo","Szwecja",520);
         Properties property28 = new Properties(28,45,"Goteborg","Szwecja",520);
         Properties property29 = new Properties(29,10,"Wodociągi","NONE",300);
