@@ -106,23 +106,41 @@ public class Client1 {
                     numbertour = Integer.parseInt(dIn.readUTF());
                     System.out.println("tura numer: " + numbertour);
                     System.out.println("nick: " + nickname);
-                    System.out.println("Player is standing on: ");
-
-                    Properties property = new Properties();
-                    property = propertiesList.get(0);
-
-                    System.out.println("Cityname: " + property.getNameProperty());
-                    System.out.println("Country name: " + property.getCountryName());
-                    System.out.println("Buy cost: " + property.getBuyCost());
-                    System.out.println("Payment for stay: " + property.getPaymentForStay());
-
 
                     if(checkTourIndexPlayer(playersList,numbertour,nickname)){
                         int dice1 = dice.throwfunction();
                         int dice2 = dice.throwfunction();
+                        Properties property = new Properties();
+                        Player myProfile = new Player();
+                        myProfile = getPlayer(playersList,nickname);
+                        property = propertiesList.get(myProfile.getPropertyId());
+                        System.out.println(" ");
                         System.out.println("First dice: " + dice1);
                         System.out.println("Secound dice: " + dice2);
                         System.out.println("Sum of dices: " + (dice2 + dice1));
+                        System.out.println(" ");
+                        System.out.println("Player " + myProfile.getPlayerName() + " stands on: ");
+                        System.out.println(" ");
+                        System.out.println("Cityname: " + property.getNameProperty());
+                        System.out.println("Country name: " + property.getCountryName());
+                        System.out.println("Buy cost: " + property.getBuyCost());
+                        System.out.println("Payment for stay: " + property.getPaymentForStay());
+                        System.out.println(" ");
+                        int newPosition = dice1+dice2+myProfile.getPropertyId();
+                        if(newPosition>40){
+                            newPosition = newPosition - 40;
+                            myProfile.setCash(myProfile.getCash() + 200);
+                            System.out.println("You pass Go property your cash is now: " + myProfile.getCash());
+                        }
+                        myProfile.setPropertyId(newPosition);
+                        property = propertiesList.get(myProfile.getPropertyId());
+                        System.out.println("Player " + myProfile.getPlayerName() + " now standing on: ");
+                        System.out.println(" ");
+                        System.out.println("Cityname: " + property.getNameProperty());
+                        System.out.println("Country name: " + property.getCountryName());
+                        System.out.println("Buy cost: " + property.getBuyCost());
+                        System.out.println("Payment for stay: " + property.getPaymentForStay());
+                        System.out.println(" ");
                         System.out.println("Players are waiting for you enter some text...");
                         scanner.nextLine();
                         dOut.writeUTF("readyTour");
@@ -153,6 +171,16 @@ public class Client1 {
         }
 
     }
+
+    public static Player getPlayer(ArrayList<Player> players,String nickName){
+        for(Player p : players){
+            if (p.getPlayerName().equals(nickName)){
+                return p;
+            }
+        }
+        return null;
+    }
+
     public static boolean checkTourIndexPlayer(ArrayList<Player> players,int index,String nickname){
         Player myProfile = new Player();
         for(Player p : players){
