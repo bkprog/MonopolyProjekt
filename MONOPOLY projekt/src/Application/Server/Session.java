@@ -17,6 +17,7 @@ public class Session extends Thread {
     int playerNumber;
     int numberOfPlayersInGame;
     int playersReady = 0;
+    int playersTourReady = 0;
 
     public Session(Socket client, ArrayList<Socket> socketArray,int np,int numberOfPlayers,ArrayList<Player> playersList,ArrayList<Properties> propertiesList){
         this.client = client;
@@ -69,33 +70,43 @@ public class Session extends Thread {
                 sendSettingPropertiesArray(socketPlayers,propertiesList);
             }while(false);
 
-            //wysyła do klientów informacje o rozpoczeciu gry
-            int index = 1;
-            int indexSoket = 1;
-            boolean firstRound = true;
-            int readyTourCheck = 0;
-            while (true){
-                if(firstRound || readyTourCheck > 0){
-                    sendStartGame(socketPlayers,index);
-                    firstRound = false;
+            boolean firstTour = true;
+            boolean sendOnce = true;
+            int playerTourIndex = 1;
+
+//            while (true){
+//
+//            }
+            for(int i=0;i<10;i++){
+                System.out.println("Tura numer: " + (i+1));
+                if(firstTour){
+                    sendStartGame(socketPlayers,playerTourIndex);
+                    firstTour = false;
                 }
-                String readyTour = socketIn.readUTF();
-                if(readyTour.startsWith("readyTour ")){
-                    if(readyTour.length()>10){
-                        String moveInfo = readyTour.substring(10);
-                        updateMove(socketPlayers,moveInfo);
-                    }
-                    readyTourCheck += 1;
-                    System.out.println(readyTourCheck);
+                String clientResponse = socketIn.readUTF();
+                if(clientResponse.equals("PlayerTourReady")){
+                    System.out.println(clientResponse);
+                    BroadcastReadyToOtherClientsTour(socketPlayers);
                 }
 
-                index++;
-                if(index>numberOfPlayersInGame){
-                    index = 1;
-                    indexSoket = 0;
+                playerTourIndex++;
+                if(playerTourIndex > numberOfPlayersInGame){
+                    playerTourIndex = 1;
                 }
+                String clientResponse1 = socketIn.readUTF();
+                if(clientResponse1.equals("allPlayersTourReady")){
+                    System.out.println(clientResponse1);
+                    sendStartGameToClient(socketPlayers,playerTourIndex);
+                }
+
+
             }
 
+//            sendStartGame(socketPlayers,playerTourIndex);
+//            System.out.println(socketIn.readUTF());
+            while (true){
+
+            }
 
         }
         catch(IOException ex){
@@ -107,6 +118,23 @@ public class Session extends Thread {
 //        sendSettingsPlayerArray(socketPlayers,playersList);
 //        sendSettingPropertiesArray(socketPlayers,propertiesList);
 //    }
+
+    public void BroadcastReadyToOtherClientsTour(ArrayList<Socket> socketPlayers){
+        playersTourReady++;
+        try{
+            for (Socket s : socketPlayers){
+                DataOutputStream socketOut = new DataOutputStream(s.getOutputStream());
+//                socketOut.writeUTF("PlayerTourReady");
+                if (s != client){
+                    socketOut.writeUTF("PlayerTourReady");
+                }
+            }
+        }
+        catch(Exception e){
+            System.out.println("Error Ready to others: " + e.getMessage());
+        }
+    }
+
     public void updateMove(ArrayList<Socket> socketPlayers,String move){
         try{
             for(Socket s : socketPlayers){
@@ -121,13 +149,30 @@ public class Session extends Thread {
         }
     }
 
-    public void sendStartGame(ArrayList<Socket> socketPlayers,int tour){
+    public void sendStartGameToClient(ArrayList<Socket> socketPlayers,int playerTourIndex){
         try{
             for(Socket s : socketPlayers){
+//                DataOutputStream socketOut = new DataOutputStream(s.getOutputStream());
+//                socketOut.writeUTF("StartGame " + playerTourIndex);
+                if(s == client){
+                    DataOutputStream socketOut = new DataOutputStream(s.getOutputStream());
+                    socketOut.writeUTF("StartGame " + playerTourIndex);
+                }
+            }
+        }
+        catch(Exception ex){
+            System.out.println("Error sending info about start game: " + ex.getMessage());
+        }
+    }
+
+    public void sendStartGame(ArrayList<Socket> socketPlayers,int playerTourIndex){
+        try{
+            for(Socket s : socketPlayers){
+//                DataOutputStream socketOut = new DataOutputStream(s.getOutputStream());
+//                socketOut.writeUTF("StartGame " + playerTourIndex);
                 if(s != client){
                     DataOutputStream socketOut = new DataOutputStream(s.getOutputStream());
-                    socketOut.writeUTF("StartGame");
-                    socketOut.writeUTF(String.valueOf(tour));
+                    socketOut.writeUTF("StartGame " + playerTourIndex);
                 }
             }
         }
