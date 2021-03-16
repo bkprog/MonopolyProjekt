@@ -84,7 +84,7 @@ public class Session extends Thread {
                 String clientResponse = socketIn.readUTF();
                 if(clientResponse.startsWith("PlayerTourReady")){
                     if(clientResponse.length() > 15){
-                        String playerMove = clientResponse.substring(20);
+                        String playerMove = clientResponse.substring(16);
                         updateMove(socketPlayers,playerMove);
                     }
                     System.out.println(clientResponse);

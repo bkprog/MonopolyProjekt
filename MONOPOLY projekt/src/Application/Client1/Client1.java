@@ -102,9 +102,27 @@ public class Client1 {
 
                 else if(info.startsWith("UpdateMove ")){
                     String move = info.substring(11);
-                    int playerMovedId = Character.getNumericValue(move.charAt(0));
-                    move = info.substring(13);
+                    int ifPlayerPassStart = Character.getNumericValue(move.charAt(0));
+                    int ifPlayerBought = Character.getNumericValue(move.charAt(2));
+                    int playerMovedId = Character.getNumericValue(move.charAt(4));
+                    System.out.println(ifPlayerBought + " " + ifPlayerPassStart + " " + playerMovedId);
+                    if(ifPlayerPassStart == 1){
+                        Player oponent = new Player();
+                        oponent = getPlayer(playersList,playerMovedId);
+                        oponent.setCash(oponent.getCash() + 400);
+                        updatePlayersCash(playersList,playerMovedId,oponent.getCash());
+                        System.out.println("Oponent pass the start!\n");
+                    }
+                    move = info.substring(17);
+                    System.out.println(move);
                     int propertyId = Integer.parseInt(move);
+                    if(ifPlayerBought == 1){
+                        Properties propertyOponent = new Properties();
+                        propertyOponent = propertiesList.get(propertyId-1);
+                        propertyOponent.setOwnerID(playerMovedId);
+                        updatePropertiesList(propertiesList,propertyOponent);
+                        System.out.println("Oponent bought city! " + propertyOponent.getIDproperty() +"\n");
+                    }
                     System.out.println("Playermoved id: " + playerMovedId + " propertyId: " + propertyId);
                     updatePlayerMove(playersList,playerMovedId,propertyId);
                 }
@@ -154,6 +172,9 @@ public class Client1 {
                                             property.setOwnerID(myProfile.getPlayerNumber());
                                             System.out.println("Your cash after transaction: " + myProfile.getCash());
                                             updatePropertiesList(propertiesList,property);
+                                        }
+                                        else{
+                                            System.out.println("You cant aford it!\n");
                                         }
                                     }
                                 }
@@ -235,6 +256,9 @@ public class Client1 {
                                             System.out.println("Your cash after transaction: " + myProfile.getCash());
                                             updatePropertiesList(propertiesList,property);
                                         }
+                                        else{
+                                            System.out.println("You cant aford it!\n");
+                                        }
                                     }
                                 }
                                 else{
@@ -259,6 +283,7 @@ public class Client1 {
                             System.out.println("Player ready before: " + PlayerTourReady);
                             dOut.writeUTF("PlayerTourReady " + passStart + " " + ifPlayerBoughtProperty + " " +Integer.parseInt(info.substring(10)) +  " " + property.getIDproperty());
                             PlayerTourReady += 1;
+                            ifPlayerBoughtProperty = 0;
                             System.out.println("Player ready before: " + PlayerTourReady);
                             passStart = 0;
                             gameSettingsReady = true;
@@ -307,6 +332,10 @@ public class Client1 {
             System.out.println("Error: " + ex.getMessage());
         }
 
+    }
+
+    public static void updatePlayersCash(ArrayList<Player> playersList,int playerId,int newCash){
+        playersList.get(playerId-1).setCash(newCash);
     }
 
     public static void getCashAllPlayers(ArrayList<Player> playersList){
