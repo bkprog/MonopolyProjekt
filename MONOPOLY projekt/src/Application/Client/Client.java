@@ -158,6 +158,10 @@ public class Client {
 
                             myProfile = getPlayer(playersList,nickname);
                             int newPosition = myProfile.getPropertyId() + dice1 + dice2;
+                            if(newPosition > 40){
+                                newPosition = newPosition - 40;
+                                System.out.println("Nice your acconut get 400$");
+                            }
                             updatePlayerMove(playersList,myProfile.getPlayerNumber(),newPosition);
                             myProfile = getPlayer(playersList,nickname);
 
