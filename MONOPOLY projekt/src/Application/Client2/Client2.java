@@ -101,7 +101,14 @@ public class Client2 {
 
                     if(checkTourIndexPlayer(playersList,Integer.parseInt(info.substring(10)),nickname)){
                         if(firstTour){
-                            System.out.println("Its your turn press <Enter>");
+                            System.out.println("Its your turn press <Enter> to Dice!");
+                            scanner.nextLine();
+                            int dice1 = dice.throwfunction();
+                            int dice2 = dice.throwfunction();
+                            System.out.println("First dice is: " + dice1);
+                            System.out.println("Secound dice is: " + dice2);
+                            System.out.println("Sum of dices is: " + (dice2 + dice1));
+                            System.out.println("Press < enter > to end your tour: ");
                             scanner.nextLine();
                             System.out.println("Player ready before: " + PlayerTourReady);
                             dOut.writeUTF("PlayerTourReady");
@@ -111,7 +118,14 @@ public class Client2 {
                             firstTour = false;
                         }
                         else{
-                            System.out.println("Its your turn press <Enter>");
+                            System.out.println("Its your turn press <Enter> to Dice!");
+                            scanner.nextLine();
+                            int dice1 = dice.throwfunction();
+                            int dice2 = dice.throwfunction();
+                            System.out.println("First dice is: " + dice1);
+                            System.out.println("Secound dice is: " + dice2);
+                            System.out.println("Sum of dices is: " + (dice2 + dice1));
+                            System.out.println("Press < enter > to end your tour: ");
                             scanner.nextLine();
                             System.out.println("Player ready before: " + PlayerTourReady);
                             dOut.writeUTF("PlayerTourReady");
