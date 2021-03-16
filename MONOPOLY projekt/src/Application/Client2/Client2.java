@@ -21,6 +21,8 @@ public class Client2 {
         int PlayerTourReady = 0;
         boolean firstTour = true;
         boolean gameSettingsReady = false;
+        Player myProfile = new Player();
+        Properties property = new Properties();
         Dice dice = new Dice();
         ArrayList<Player> playersList = new ArrayList<>();
         ArrayList<Properties> propertiesList = new ArrayList<>();
@@ -62,15 +64,19 @@ public class Client2 {
                 else if(info.equals("PropertiesSettings") && (playersInGame == readyPlayers)){
 
                     for(int i =0 ;i<40;i++){
-                        Properties property = new Properties();
-                        property.setNameProperty(dIn.readUTF());
-                        property.setPaymentForStay(Integer.parseInt(dIn.readUTF()));
-                        property.setIDproperty(Integer.parseInt(dIn.readUTF()));
-                        property.setBuyCost(Integer.parseInt(dIn.readUTF()));
-                        property.setCountryName(dIn.readUTF());
-                        property.setOwnerID(Integer.parseInt(dIn.readUTF()));
-                        propertiesList.add(property);
+                        Properties propertyNew = new Properties();
+                        propertyNew.setNameProperty(dIn.readUTF());
+                        propertyNew.setPaymentForStay(Integer.parseInt(dIn.readUTF()));
+                        propertyNew.setIDproperty(Integer.parseInt(dIn.readUTF()));
+                        propertyNew.setBuyCost(Integer.parseInt(dIn.readUTF()));
+                        propertyNew.setCountryName(dIn.readUTF());
+                        propertyNew.setOwnerID(Integer.parseInt(dIn.readUTF()));
+                        propertiesList.add(propertyNew);
                     }
+
+//                    for(int i=0;i<propertiesList.size();i++){
+//
+//                    }
                 }
                 else if(info.equals("PlayersInGame")){
                     int number = dIn.readInt();
@@ -92,6 +98,15 @@ public class Client2 {
                     }
                 }
 
+                else if(info.startsWith("UpdateMove ")){
+                    String move = info.substring(11);
+                    int playerMovedId = Character.getNumericValue(move.charAt(0));
+                    move = info.substring(13);
+                    int propertyId = Integer.parseInt(move);
+                    System.out.println("Playermoved id: " + playerMovedId + " propertyId: " + propertyId);
+                    updatePlayerMove(playersList,playerMovedId,propertyId);
+                }
+
                 else if((info.startsWith("StartGame")) && (playersInGame == readyPlayers)){
                     if(!gameSettingsReady){
                         System.out.println("All Players are ready! Let's go!!!");
@@ -105,13 +120,28 @@ public class Client2 {
                             scanner.nextLine();
                             int dice1 = dice.throwfunction();
                             int dice2 = dice.throwfunction();
+                            System.out.println("Your Dice info:\n");
                             System.out.println("First dice is: " + dice1);
                             System.out.println("Secound dice is: " + dice2);
-                            System.out.println("Sum of dices is: " + (dice2 + dice1));
-                            System.out.println("Press < enter > to end your tour: ");
+                            System.out.println("Sum of dices is: " + (dice2 + dice1) + "\n");
+
+                            myProfile = getPlayer(playersList,nickname);
+                            int newPosition = myProfile.getPropertyId() + dice1 + dice2;
+                            updatePlayerMove(playersList,myProfile.getPlayerNumber(),newPosition);
+                            myProfile = getPlayer(playersList,nickname);
+
+                            System.out.println("Property Info: \n");
+                            property = propertiesList.get(myProfile.getPropertyId());
+                            System.out.println("Id property: " + property.getIDproperty());
+                            System.out.println("Country name: " + property.getCountryName());
+                            System.out.println("City name: " + property.getNameProperty());
+                            System.out.println("Buy cost: " + property.getBuyCost());
+                            System.out.println("Stand cost: " + property.getPaymentForStay());
+
+                            System.out.println("\nPress < enter > to end your tour: ");
                             scanner.nextLine();
                             System.out.println("Player ready before: " + PlayerTourReady);
-                            dOut.writeUTF("PlayerTourReady");
+                            dOut.writeUTF("PlayerTourReady " + Integer.parseInt(info.substring(10)) +  " " + property.getIDproperty());
                             PlayerTourReady += 1;
                             System.out.println("Player ready before: " + PlayerTourReady);
                             gameSettingsReady = true;
@@ -122,13 +152,28 @@ public class Client2 {
                             scanner.nextLine();
                             int dice1 = dice.throwfunction();
                             int dice2 = dice.throwfunction();
+                            System.out.println("Your Dice info:\n");
                             System.out.println("First dice is: " + dice1);
                             System.out.println("Secound dice is: " + dice2);
-                            System.out.println("Sum of dices is: " + (dice2 + dice1));
-                            System.out.println("Press < enter > to end your tour: ");
+                            System.out.println("Sum of dices is: " + (dice2 + dice1) + "\n");
+
+                            myProfile = getPlayer(playersList,nickname);
+                            int newPosition = myProfile.getPropertyId() + dice1 + dice2;
+                            updatePlayerMove(playersList,myProfile.getPlayerNumber(),newPosition);
+                            myProfile = getPlayer(playersList,nickname);
+
+                            System.out.println("Property Info: \n");
+                            property = propertiesList.get(myProfile.getPropertyId());
+                            System.out.println("Id property: " + property.getIDproperty());
+                            System.out.println("Country name: " + property.getCountryName());
+                            System.out.println("City name: " + property.getNameProperty());
+                            System.out.println("Buy cost: " + property.getBuyCost());
+                            System.out.println("Stand cost: " + property.getPaymentForStay());
+
+                            System.out.println("\nPress < enter > to end your tour: ");
                             scanner.nextLine();
                             System.out.println("Player ready before: " + PlayerTourReady);
-                            dOut.writeUTF("PlayerTourReady");
+                            dOut.writeUTF("PlayerTourReady " + Integer.parseInt(info.substring(10)) +  " " + property.getIDproperty());
                             PlayerTourReady += 1;
                             System.out.println("Player ready before: " + PlayerTourReady);
                             gameSettingsReady = true;

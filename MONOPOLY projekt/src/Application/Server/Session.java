@@ -73,18 +73,20 @@ public class Session extends Thread {
             boolean firstTour = true;
             boolean sendOnce = true;
             int playerTourIndex = 1;
+            int i = 1;
 
-//            while (true){
-//
-//            }
-            for(int i=0;i<10;i++){
-                System.out.println("Tura numer: " + (i+1));
+            while(true){
+                System.out.println("Tura numer: " + i);
                 if(firstTour){
                     sendStartGame(socketPlayers,playerTourIndex);
                     firstTour = false;
                 }
                 String clientResponse = socketIn.readUTF();
-                if(clientResponse.equals("PlayerTourReady")){
+                if(clientResponse.startsWith("PlayerTourReady")){
+                    if(clientResponse.length() > 15){
+                        String playerMove = clientResponse.substring(16);
+                        updateMove(socketPlayers,playerMove);
+                    }
                     System.out.println(clientResponse);
                     BroadcastReadyToOtherClientsTour(socketPlayers);
                 }
@@ -98,16 +100,8 @@ public class Session extends Thread {
                     System.out.println(clientResponse1);
                     sendStartGameToClient(socketPlayers,playerTourIndex);
                 }
-
-
+                i++;
             }
-
-//            sendStartGame(socketPlayers,playerTourIndex);
-//            System.out.println(socketIn.readUTF());
-            while (true){
-
-            }
-
         }
         catch(IOException ex){
             System.out.println("Session error: " + ex.getMessage());
