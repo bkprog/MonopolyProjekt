@@ -27,6 +27,10 @@ public class Player {
         this.isInJail = isInJail;
     }
 
+    public boolean getIsInJail(){
+        return this.isInJail;
+    }
+
     public int getCash(){
         return this.cash;
     }

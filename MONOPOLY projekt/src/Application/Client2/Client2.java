@@ -74,9 +74,6 @@ public class Client2 {
                         propertiesList.add(propertyNew);
                     }
 
-//                    for(int i=0;i<propertiesList.size();i++){
-//
-//                    }
                 }
                 else if(info.equals("PlayersInGame")){
                     int number = dIn.readInt();
@@ -148,6 +145,7 @@ public class Client2 {
                             firstTour = false;
                         }
                         else{
+
                             System.out.println("Its your turn press <Enter> to Dice!");
                             scanner.nextLine();
                             int dice1 = dice.throwfunction();
