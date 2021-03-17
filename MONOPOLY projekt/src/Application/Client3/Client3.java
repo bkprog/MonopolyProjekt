@@ -1,5 +1,6 @@
 package Application.Client3;
 
+import Application.Sources.BlueRedCards;
 import Application.Sources.Dice;
 import Application.Sources.Player;
 import Application.Sources.Properties;
@@ -26,6 +27,8 @@ public class Client3 {
         Player myProfile = new Player();
         Properties property = new Properties();
         Dice dice = new Dice();
+        ArrayList<BlueRedCards> blueRedCards = new ArrayList<>();
+        blueRedCards = initializeRandomCards();
         ArrayList<Player> playersList = new ArrayList<>();
         ArrayList<Properties> propertiesList = new ArrayList<>();
         String hostname = "localhost";
@@ -513,5 +516,45 @@ public class Client3 {
             return true;
         else
             return false;
+    }
+
+    public static ArrayList<BlueRedCards> initializeRandomCards(){
+        ArrayList<BlueRedCards> blueRedCardsInitial = new ArrayList<>();
+
+        BlueRedCards card1 = new BlueRedCards(1,"Wracasz do Mardrytu",0,0,0,0,15);
+        BlueRedCards card2 = new BlueRedCards(2,"Bank wyplaca ci procenty w wysokosci 100$",100,0,0,0,0);
+        BlueRedCards card3 = new BlueRedCards(3,"Idziesz do Kolei Wschodnich, jezeli przechodzisz przez start otrymujesz 400$!",0,0,0,0,16);
+        BlueRedCards card4 = new BlueRedCards(4,"Bank wyplaca ci nalezne odsetki w wyskości 300$",300,0,0,0,0);
+        BlueRedCards card5 = new BlueRedCards(5,"Idziesz do Brukseli, jezeli przechodzisz przez start otrzymujesz 400$",0,0,0,0,24);
+        BlueRedCards card6 = new BlueRedCards(6,"Piles w czasie pracy placisz 40$",0,40,0,0,0);
+        BlueRedCards card7 = new BlueRedCards(7,"Idziesz do Neapolu, jezeli przechodzisz przez start otrzymujesz 400$",0,0,0,0,7);
+        BlueRedCards card8 = new BlueRedCards(8,"Placisz oplate za szkole 300$",0,300,0,0,0);
+        BlueRedCards card9 = new BlueRedCards(9,"Idziesz do wiezienia!",0,0,0,0,31);
+        BlueRedCards card10 = new BlueRedCards(10,"Rozwiazales dobrze krzyzowke otrzymujesz 200$",200,0,0,0,0);
+        BlueRedCards card11 = new BlueRedCards(11,"Wracasz na Start",0,0,0,0,1);
+        BlueRedCards card12 = new BlueRedCards(12,"Cofasz sie o 3 pola.",0,0,0,3,0);
+        BlueRedCards card13 = new BlueRedCards(13,"Idziesz 3 pola dalej",0,0,3,0,0);
+        BlueRedCards card14 = new BlueRedCards(14,"Mandat za szybka jazde 30$.",0,30,0,0,0);
+        BlueRedCards card15 = new BlueRedCards(15,"Bank pomylil sie na twoja korzysc otrzymujesz 400$.",400,0,0,0,0);
+        BlueRedCards card16 = new BlueRedCards(16,"Wracasz do Wiednia",0,0,0,0,40);
+
+        blueRedCardsInitial.add(card1);
+        blueRedCardsInitial.add(card2);
+        blueRedCardsInitial.add(card3);
+        blueRedCardsInitial.add(card4);
+        blueRedCardsInitial.add(card5);
+        blueRedCardsInitial.add(card6);
+        blueRedCardsInitial.add(card7);
+        blueRedCardsInitial.add(card8);
+        blueRedCardsInitial.add(card9);
+        blueRedCardsInitial.add(card10);
+        blueRedCardsInitial.add(card11);
+        blueRedCardsInitial.add(card12);
+        blueRedCardsInitial.add(card13);
+        blueRedCardsInitial.add(card14);
+        blueRedCardsInitial.add(card15);
+        blueRedCardsInitial.add(card16);
+
+        return blueRedCardsInitial;
     }
 }
