@@ -165,11 +165,17 @@ public class Client1 {
                     if(playerMovedId != propertyOponent.getOwnerID() && propertyOponent.getOwnerID() != 0){
                         Player propertyOwner = new Player();
                         propertyOwner = playersList.get(propertyOponent.getOwnerID()-1);
-                        propertyOwner.setCash(propertyOwner.getCash() + propertyOponent.getPaymentForStay());
-                        oponent.setCash(oponent.getCash() - propertyOponent.getPaymentForStay());
-                        System.out.println("Player " + oponent.getPlayerName() + " pay to " + propertyOwner.getPlayerName() + " " + propertyOponent.getPaymentForStay() + "$");
-                        updatePlayersCash(playersList,propertyOwner.getPlayerNumber(),propertyOwner.getCash());
-                        updatePlayersCash(playersList,oponent.getPlayerNumber(),oponent.getCash());
+                        if(propertyOwner.getIsInJail()){
+                            System.out.println(propertyOwner.getPlayerName() + " is in jail! ");
+                        }
+                        else{
+                            propertyOwner.setCash(propertyOwner.getCash() + propertyOponent.getPaymentForStay());
+                            oponent.setCash(oponent.getCash() - propertyOponent.getPaymentForStay());
+                            System.out.println("Player " + oponent.getPlayerName() + " pay to " + propertyOwner.getPlayerName() + " " + propertyOponent.getPaymentForStay() + "$");
+                            updatePlayersCash(playersList,propertyOwner.getPlayerNumber(),propertyOwner.getCash());
+                            updatePlayersCash(playersList,oponent.getPlayerNumber(),oponent.getCash());
+                        }
+
                     }
                 }
 
@@ -237,9 +243,14 @@ public class Client1 {
                             else{
                                 Player oponent = new Player();
                                 oponent = getPlayer(playersList,property.getOwnerID());
-                                System.out.println("This property have owner u have to pay " + property.getPaymentForStay() + "$ to " + oponent.getPlayerName());
-                                myProfile.setCash(myProfile.getCash() - property.getPaymentForStay());
-                                oponent.setCash(oponent.getCash() + property.getPaymentForStay());
+                                if(oponent.getIsInJail()){
+                                    System.out.println(oponent.getPlayerName() + " is in jail go on!");
+                                }
+                                else{
+                                    System.out.println("This property have owner u have to pay " + property.getPaymentForStay() + "$ to " + oponent.getPlayerName());
+                                    myProfile.setCash(myProfile.getCash() - property.getPaymentForStay());
+                                    oponent.setCash(oponent.getCash() + property.getPaymentForStay());
+                                }
                             }
                             getCashAllPlayers(playersList);
                             System.out.println("playersSize: " + playersList.size());
@@ -305,7 +316,7 @@ public class Client1 {
 
 
                                 myProfile = getPlayer(playersList,nickname);
-                                int newPosition = myProfile.getPropertyId() + dice1 + dice2;
+                                int newPosition = 8;//myProfile.getPropertyId() + dice1 + dice2;
                                 System.out.println(newPosition);
                                 if(newPosition + 1 == 31){
                                     newPosition = 10;
@@ -365,9 +376,14 @@ public class Client1 {
                                 else{
                                     Player oponent = new Player();
                                     oponent = getPlayer(playersList,property.getOwnerID());
-                                    System.out.println("This property have owner u have to pay " + property.getPaymentForStay() + "$ to " + oponent.getPlayerName());
-                                    myProfile.setCash(myProfile.getCash() - property.getPaymentForStay());
-                                    oponent.setCash(oponent.getCash() + property.getPaymentForStay());
+                                    if(oponent.getIsInJail()){
+                                        System.out.println(oponent.getPlayerName() + " is in jail go on!");
+                                    }
+                                    else{
+                                        System.out.println("This property have owner u have to pay " + property.getPaymentForStay() + "$ to " + oponent.getPlayerName());
+                                        myProfile.setCash(myProfile.getCash() - property.getPaymentForStay());
+                                        oponent.setCash(oponent.getCash() + property.getPaymentForStay());
+                                    }
                                 }
                                 getCashAllPlayers(playersList);
                                 System.out.println("playersSize: " + playersList.size());
