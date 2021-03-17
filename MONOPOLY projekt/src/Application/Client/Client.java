@@ -197,7 +197,7 @@ public class Client {
                             System.out.println("Sum of dices is: " + (dice2 + dice1) + "\n");
 
                             myProfile = getPlayer(playersList,nickname);
-                            int newPosition = 8;//myProfile.getPropertyId() + dice1 + dice2;
+                            int newPosition = myProfile.getPropertyId() + dice1 + dice2;
                             myProfile.setPropertyId(newPosition);
                             updatePlayerMove(playersList,myProfile.getPlayerNumber(),newPosition);
                             //myProfile = getPlayer(playersList,nickname);
@@ -315,7 +315,7 @@ public class Client {
 
 
                                 myProfile = getPlayer(playersList,nickname);
-                                int newPosition = 30;//myProfile.getPropertyId() + dice1 + dice2;
+                                int newPosition = myProfile.getPropertyId() + dice1 + dice2;
                                 System.out.println(newPosition);
                                 if(newPosition + 1 == 31){
                                     newPosition = 10;

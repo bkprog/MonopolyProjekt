@@ -316,7 +316,7 @@ public class Client1 {
 
 
                                 myProfile = getPlayer(playersList,nickname);
-                                int newPosition = 8;//myProfile.getPropertyId() + dice1 + dice2;
+                                int newPosition = myProfile.getPropertyId() + dice1 + dice2;
                                 System.out.println(newPosition);
                                 if(newPosition + 1 == 31){
                                     newPosition = 10;
