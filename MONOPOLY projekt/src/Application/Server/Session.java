@@ -90,7 +90,6 @@ public class Session extends Thread {
                     System.out.println(clientResponse);
                     BroadcastReadyToOtherClientsTour(socketPlayers);
                 }
-
                 playerTourIndex++;
                 if(playerTourIndex > numberOfPlayersInGame){
                     playerTourIndex = 1;

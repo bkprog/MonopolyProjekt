@@ -128,6 +128,17 @@ public class Client3 {
                     }
                     System.out.println("Playermoved id: " + playerMovedId + " propertyId: " + propertyId);
                     updatePlayerMove(playersList,playerMovedId,propertyId);
+
+                    if(propertyId == 5){
+                        oponent.setCash(oponent.getCash() - propertiesList.get(propertyId-1).getPaymentForStay());
+                        System.out.println(oponent.getPlayerName() + " have to pay fee " + propertiesList.get(propertyId-1).getPaymentForStay());
+                    }
+
+                    if(propertyId == 39){
+                        oponent.setCash(oponent.getCash() - propertiesList.get(propertyId-1).getPaymentForStay());
+                        System.out.println(oponent.getPlayerName() + " have to pay fee " + propertiesList.get(propertyId-1).getPaymentForStay());
+                    }
+
                     if(playerMovedId != propertyOponent.getOwnerID() && propertyOponent.getOwnerID() != 0){
                         Player propertyOwner = new Player();
                         propertyOwner = playersList.get(propertyOponent.getOwnerID()-1);
@@ -235,7 +246,7 @@ public class Client3 {
 
 
                             myProfile = getPlayer(playersList,nickname);
-                            int newPosition = myProfile.getPropertyId() + dice1 + dice2;
+                            int newPosition = 4;//myProfile.getPropertyId() + dice1 + dice2;
                             System.out.println(newPosition);
                             if(newPosition + 1 == 31){
                                 newPosition = 10;
