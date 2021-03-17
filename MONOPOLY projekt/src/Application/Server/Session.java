@@ -84,7 +84,12 @@ public class Session extends Thread {
                 String clientResponse = socketIn.readUTF();
                 if(clientResponse.startsWith("PlayerTourReady")){
                     if(clientResponse.length() > 15){
-                        String playerMove = clientResponse.substring(16);
+                        String playerMove = clientResponse.substring(20);
+                        char prisionDecion = clientResponse.charAt(18);
+                        char prisionBuy = clientResponse.charAt(16);
+                        System.out.println("prison decision: " + prisionDecion);
+                        System.out.println("prison buy: " + prisionDecion);
+                        prisonDecisionUpdate(socketPlayers,prisionDecion,prisionBuy,playerTourIndex);
                         updateMove(socketPlayers,playerMove);
                     }
                     System.out.println(clientResponse);
@@ -125,6 +130,20 @@ public class Session extends Thread {
         }
         catch(Exception e){
             System.out.println("Error Ready to others: " + e.getMessage());
+        }
+    }
+
+    public void prisonDecisionUpdate(ArrayList<Socket> socketPlayers,char prisonChar,char prisonBuy,int playerindex){
+        try{
+            for(Socket s : socketPlayers){
+                if(s != client){
+                    DataOutputStream socketOut = new DataOutputStream(s.getOutputStream());
+                    socketOut.writeUTF("PrisonDecision " + prisonChar + " " + playerindex + " " + prisonBuy);
+                }
+            }
+        }
+        catch(Exception ex){
+            System.out.println("Error sending info about start game: " + ex.getMessage());
         }
     }
 

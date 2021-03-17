@@ -100,6 +100,29 @@ public class Client {
                     }
                 }
 
+                else if(info.startsWith("PrisonDecision ")){
+                    String clienres = info.substring(14);
+                    System.out.println(clienres);
+                    int prisonDecision = Character.getNumericValue(info.charAt(15));
+                    int playerIndex = Character.getNumericValue(info.charAt(17));
+                    int prisonBuy = Character.getNumericValue(info.charAt(19));
+//                    System.out.println("Prison decision: " + prisonDecision);
+//                    System.out.println("Player index: " + playerIndex);
+//                    System.out.println("Prison buy: " + prisonBuy);
+
+                    if(prisonDecision == 1){
+                        System.out.println("\nPlayer " + playersList.get(playerIndex-1).getPlayerName() + " goes to prison\n");
+                        playersList.get(playerIndex-1).setInJail(true);
+                    }
+                    else{
+                        if(prisonBuy == 1){
+                            playersList.get(playerIndex-1).setCash(playersList.get(playerIndex-1).getCash() - 200);
+                        }
+                        System.out.println("\nPlayer " + playersList.get(playerIndex-1).getPlayerName() + " is free\n");
+                        playersList.get(playerIndex-1).setInJail(false);
+                    }
+                }
+
                 else if(info.startsWith("UpdateMove ")){
                     String move = info.substring(11);
                     int ifPlayerPassStart = Character.getNumericValue(move.charAt(0));
@@ -223,7 +246,7 @@ public class Client {
                             System.out.println("\nPress < enter > to end your tour: ");
                             scanner.nextLine();
                             System.out.println("Player ready before: " + PlayerTourReady);
-                            dOut.writeUTF("PlayerTourReady " + passStart + " " + ifPlayerBoughtProperty + " " +Integer.parseInt(info.substring(10)) +  " " + property.getIDproperty());
+                            dOut.writeUTF("PlayerTourReady " + 0 + " " + 0 + " " +passStart + " " + ifPlayerBoughtProperty + " " +Integer.parseInt(info.substring(10)) +  " " + property.getIDproperty());
                             ifPlayerBoughtProperty = 0;
                             PlayerTourReady += 1;
                             System.out.println("Player ready before: " + PlayerTourReady);
@@ -233,94 +256,133 @@ public class Client {
                         else{
                             //funkcja regulujaca pieniadze graczy
                             //checkPositionPlayers(playersList,propertiesList,Integer.parseInt(info.substring(10)));
+                            if(playersList.get(Integer.parseInt(info.substring(10)) - 1).getIsInJail()){
+                                System.out.println("You are in prison!\n");
+                                System.out.println("[1] Try thow double in dice\n");
+                                System.out.println("[2] Pay 200$ to get out!\n");
+                                int prisonDecision = Integer.parseInt(scanner.nextLine());
+                                int isInPrison = 1;
+                                if(prisonDecision == 1) {
+                                    int dicePrison1 = dice.throwfunction();
+                                    int dicePrison2 = dice.throwfunction();
+                                    System.out.println("Your first Dice: " + dicePrison1);
+                                    System.out.println("Your Secound Dice: " + dicePrison2);
+                                    if(dicePrison1 == dicePrison2){
+                                        playersList.get(Integer.parseInt(info.substring(10)) - 1).setInJail(false);
+                                        isInPrison = 0;
+                                        System.out.println("Great you are no longer in prison!");
+                                    }
+                                    else{
+                                        System.out.println("Sorry u are still in prison. Good luck next time!");
+                                    }
+                                    System.out.println("Press < enter > : ");
+                                    scanner.nextLine();
 
-                            System.out.println("Its your turn press <Enter> to Dice!");
-                            scanner.nextLine();
-                            int dice1 = dice.throwfunction();
-                            int dice2 = dice.throwfunction();
-                            System.out.println("Your Dice info:\n");
-                            System.out.println("First dice is: " + dice1);
-                            System.out.println("Secound dice is: " + dice2);
-                            System.out.println("Sum of dices is: " + (dice2 + dice1) + "\n");
-
-
-                            myProfile = getPlayer(playersList,nickname);
-                            int newPosition = 4;//myProfile.getPropertyId() + dice1 + dice2;
-                            System.out.println(newPosition);
-                            if(newPosition + 1 == 31){
-                                newPosition = 10;
-                                System.out.println("\nYou go to jail!!!\n");
+                                    dOut.writeUTF("PlayerTourReady " + 0 + " " + isInPrison + " " + 0 + " " + 0 + " " + Integer.parseInt(info.substring(10)) +  " " + 11);
+                                    PlayerTourReady += 1;
+                                }
+                                if(prisonDecision == 2){
+                                    playersList.get(Integer.parseInt(info.substring(10)) - 1).setCash(playersList.get(Integer.parseInt(info.substring(10)) - 1).getCash() - 200);
+                                    playersList.get(Integer.parseInt(info.substring(10)) - 1).setInJail(false);
+                                    System.out.println("Great you are no longer in prison!");
+                                    System.out.println("Press < enter > : ");
+                                    scanner.nextLine();
+                                    dOut.writeUTF("PlayerTourReady "  + 1 + " " +  0 + " " + 0 + " " + 0 + " " + Integer.parseInt(info.substring(10)) +  " " + 11);
+                                    PlayerTourReady += 1;
+                                }
                             }
+                            else {
+                                System.out.println("Its your turn press <Enter> to Dice!");
+                                scanner.nextLine();
+                                int isInPrison = 0;
+                                int dice1 = dice.throwfunction();
+                                int dice2 = dice.throwfunction();
+                                System.out.println("Your Dice info:\n");
+                                System.out.println("First dice is: " + dice1);
+                                System.out.println("Secound dice is: " + dice2);
+                                System.out.println("Sum of dices is: " + (dice2 + dice1) + "\n");
 
-                            if(newPosition > 39){
-                                newPosition = newPosition - 40;
-                                passStart = 1;
-                                System.out.println("Nice your acconut get 400$");
-                            }
-                            myProfile.setPropertyId(newPosition);
-                            updatePlayerMove(playersList,myProfile.getPlayerNumber(),newPosition);
-                            //myProfile = getPlayer(playersList,nickname);
+
+                                myProfile = getPlayer(playersList,nickname);
+                                int newPosition = 30;//myProfile.getPropertyId() + dice1 + dice2;
+                                System.out.println(newPosition);
+                                if(newPosition + 1 == 31){
+                                    newPosition = 10;
+                                    System.out.println("\nYou go to jail!!!\n");
+                                    isInPrison = 1;
+                                    playersList.get(Integer.parseInt(info.substring(10)) - 1).setInJail(true);
+                                }
+
+                                if(newPosition > 39){
+                                    newPosition = newPosition - 40;
+                                    passStart = 1;
+                                    System.out.println("Nice your acconut get 400$");
+                                    playersList.get(Integer.parseInt(info.substring(10)) - 1).setCash(playersList.get(Integer.parseInt(info.substring(10)) - 1).getCash() + 400);
+                                }
+                                myProfile.setPropertyId(newPosition);
+                                updatePlayerMove(playersList,myProfile.getPlayerNumber(),newPosition);
+                                //myProfile = getPlayer(playersList,nickname);
 
 
-                            System.out.println("Property Info: \n");
-                            property = propertiesList.get(myProfile.getPropertyId());
-                            System.out.println("Id property: " + property.getIDproperty());
-                            System.out.println("Country name: " + property.getCountryName());
-                            System.out.println("City name: " + property.getNameProperty());
-                            System.out.println("Buy cost: " + property.getBuyCost());
-                            System.out.println("Stand cost: " + property.getPaymentForStay());
+                                System.out.println("Property Info: \n");
+                                property = propertiesList.get(myProfile.getPropertyId());
+                                System.out.println("Id property: " + property.getIDproperty());
+                                System.out.println("Country name: " + property.getCountryName());
+                                System.out.println("City name: " + property.getNameProperty());
+                                System.out.println("Buy cost: " + property.getBuyCost());
+                                System.out.println("Stand cost: " + property.getPaymentForStay());
 
-                            if(property.getOwnerID() == 0){
-                                if(propertyBuyable(property)){
-                                    System.out.println("Your cash: " + myProfile.getCash());
-                                    System.out.println("Cost buy this property is: " + property.getBuyCost() + "$");
-                                    System.out.println("Do you want to buy this property? (0-No OR 1-Yes): ");
-                                    int answear = Integer.parseInt(scanner.nextLine());
-                                    if(answear == 1){
-                                        if(myProfile.getCash() >= property.getBuyCost()){
-                                            ifPlayerBoughtProperty = 1;
-                                            myProfile.setCash(myProfile.getCash() - property.getBuyCost());
-                                            property.setOwnerID(myProfile.getPlayerNumber());
-                                            System.out.println("Your cash after transaction: " + myProfile.getCash());
-                                            updatePropertiesList(propertiesList,property);
-                                        }
-                                        else{
-                                            System.out.println("You cant aford it!\n");
+                                if(property.getOwnerID() == 0){
+                                    if(propertyBuyable(property)){
+                                        System.out.println("Your cash: " + myProfile.getCash());
+                                        System.out.println("Cost buy this property is: " + property.getBuyCost() + "$");
+                                        System.out.println("Do you want to buy this property? (0-No OR 1-Yes): ");
+                                        int answear = Integer.parseInt(scanner.nextLine());
+                                        if(answear == 1){
+                                            if(myProfile.getCash() >= property.getBuyCost()){
+                                                ifPlayerBoughtProperty = 1;
+                                                myProfile.setCash(myProfile.getCash() - property.getBuyCost());
+                                                property.setOwnerID(myProfile.getPlayerNumber());
+                                                System.out.println("Your cash after transaction: " + myProfile.getCash());
+                                                updatePropertiesList(propertiesList,property);
+                                            }
+                                            else{
+                                                System.out.println("You cant aford it!\n");
+                                            }
                                         }
                                     }
+                                    else{
+                                        System.out.println("Your cash: " + myProfile.getCash());
+                                        System.out.println("Property fee is: " + property.getPaymentForStay());
+                                        myProfile.setCash(myProfile.getCash() - property.getPaymentForStay());
+                                        System.out.println("Your cash after transaction: " + myProfile.getCash());
+                                    }
+                                }
+                                else if(property.getOwnerID() == myProfile.getPlayerNumber()){
+                                    System.out.println("its yours property take bear!");
                                 }
                                 else{
-                                    System.out.println("Your cash: " + myProfile.getCash());
-                                    System.out.println("Property fee is: " + property.getPaymentForStay());
+                                    Player oponent = new Player();
+                                    oponent = getPlayer(playersList,property.getOwnerID());
+                                    System.out.println("This property have owner u have to pay " + property.getPaymentForStay() + "$ to " + oponent.getPlayerName());
                                     myProfile.setCash(myProfile.getCash() - property.getPaymentForStay());
-                                    System.out.println("Your cash after transaction: " + myProfile.getCash());
+                                    oponent.setCash(oponent.getCash() + property.getPaymentForStay());
                                 }
-                            }
-                            else if(property.getOwnerID() == myProfile.getPlayerNumber()){
-                                System.out.println("its yours property take bear!");
-                            }
-                            else{
-                                Player oponent = new Player();
-                                oponent = getPlayer(playersList,property.getOwnerID());
-                                System.out.println("This property have owner u have to pay " + property.getPaymentForStay() + "$ to " + oponent.getPlayerName());
-                                myProfile.setCash(myProfile.getCash() - property.getPaymentForStay());
-                                oponent.setCash(oponent.getCash() + property.getPaymentForStay());
-                            }
-                            getCashAllPlayers(playersList);
-                            System.out.println("playersSize: " + playersList.size());
+                                getCashAllPlayers(playersList);
+                                System.out.println("playersSize: " + playersList.size());
 
-                            System.out.println("\nPress < enter > to end your tour: ");
-                            scanner.nextLine();
-                            System.out.println("Player ready before: " + PlayerTourReady);
-                            dOut.writeUTF("PlayerTourReady " + passStart + " " + ifPlayerBoughtProperty + " " +Integer.parseInt(info.substring(10)) +  " " + property.getIDproperty());
-                            PlayerTourReady += 1;
-                            ifPlayerBoughtProperty = 0;
-                            System.out.println("Player ready before: " + PlayerTourReady);
-                            passStart = 0;
-                            gameSettingsReady = true;
-                            firstTour = false;
+                                System.out.println("\nPress < enter > to end your tour: ");
+                                scanner.nextLine();
+                                System.out.println("Player ready before: " + PlayerTourReady);
+                                dOut.writeUTF("PlayerTourReady " + 0 + " " + isInPrison + " " +passStart + " " + ifPlayerBoughtProperty + " " +Integer.parseInt(info.substring(10)) +  " " + property.getIDproperty());
+                                PlayerTourReady += 1;
+                                ifPlayerBoughtProperty = 0;
+                                System.out.println("Player ready before: " + PlayerTourReady);
+                                passStart = 0;
+                                gameSettingsReady = true;
+                                firstTour = false;
+                            }
                         }
-
                     }
 
                     if(!checkTourIndexPlayer(playersList,Integer.parseInt(info.substring(10)),nickname)){
@@ -363,27 +425,6 @@ public class Client {
             System.out.println("Error: " + ex.getMessage());
         }
 
-    }
-
-    public static void checkPositionPlayers(ArrayList<Player> playersList,ArrayList<Properties> propertiesList,int skipIndex){
-        for(int i =0;i<playersInGameVar;i++){
-            if(i != skipIndex){
-                Player player = new Player();
-                player = playersList.get(i);
-                Properties property = new Properties();
-                property = propertiesList.get(player.getPropertyId());
-                if(player.getPropertyId() != 0){
-                    if(property.getOwnerID() != player.getPlayerNumber()){
-                        Player oponent = new Player();
-                        oponent = playersList.get(property.getOwnerID());
-                        oponent.setCash(oponent.getCash() + property.getPaymentForStay());
-                        player.setCash(player.getCash() - property.getPaymentForStay());
-                        updatePlayersCash(playersList,oponent.getPlayerNumber(),oponent.getCash());
-                        updatePlayersCash(playersList,player.getPlayerNumber(),player.getCash());
-                    }
-                }
-            }
-        }
     }
 
     public static void getCashAllPlayers(ArrayList<Player> playersList){
