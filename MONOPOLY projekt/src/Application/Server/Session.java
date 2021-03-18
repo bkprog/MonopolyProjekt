@@ -90,6 +90,7 @@ public class Session extends Thread {
                         System.out.println("prison decision: " + prisionDecion);
                         System.out.println("prison buy: " + prisionDecion);
                         System.out.println("cardId : " + cardId);
+                        cardMoveSend(socketPlayers,cardId,playerTourIndex);
                         prisonDecisionUpdate(socketPlayers,prisionDecion,prisionBuy,playerTourIndex);
                         updateMove(socketPlayers,playerMove);
                     }
@@ -131,6 +132,20 @@ public class Session extends Thread {
         }
         catch(Exception e){
             System.out.println("Error Ready to others: " + e.getMessage());
+        }
+    }
+
+    public void cardMoveSend(ArrayList<Socket> socketPlayers,char cardID,int playerindex){
+        try{
+            for(Socket s : socketPlayers){
+                if(s != client){
+                    DataOutputStream socketOut = new DataOutputStream(s.getOutputStream());
+                    socketOut.writeUTF("CardMove " + cardID + " " + playerindex);
+                }
+            }
+        }
+        catch(Exception ex){
+            System.out.println("Error sending info about start game: " + ex.getMessage());
         }
     }
 

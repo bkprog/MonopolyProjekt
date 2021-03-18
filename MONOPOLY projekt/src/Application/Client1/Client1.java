@@ -105,6 +105,30 @@ public class Client1 {
                     }
                 }
 
+                else if(info.startsWith("CardMove ")){
+                    int cardID = card4ClientFromServer(info.charAt(9));
+                    int playerID = Character.getNumericValue(info.charAt(11));
+                    System.out.println("Player id: " + playerID);
+                    System.out.println("Card id: " + cardID);
+                    if(cardID != 0){
+                        BlueRedCards card = new BlueRedCards();
+                        card = blueRedCardsList.get(cardID-1);
+                        System.out.println("Card Reward: " + card.getCashReward());
+                        System.out.println("Card fine: " + card.getCashFine());
+                        Player oponent = new Player();
+                        oponent = playersList.get(playerID-1);
+                        oponent.setCash(oponent.getCash() - card.getCashFine());
+                        oponent.setCash(oponent.getCash() + card.getCashReward());
+                        if(card.getDestinationField()>0){
+                            if(oponent.getPropertyId() > propertiesList.get(card.getDestinationField()-1).getIDproperty() && cardID != 9){
+                                oponent.setCash(oponent.getCash() + 400);
+                                System.out.println("Oponent pass Start and get +400$");
+                            }
+                        }
+                        updatePlayersCash(playersList,oponent.getPlayerNumber(),oponent.getCash());
+                    }
+                }
+
                 else if(info.startsWith("PrisonDecision ")){
                     String clienres = info.substring(14);
                     System.out.println(clienres);
@@ -265,7 +289,7 @@ public class Client1 {
                                             System.out.println("You go to jail!");
                                             isInPrison = 1;
                                             playersList.get(Integer.parseInt(info.substring(10)) - 1).setInJail(true);
-                                            myProfile.setPropertyId(10);
+                                            myProfile.setPropertyId(11);
                                             updatePlayerMove(playersList,myProfile.getPlayerNumber(),myProfile.getPropertyId());
                                             property = propertiesList.get(myProfile.getPropertyId()-1);
                                         }
@@ -579,7 +603,7 @@ public class Client1 {
                                                 System.out.println("You go to jail!");
                                                 isInPrison = 1;
                                                 playersList.get(Integer.parseInt(info.substring(10)) - 1).setInJail(true);
-                                                myProfile.setPropertyId(10);
+                                                myProfile.setPropertyId(11);
                                                 updatePlayerMove(playersList,myProfile.getPlayerNumber(),myProfile.getPropertyId());
                                                 property = propertiesList.get(myProfile.getPropertyId()-1);
                                             }
@@ -805,6 +829,28 @@ public class Client1 {
             System.out.println("Error: " + ex.getMessage());
         }
 
+    }
+
+    public static int card4ClientFromServer(char cardID){
+        switch (cardID){
+            case '1': return 1;
+            case '2': return 2;
+            case '3': return 3;
+            case '4': return 4;
+            case '5': return 5;
+            case '6': return 6;
+            case '7': return 7;
+            case '8': return 8;
+            case '9': return 9;
+            case 'a': return 10;
+            case 'b': return 11;
+            case 'c': return 12;
+            case 'd': return 13;
+            case 'e': return 14;
+            case 'f': return 15;
+            case 'g': return 16;
+        }
+        return 0;
     }
 
     public static char cardId4Server(int cardID){
