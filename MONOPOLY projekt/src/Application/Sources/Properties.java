@@ -6,7 +6,7 @@ public class Properties {
     private int IDproperty;
     private int buyCost;
     private String countryName;
-    private int ownerID = 0;
+    private int ownerID;
 
     public Properties(){
         this.IDproperty = 0;
@@ -14,6 +14,7 @@ public class Properties {
         this.paymentForStay = 0;
         this.countryName = " ";
         this.buyCost = 0;
+        this.ownerID = 0;
     }
 
     public Properties(int IDproperty,int paymentForStay, String nameProperty,String countryName,int buyCost){
@@ -22,6 +23,7 @@ public class Properties {
         this.paymentForStay = paymentForStay;
         this.countryName = countryName;
         this.buyCost = buyCost;
+        this.ownerID = 0;
     }
 
     public String getNameProperty(){

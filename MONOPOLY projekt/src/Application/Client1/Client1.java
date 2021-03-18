@@ -19,6 +19,7 @@ public class Client1 {
         int readyPlayers = 0;
         int playersInGame = 0;
         int playerTour = 1;
+        char blueRedCardID = '0';
         int PlayerTourReady = 0;
         int passStart = 0;
         int ifPlayerBoughtProperty = 0;
@@ -238,6 +239,7 @@ public class Client1 {
                                     Dice randomQuestionMarkDice = new Dice();
                                     BlueRedCards card = new BlueRedCards();
                                     int cardID = randomQuestionMarkDice.throwQuestionMarkCard();
+                                    blueRedCardID = cardId4Server(cardID);
                                     card = blueRedCardsList.get(cardID - 1);
                                     System.out.println("\nYou stand on Question mark field!\n");
                                     System.out.println("Card id: " + card.getCardId());
@@ -322,7 +324,7 @@ public class Client1 {
                                         myProfile.setPropertyId(myProfile.getPropertyId() + card.getFieldsForward());
                                         System.out.println("Now you are standing on: " + propertiesList.get(myProfile.getPropertyId()).getNameProperty());
                                         updatePlayerMove(playersList,myProfile.getPlayerNumber(),myProfile.getPropertyId());
-                                        property = propertiesList.get(myProfile.getPropertyId()-1);
+                                        property = propertiesList.get(myProfile.getPropertyId());
                                         System.out.println("Property : " + property.getIDproperty() + " " + property.getNameProperty());
                                         if(propertyBuyable(property)){
                                             if(property.getOwnerID() == myProfile.getPlayerNumber()){
@@ -370,6 +372,41 @@ public class Client1 {
                                         }
                                         property = propertiesList.get(myProfile.getPropertyId());
                                         System.out.println("Now u statnding at: " + property.getNameProperty());
+                                        if(propertyBuyable(property)){
+                                            if(property.getOwnerID() == myProfile.getPlayerNumber()){
+                                                System.out.println("You are at home take a bear!");
+                                            }
+                                            else if(property.getOwnerID() == 0){
+                                                System.out.println("Your cash: " + myProfile.getCash());
+                                                System.out.println("Cost buy this property is: " + property.getBuyCost() + "$");
+                                                System.out.println("Do you want to buy this property? (0-No OR 1-Yes): ");
+                                                int answear = Integer.parseInt(scanner.nextLine());
+                                                if(answear == 1){
+                                                    if(myProfile.getCash() >= property.getBuyCost()){
+                                                        ifPlayerBoughtProperty = 1;
+                                                        myProfile.setCash(myProfile.getCash() - property.getBuyCost());
+                                                        property.setOwnerID(myProfile.getPlayerNumber());
+                                                        System.out.println("Your cash after transaction: " + myProfile.getCash());
+                                                        updatePropertiesList(propertiesList,property);
+                                                    }
+                                                    else{
+                                                        System.out.println("You cant aford it!\n");
+                                                    }
+                                                }
+                                            }
+                                            else{
+                                                Player oponent = new Player();
+                                                oponent = getPlayer(playersList,property.getOwnerID());
+                                                if(oponent.getIsInJail()){
+                                                    System.out.println(oponent.getPlayerName() + " is in jail go on!");
+                                                }
+                                                else{
+                                                    System.out.println("This property have owner u have to pay " + property.getPaymentForStay() + "$ to " + oponent.getPlayerName());
+                                                    myProfile.setCash(myProfile.getCash() - property.getPaymentForStay());
+                                                    oponent.setCash(oponent.getCash() + property.getPaymentForStay());
+                                                }
+                                            }
+                                        }
 
                                     }
 
@@ -402,8 +439,9 @@ public class Client1 {
                             System.out.println("\nPress < enter > to end your tour: ");
                             scanner.nextLine();
                             System.out.println("Player ready before: " + PlayerTourReady);
-                            dOut.writeUTF("PlayerTourReady " + 0 + " " + isInPrison + " " +passStart + " " + ifPlayerBoughtProperty + " " +Integer.parseInt(info.substring(10)) +  " " + property.getIDproperty());
+                            dOut.writeUTF("PlayerTourReady " + blueRedCardID + " " +  0 + " " + isInPrison + " " +passStart + " " + ifPlayerBoughtProperty + " " +Integer.parseInt(info.substring(10)) +  " " + property.getIDproperty());
                             ifPlayerBoughtProperty = 0;
+                            blueRedCardID = '0';
                             PlayerTourReady += 1;
                             System.out.println("Player ready before: " + PlayerTourReady);
                             gameSettingsReady = true;
@@ -435,7 +473,8 @@ public class Client1 {
                                     System.out.println("Press < enter > : ");
                                     scanner.nextLine();
 
-                                    dOut.writeUTF("PlayerTourReady " + 0 + " " + isInPrison + " " + 0 + " " + 0 + " " + Integer.parseInt(info.substring(10)) +  " " + 11);
+                                    dOut.writeUTF("PlayerTourReady " + blueRedCardID + " " + 0 + " " + isInPrison + " " + 0 + " " + 0 + " " + Integer.parseInt(info.substring(10)) +  " " + 11);
+                                    blueRedCardID = '0';
                                     PlayerTourReady += 1;
                                 }
                                 if(prisonDecision == 2 && (playersList.get(Integer.parseInt(info.substring(10)) - 1).getCash() >= 200)){
@@ -444,7 +483,8 @@ public class Client1 {
                                     System.out.println("Great you are no longer in prison!");
                                     System.out.println("Press < enter > : ");
                                     scanner.nextLine();
-                                    dOut.writeUTF("PlayerTourReady "  + 1 + " " +  0 + " " + 0 + " " + 0 + " " + Integer.parseInt(info.substring(10)) +  " " + 11);
+                                    dOut.writeUTF("PlayerTourReady "  + blueRedCardID + " " + 1 + " " +  0 + " " + 0 + " " + 0 + " " + Integer.parseInt(info.substring(10)) +  " " + 11);
+                                    blueRedCardID = '0';
                                     PlayerTourReady += 1;
                                 }
                             }
@@ -483,7 +523,8 @@ public class Client1 {
                                 System.out.println("Property Info: \n");
 
 
-                                System.out.println("Id property: " + propertiesList.get(newPosition).getIDproperty());
+                                System.out.println("Id property: " + property.getIDproperty());
+                                System.out.println("Owner id: " + property.getOwnerID());
                                 System.out.println("Country name: " + property.getCountryName());
                                 System.out.println("City name: " + property.getNameProperty());
                                 System.out.println("Buy cost: " + property.getBuyCost());
@@ -512,6 +553,7 @@ public class Client1 {
                                         Dice randomQuestionMarkDice = new Dice();
                                         BlueRedCards card = new BlueRedCards();
                                         int cardID = randomQuestionMarkDice.throwQuestionMarkCard();
+                                        blueRedCardID = cardId4Server(cardID);
                                         card = blueRedCardsList.get(cardID - 1);
                                         System.out.println("\nYou stand on Question mark field!\n");
                                         System.out.println("Card id: " + card.getCardId());
@@ -596,7 +638,7 @@ public class Client1 {
                                             myProfile.setPropertyId(myProfile.getPropertyId() + card.getFieldsForward());
                                             System.out.println("Now you are standing on: " + propertiesList.get(myProfile.getPropertyId()).getNameProperty());
                                             updatePlayerMove(playersList,myProfile.getPlayerNumber(),myProfile.getPropertyId());
-                                            property = propertiesList.get(myProfile.getPropertyId()-1);
+                                            property = propertiesList.get(myProfile.getPropertyId());
                                             System.out.println("Property : " + property.getIDproperty() + " " + property.getNameProperty());
                                             if(propertyBuyable(property)){
                                                 if(property.getOwnerID() == myProfile.getPlayerNumber()){
@@ -644,6 +686,41 @@ public class Client1 {
                                             }
                                             property = propertiesList.get(myProfile.getPropertyId());
                                             System.out.println("Now u statnding at: " + property.getNameProperty());
+                                            if(propertyBuyable(property)){
+                                                if(property.getOwnerID() == myProfile.getPlayerNumber()){
+                                                    System.out.println("You are at home take a bear!");
+                                                }
+                                                else if(property.getOwnerID() == 0){
+                                                    System.out.println("Your cash: " + myProfile.getCash());
+                                                    System.out.println("Cost buy this property is: " + property.getBuyCost() + "$");
+                                                    System.out.println("Do you want to buy this property? (0-No OR 1-Yes): ");
+                                                    int answear = Integer.parseInt(scanner.nextLine());
+                                                    if(answear == 1){
+                                                        if(myProfile.getCash() >= property.getBuyCost()){
+                                                            ifPlayerBoughtProperty = 1;
+                                                            myProfile.setCash(myProfile.getCash() - property.getBuyCost());
+                                                            property.setOwnerID(myProfile.getPlayerNumber());
+                                                            System.out.println("Your cash after transaction: " + myProfile.getCash());
+                                                            updatePropertiesList(propertiesList,property);
+                                                        }
+                                                        else{
+                                                            System.out.println("You cant aford it!\n");
+                                                        }
+                                                    }
+                                                }
+                                                else{
+                                                    Player oponent = new Player();
+                                                    oponent = getPlayer(playersList,property.getOwnerID());
+                                                    if(oponent.getIsInJail()){
+                                                        System.out.println(oponent.getPlayerName() + " is in jail go on!");
+                                                    }
+                                                    else{
+                                                        System.out.println("This property have owner u have to pay " + property.getPaymentForStay() + "$ to " + oponent.getPlayerName());
+                                                        myProfile.setCash(myProfile.getCash() - property.getPaymentForStay());
+                                                        oponent.setCash(oponent.getCash() + property.getPaymentForStay());
+                                                    }
+                                                }
+                                            }
 
                                         }
 
@@ -676,8 +753,9 @@ public class Client1 {
                                 System.out.println("\nPress < enter > to end your tour: ");
                                 scanner.nextLine();
                                 System.out.println("Player ready before: " + PlayerTourReady);
-                                dOut.writeUTF("PlayerTourReady " + 0 + " " + isInPrison + " " +passStart + " " + ifPlayerBoughtProperty + " " +Integer.parseInt(info.substring(10)) +  " " + property.getIDproperty());
+                                dOut.writeUTF("PlayerTourReady " + blueRedCardID + " " + 0 + " " + isInPrison + " " +passStart + " " + ifPlayerBoughtProperty + " " +Integer.parseInt(info.substring(10)) +  " " + property.getIDproperty());
                                 PlayerTourReady += 1;
+                                blueRedCardID = 0;
                                 ifPlayerBoughtProperty = 0;
                                 System.out.println("Player ready before: " + PlayerTourReady);
                                 passStart = 0;
@@ -729,6 +807,28 @@ public class Client1 {
 
     }
 
+    public static char cardId4Server(int cardID){
+        switch (cardID){
+            case 1: return '1';
+            case 2: return '2';
+            case 3: return '3';
+            case 4: return '4';
+            case 5: return '5';
+            case 6: return '6';
+            case 7: return '7';
+            case 8: return '8';
+            case 9: return '9';
+            case 10: return 'a';
+            case 11: return 'b';
+            case 12: return 'c';
+            case 13: return 'd';
+            case 14: return 'e';
+            case 15: return 'f';
+            case 16: return 'g';
+        }
+        return '0';
+    }
+
     public static boolean idQuestionMark(Properties property){
         if(property.getNameProperty().equals("BlueQuestionMark") || property.getNameProperty().equals("RedQuestionMark")){
             return true;
@@ -752,7 +852,7 @@ public class Client1 {
     }
 
     public static boolean propertyBuyable(Properties property){
-        if(property.getNameProperty().startsWith("Linie") || property.getNameProperty().startsWith("Blue")
+        if(property.getNameProperty().startsWith("Blue")
                 || property.getNameProperty().startsWith("Red") || property.getNameProperty().startsWith("Podatek") ||
                 property.getNameProperty().startsWith("Parking") || property.getNameProperty().startsWith("Wiezienie") ||
                 property.getNameProperty().startsWith("Go") || property.getNameProperty().startsWith("Idziesz") ||
