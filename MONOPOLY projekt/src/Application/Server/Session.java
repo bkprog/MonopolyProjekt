@@ -71,7 +71,6 @@ public class Session extends Thread {
             }while(false);
 
             boolean firstTour = true;
-            boolean sendOnce = true;
             int playerTourIndex = 1;
             int i = 1;
 

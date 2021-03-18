@@ -9,6 +9,16 @@ public class BlueRedCards {
     private int fieldsBackward;
     private int destinationField;
 
+    public BlueRedCards(){
+        this.CardId = 0;
+        this.cardText = " ";
+        this.cashReward = 0;
+        this.cashFine = 0;
+        this.fieldsForward = 0;
+        this.fieldsBackward = 0;
+        this.destinationField = 0;
+    }
+
     public BlueRedCards(int cardId,String cardText,int cashReward,int cashFine,int fieldsForward,int fieldsBackward,int destinationField){
         this.CardId = cardId;
         this.cardText = cardText;

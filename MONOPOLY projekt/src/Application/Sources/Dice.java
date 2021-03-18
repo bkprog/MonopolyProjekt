@@ -11,7 +11,13 @@ public class Dice {
 
     public int throwfunction(){
         Random generator = new Random();
-        dice = generator.nextInt(6)+1;
+        dice = generator.nextInt(6) + 1;
+        return dice;
+    }
+
+    public int throwQuestionMarkCard(){
+        Random generator = new Random();
+        dice = generator.nextInt(16) + 1;
         return dice;
     }
 
