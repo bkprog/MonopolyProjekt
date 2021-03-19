@@ -19,6 +19,7 @@ public class Client2 {
         int readyPlayers = 0;
         int playersInGame = 0;
         int playerTour = 1;
+        char blueRedCardID = '0';
         int PlayerTourReady = 0;
         int passStart = 0;
         int ifPlayerBoughtProperty = 0;
@@ -27,8 +28,8 @@ public class Client2 {
         Player myProfile = new Player();
         Properties property = new Properties();
         Dice dice = new Dice();
-        ArrayList<BlueRedCards> blueRedCards = new ArrayList<>();
-        blueRedCards = initializeRandomCards();
+        ArrayList<BlueRedCards> blueRedCardsList = new ArrayList<>();
+        blueRedCardsList = initializeRandomCards();
         ArrayList<Player> playersList = new ArrayList<>();
         ArrayList<Properties> propertiesList = new ArrayList<>();
         String hostname = "localhost";
@@ -101,6 +102,30 @@ public class Client2 {
                         PlayerTourReady = 0;
                         System.out.println("Players after: " + PlayerTourReady);
                         dOut.writeUTF("allPlayersTourReady");
+                    }
+                }
+
+                else if(info.startsWith("CardMove ")){
+                    int cardID = card4ClientFromServer(info.charAt(9));
+                    int playerID = Character.getNumericValue(info.charAt(11));
+                    System.out.println("Player id: " + playerID);
+                    System.out.println("Card id: " + cardID);
+                    if(cardID != 0){
+                        BlueRedCards card = new BlueRedCards();
+                        card = blueRedCardsList.get(cardID-1);
+                        System.out.println("Card Reward: " + card.getCashReward());
+                        System.out.println("Card fine: " + card.getCashFine());
+                        Player oponent = new Player();
+                        oponent = playersList.get(playerID-1);
+                        oponent.setCash(oponent.getCash() - card.getCashFine());
+                        oponent.setCash(oponent.getCash() + card.getCashReward());
+                        if(card.getDestinationField()>0){
+                            if(oponent.getPropertyId() > propertiesList.get(card.getDestinationField()-1).getIDproperty() && cardID != 9){
+                                oponent.setCash(oponent.getCash() + 400);
+                                System.out.println("Oponent pass Start and get +400$");
+                            }
+                        }
+                        updatePlayersCash(playersList,oponent.getPlayerNumber(),oponent.getCash());
                     }
                 }
 
@@ -193,6 +218,7 @@ public class Client2 {
                         if(firstTour){
                             System.out.println("Its your turn press <Enter> to Dice!");
                             scanner.nextLine();
+                            int isInPrison = 0;
                             int dice1 = dice.throwfunction();
                             int dice2 = dice.throwfunction();
                             System.out.println("Your Dice info:\n");
@@ -229,9 +255,185 @@ public class Client2 {
                                             updatePropertiesList(propertiesList,property);
                                         }
                                         else{
-                                            System.out.println("You cant aford it!\n");
+                                            System.out.println("You can't afford it!\n");
                                         }
                                     }
+                                }
+                                else if(idQuestionMark(property)){
+                                    Dice randomQuestionMarkDice = new Dice();
+                                    BlueRedCards card = new BlueRedCards();
+                                    int cardID = randomQuestionMarkDice.throwQuestionMarkCard();
+                                    blueRedCardID = cardId4Server(cardID);
+                                    card = blueRedCardsList.get(cardID - 1);
+                                    System.out.println("\nYou stand on Question mark field!\n");
+                                    System.out.println("Card id: " + card.getCardId());
+                                    System.out.println("Card text: " + card.getCardText());
+
+                                    System.out.println("Reward: " + card.getCashReward() + "$");
+                                    if(card.getCashReward() != 0){
+                                        System.out.println("You account was " + myProfile.getCash() + "$ now: " + (myProfile.getCash() + card.getCashReward()));
+                                        myProfile.setCash(myProfile.getCash() + card.getCashReward());
+                                        updatePlayersCash(playersList,myProfile.getPlayerNumber(),myProfile.getCash());
+                                    }
+
+                                    System.out.println("Fine: " + card.getCashFine() + "$");
+                                    if(card.getCashFine() != 0){
+                                        System.out.println("You account was " + myProfile.getCash() + "$ now: " + (myProfile.getCash() - card.getCashFine()));
+                                        myProfile.setCash(myProfile.getCash() - card.getCashFine());
+                                        updatePlayersCash(playersList,myProfile.getPlayerNumber(),myProfile.getCash());
+                                    }
+
+                                    System.out.println("Destination: " + card.getDestinationField());
+                                    if(card.getDestinationField() !=  0){
+                                        if(card.getDestinationField() == 31){
+                                            System.out.println("You go to jail!");
+                                            isInPrison = 1;
+                                            playersList.get(Integer.parseInt(info.substring(10)) - 1).setInJail(true);
+                                            myProfile.setPropertyId(11);
+                                            updatePlayerMove(playersList,myProfile.getPlayerNumber(),myProfile.getPropertyId());
+                                            property = propertiesList.get(myProfile.getPropertyId()-1);
+                                        }
+                                        else{
+                                            int actualPropety = myProfile.getPropertyId();
+                                            int destinationProperty = card.getDestinationField();
+                                            if(actualPropety >= destinationProperty){
+                                                myProfile.setCash(myProfile.getCash() + 400);
+                                                System.out.println("You pass Start ang you recive 400$!");
+                                            }
+                                            System.out.println("Now u standing at : " + propertiesList.get(card.getDestinationField()-1).getNameProperty());
+                                            myProfile.setPropertyId(card.getDestinationField());
+                                            updatePlayerMove(playersList,myProfile.getPlayerNumber(),myProfile.getPropertyId());
+                                            property = propertiesList.get(myProfile.getPropertyId()-1);
+                                            if(propertyBuyable(property)){
+                                                if(property.getOwnerID() == myProfile.getPlayerNumber()){
+                                                    System.out.println("You are at home take a bear!");
+                                                }
+                                                else if(property.getOwnerID() == 0){
+                                                    System.out.println("Your cash: " + myProfile.getCash());
+                                                    System.out.println("Cost buy this property is: " + property.getBuyCost() + "$");
+                                                    System.out.println("Do you want to buy this property? (0-No OR 1-Yes): ");
+                                                    int answear = Integer.parseInt(scanner.nextLine());
+                                                    if(answear == 1){
+                                                        if(myProfile.getCash() >= property.getBuyCost()){
+                                                            ifPlayerBoughtProperty = 1;
+                                                            myProfile.setCash(myProfile.getCash() - property.getBuyCost());
+                                                            property.setOwnerID(myProfile.getPlayerNumber());
+                                                            System.out.println("Your cash after transaction: " + myProfile.getCash());
+                                                            updatePropertiesList(propertiesList,property);
+                                                        }
+                                                        else{
+                                                            System.out.println("You cant aford it!\n");
+                                                        }
+                                                    }
+                                                }
+                                                else{
+                                                    Player oponent = new Player();
+                                                    oponent = getPlayer(playersList,property.getOwnerID());
+                                                    if(oponent.getIsInJail()){
+                                                        System.out.println(oponent.getPlayerName() + " is in jail go on!");
+                                                    }
+                                                    else{
+                                                        System.out.println("This property have owner u have to pay " + property.getPaymentForStay() + "$ to " + oponent.getPlayerName());
+                                                        myProfile.setCash(myProfile.getCash() - property.getPaymentForStay());
+                                                        oponent.setCash(oponent.getCash() + property.getPaymentForStay());
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+
+                                    System.out.println("Go forward: " + card.getFieldsForward());
+                                    if(card.getFieldsForward() != 0){
+                                        System.out.println("You do " + card.getFieldsForward() + " more!");
+                                        myProfile.setPropertyId(myProfile.getPropertyId() + card.getFieldsForward());
+                                        System.out.println("Now you are standing on: " + propertiesList.get(myProfile.getPropertyId()).getNameProperty());
+                                        updatePlayerMove(playersList,myProfile.getPlayerNumber(),myProfile.getPropertyId());
+                                        property = propertiesList.get(myProfile.getPropertyId());
+                                        System.out.println("Property : " + property.getIDproperty() + " " + property.getNameProperty());
+                                        if(propertyBuyable(property)){
+                                            if(property.getOwnerID() == myProfile.getPlayerNumber()){
+                                                System.out.println("You are at home take a bear!");
+                                            }
+                                            else if(property.getOwnerID() == 0){
+                                                System.out.println("Your cash: " + myProfile.getCash());
+                                                System.out.println("Cost buy this property is: " + property.getBuyCost() + "$");
+                                                System.out.println("Do you want to buy this property? (0-No OR 1-Yes): ");
+                                                int answear = Integer.parseInt(scanner.nextLine());
+                                                if(answear == 1){
+                                                    if(myProfile.getCash() >= property.getBuyCost()){
+                                                        ifPlayerBoughtProperty = 1;
+                                                        myProfile.setCash(myProfile.getCash() - property.getBuyCost());
+                                                        property.setOwnerID(myProfile.getPlayerNumber());
+                                                        System.out.println("Your cash after transaction: " + myProfile.getCash());
+                                                        updatePropertiesList(propertiesList,property);
+                                                    }
+                                                    else{
+                                                        System.out.println("You cant aford it!\n");
+                                                    }
+                                                }
+                                            }
+                                            else{
+                                                Player oponent = new Player();
+                                                oponent = getPlayer(playersList,property.getOwnerID());
+                                                if(oponent.getIsInJail()){
+                                                    System.out.println(oponent.getPlayerName() + " is in jail go on!");
+                                                }
+                                                else{
+                                                    System.out.println("This property have owner u have to pay " + property.getPaymentForStay() + "$ to " + oponent.getPlayerName());
+                                                    myProfile.setCash(myProfile.getCash() - property.getPaymentForStay());
+                                                    oponent.setCash(oponent.getCash() + property.getPaymentForStay());
+                                                }
+                                            }
+                                        }
+                                    }
+
+                                    System.out.println("Go backward: " + card.getFieldsBackward());
+                                    if(card.getFieldsBackward() != 0){
+                                        System.out.println("You do " + card.getFieldsBackward() + " less!");
+                                        myProfile.setPropertyId(myProfile.getPropertyId() - card.getFieldsBackward());
+                                        if(myProfile.getPropertyId() < 0){
+                                            myProfile.setPropertyId(40 + myProfile.getPropertyId());
+                                        }
+                                        property = propertiesList.get(myProfile.getPropertyId());
+                                        System.out.println("Now u statnding at: " + property.getNameProperty());
+                                        if(propertyBuyable(property)){
+                                            if(property.getOwnerID() == myProfile.getPlayerNumber()){
+                                                System.out.println("You are at home take a bear!");
+                                            }
+                                            else if(property.getOwnerID() == 0){
+                                                System.out.println("Your cash: " + myProfile.getCash());
+                                                System.out.println("Cost buy this property is: " + property.getBuyCost() + "$");
+                                                System.out.println("Do you want to buy this property? (0-No OR 1-Yes): ");
+                                                int answear = Integer.parseInt(scanner.nextLine());
+                                                if(answear == 1){
+                                                    if(myProfile.getCash() >= property.getBuyCost()){
+                                                        ifPlayerBoughtProperty = 1;
+                                                        myProfile.setCash(myProfile.getCash() - property.getBuyCost());
+                                                        property.setOwnerID(myProfile.getPlayerNumber());
+                                                        System.out.println("Your cash after transaction: " + myProfile.getCash());
+                                                        updatePropertiesList(propertiesList,property);
+                                                    }
+                                                    else{
+                                                        System.out.println("You cant aford it!\n");
+                                                    }
+                                                }
+                                            }
+                                            else{
+                                                Player oponent = new Player();
+                                                oponent = getPlayer(playersList,property.getOwnerID());
+                                                if(oponent.getIsInJail()){
+                                                    System.out.println(oponent.getPlayerName() + " is in jail go on!");
+                                                }
+                                                else{
+                                                    System.out.println("This property have owner u have to pay " + property.getPaymentForStay() + "$ to " + oponent.getPlayerName());
+                                                    myProfile.setCash(myProfile.getCash() - property.getPaymentForStay());
+                                                    oponent.setCash(oponent.getCash() + property.getPaymentForStay());
+                                                }
+                                            }
+                                        }
+
+                                    }
+
                                 }
                                 else{
                                     System.out.println("Your cash: " + myProfile.getCash());
@@ -261,8 +463,9 @@ public class Client2 {
                             System.out.println("\nPress < enter > to end your tour: ");
                             scanner.nextLine();
                             System.out.println("Player ready before: " + PlayerTourReady);
-                            dOut.writeUTF("PlayerTourReady " + 0 + " " + 0 + " " +passStart + " " + ifPlayerBoughtProperty + " " +Integer.parseInt(info.substring(10)) +  " " + property.getIDproperty());
+                            dOut.writeUTF("PlayerTourReady " + blueRedCardID + " " +  0 + " " + isInPrison + " " +passStart + " " + ifPlayerBoughtProperty + " " +Integer.parseInt(info.substring(10)) +  " " + property.getIDproperty());
                             ifPlayerBoughtProperty = 0;
+                            blueRedCardID = '0';
                             PlayerTourReady += 1;
                             System.out.println("Player ready before: " + PlayerTourReady);
                             gameSettingsReady = true;
@@ -274,7 +477,8 @@ public class Client2 {
                             if(playersList.get(Integer.parseInt(info.substring(10)) - 1).getIsInJail()){
                                 System.out.println("You are in prison!\n");
                                 System.out.println("[1] Try thow double in dice\n");
-                                System.out.println("[2] Pay 200$ to get out!\n");
+                                if(playersList.get(Integer.parseInt(info.substring(10)) - 1).getCash() >= 200)
+                                    System.out.println("[2] Pay 200$ to get out!\n");
                                 int prisonDecision = Integer.parseInt(scanner.nextLine());
                                 int isInPrison = 1;
                                 if(prisonDecision == 1) {
@@ -293,16 +497,18 @@ public class Client2 {
                                     System.out.println("Press < enter > : ");
                                     scanner.nextLine();
 
-                                    dOut.writeUTF("PlayerTourReady " + 0 + " " + isInPrison + " " + 0 + " " + 0 + " " + Integer.parseInt(info.substring(10)) +  " " + 11);
+                                    dOut.writeUTF("PlayerTourReady " + blueRedCardID + " " + 0 + " " + isInPrison + " " + 0 + " " + 0 + " " + Integer.parseInt(info.substring(10)) +  " " + 11);
+                                    blueRedCardID = '0';
                                     PlayerTourReady += 1;
                                 }
-                                if(prisonDecision == 2){
+                                if(prisonDecision == 2 && (playersList.get(Integer.parseInt(info.substring(10)) - 1).getCash() >= 200)){
                                     playersList.get(Integer.parseInt(info.substring(10)) - 1).setCash(playersList.get(Integer.parseInt(info.substring(10)) - 1).getCash() - 200);
                                     playersList.get(Integer.parseInt(info.substring(10)) - 1).setInJail(false);
                                     System.out.println("Great you are no longer in prison!");
                                     System.out.println("Press < enter > : ");
                                     scanner.nextLine();
-                                    dOut.writeUTF("PlayerTourReady "  + 1 + " " +  0 + " " + 0 + " " + 0 + " " + Integer.parseInt(info.substring(10)) +  " " + 11);
+                                    dOut.writeUTF("PlayerTourReady "  + blueRedCardID + " " + 1 + " " +  0 + " " + 0 + " " + 0 + " " + Integer.parseInt(info.substring(10)) +  " " + 11);
+                                    blueRedCardID = '0';
                                     PlayerTourReady += 1;
                                 }
                             }
@@ -336,12 +542,13 @@ public class Client2 {
                                 }
                                 myProfile.setPropertyId(newPosition);
                                 updatePlayerMove(playersList,myProfile.getPlayerNumber(),newPosition);
-                                //myProfile = getPlayer(playersList,nickname);
 
-
+                                property = propertiesList.get(newPosition);
                                 System.out.println("Property Info: \n");
-                                property = propertiesList.get(myProfile.getPropertyId());
+
+
                                 System.out.println("Id property: " + property.getIDproperty());
+                                System.out.println("Owner id: " + property.getOwnerID());
                                 System.out.println("Country name: " + property.getCountryName());
                                 System.out.println("City name: " + property.getNameProperty());
                                 System.out.println("Buy cost: " + property.getBuyCost());
@@ -365,6 +572,182 @@ public class Client2 {
                                                 System.out.println("You cant aford it!\n");
                                             }
                                         }
+                                    }
+                                    else if(idQuestionMark(property)){
+                                        Dice randomQuestionMarkDice = new Dice();
+                                        BlueRedCards card = new BlueRedCards();
+                                        int cardID = randomQuestionMarkDice.throwQuestionMarkCard();
+                                        blueRedCardID = cardId4Server(cardID);
+                                        card = blueRedCardsList.get(cardID - 1);
+                                        System.out.println("\nYou stand on Question mark field!\n");
+                                        System.out.println("Card id: " + card.getCardId());
+                                        System.out.println("Card text: " + card.getCardText());
+
+                                        System.out.println("Reward: " + card.getCashReward() + "$");
+                                        if(card.getCashReward() != 0){
+                                            System.out.println("You account was " + myProfile.getCash() + "$ now: " + (myProfile.getCash() + card.getCashReward()));
+                                            myProfile.setCash(myProfile.getCash() + card.getCashReward());
+                                            updatePlayersCash(playersList,myProfile.getPlayerNumber(),myProfile.getCash());
+                                        }
+
+                                        System.out.println("Fine: " + card.getCashFine() + "$");
+                                        if(card.getCashFine() != 0){
+                                            System.out.println("You account was " + myProfile.getCash() + "$ now: " + (myProfile.getCash() - card.getCashFine()));
+                                            myProfile.setCash(myProfile.getCash() - card.getCashFine());
+                                            updatePlayersCash(playersList,myProfile.getPlayerNumber(),myProfile.getCash());
+                                        }
+
+                                        System.out.println("Destination: " + card.getDestinationField());
+                                        if(card.getDestinationField() !=  0){
+                                            if(card.getDestinationField() == 31){
+                                                System.out.println("You go to jail!");
+                                                isInPrison = 1;
+                                                playersList.get(Integer.parseInt(info.substring(10)) - 1).setInJail(true);
+                                                myProfile.setPropertyId(11);
+                                                updatePlayerMove(playersList,myProfile.getPlayerNumber(),myProfile.getPropertyId());
+                                                property = propertiesList.get(myProfile.getPropertyId()-1);
+                                            }
+                                            else{
+                                                int actualPropety = myProfile.getPropertyId();
+                                                int destinationProperty = card.getDestinationField();
+                                                if(actualPropety >= destinationProperty){
+                                                    myProfile.setCash(myProfile.getCash() + 400);
+                                                    System.out.println("You pass Start ang you recive 400$!");
+                                                }
+                                                System.out.println("Now u standing at : " + propertiesList.get(card.getDestinationField()-1).getNameProperty());
+                                                myProfile.setPropertyId(card.getDestinationField());
+                                                updatePlayerMove(playersList,myProfile.getPlayerNumber(),myProfile.getPropertyId());
+                                                property = propertiesList.get(myProfile.getPropertyId()-1);
+                                                if(propertyBuyable(property)){
+                                                    if(property.getOwnerID() == myProfile.getPlayerNumber()){
+                                                        System.out.println("You are at home take a bear!");
+                                                    }
+                                                    else if(property.getOwnerID() == 0){
+                                                        System.out.println("Your cash: " + myProfile.getCash());
+                                                        System.out.println("Cost buy this property is: " + property.getBuyCost() + "$");
+                                                        System.out.println("Do you want to buy this property? (0-No OR 1-Yes): ");
+                                                        int answear = Integer.parseInt(scanner.nextLine());
+                                                        if(answear == 1){
+                                                            if(myProfile.getCash() >= property.getBuyCost()){
+                                                                ifPlayerBoughtProperty = 1;
+                                                                myProfile.setCash(myProfile.getCash() - property.getBuyCost());
+                                                                property.setOwnerID(myProfile.getPlayerNumber());
+                                                                System.out.println("Your cash after transaction: " + myProfile.getCash());
+                                                                updatePropertiesList(propertiesList,property);
+                                                            }
+                                                            else{
+                                                                System.out.println("You cant aford it!\n");
+                                                            }
+                                                        }
+                                                    }
+                                                    else{
+                                                        Player oponent = new Player();
+                                                        oponent = getPlayer(playersList,property.getOwnerID());
+                                                        if(oponent.getIsInJail()){
+                                                            System.out.println(oponent.getPlayerName() + " is in jail go on!");
+                                                        }
+                                                        else{
+                                                            System.out.println("This property have owner u have to pay " + property.getPaymentForStay() + "$ to " + oponent.getPlayerName());
+                                                            myProfile.setCash(myProfile.getCash() - property.getPaymentForStay());
+                                                            oponent.setCash(oponent.getCash() + property.getPaymentForStay());
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+
+                                        System.out.println("Go forward: " + card.getFieldsForward());
+                                        if(card.getFieldsForward() != 0){
+                                            System.out.println("You do " + card.getFieldsForward() + " more!");
+                                            myProfile.setPropertyId(myProfile.getPropertyId() + card.getFieldsForward());
+                                            System.out.println("Now you are standing on: " + propertiesList.get(myProfile.getPropertyId()).getNameProperty());
+                                            updatePlayerMove(playersList,myProfile.getPlayerNumber(),myProfile.getPropertyId());
+                                            property = propertiesList.get(myProfile.getPropertyId());
+                                            System.out.println("Property : " + property.getIDproperty() + " " + property.getNameProperty());
+                                            if(propertyBuyable(property)){
+                                                if(property.getOwnerID() == myProfile.getPlayerNumber()){
+                                                    System.out.println("You are at home take a bear!");
+                                                }
+                                                else if(property.getOwnerID() == 0){
+                                                    System.out.println("Your cash: " + myProfile.getCash());
+                                                    System.out.println("Cost buy this property is: " + property.getBuyCost() + "$");
+                                                    System.out.println("Do you want to buy this property? (0-No OR 1-Yes): ");
+                                                    int answear = Integer.parseInt(scanner.nextLine());
+                                                    if(answear == 1){
+                                                        if(myProfile.getCash() >= property.getBuyCost()){
+                                                            ifPlayerBoughtProperty = 1;
+                                                            myProfile.setCash(myProfile.getCash() - property.getBuyCost());
+                                                            property.setOwnerID(myProfile.getPlayerNumber());
+                                                            System.out.println("Your cash after transaction: " + myProfile.getCash());
+                                                            updatePropertiesList(propertiesList,property);
+                                                        }
+                                                        else{
+                                                            System.out.println("You cant aford it!\n");
+                                                        }
+                                                    }
+                                                }
+                                                else{
+                                                    Player oponent = new Player();
+                                                    oponent = getPlayer(playersList,property.getOwnerID());
+                                                    if(oponent.getIsInJail()){
+                                                        System.out.println(oponent.getPlayerName() + " is in jail go on!");
+                                                    }
+                                                    else{
+                                                        System.out.println("This property have owner u have to pay " + property.getPaymentForStay() + "$ to " + oponent.getPlayerName());
+                                                        myProfile.setCash(myProfile.getCash() - property.getPaymentForStay());
+                                                        oponent.setCash(oponent.getCash() + property.getPaymentForStay());
+                                                    }
+                                                }
+                                            }
+                                        }
+
+                                        System.out.println("Go backward: " + card.getFieldsBackward());
+                                        if(card.getFieldsBackward() != 0){
+                                            System.out.println("You do " + card.getFieldsBackward() + " less!");
+                                            myProfile.setPropertyId(myProfile.getPropertyId() - card.getFieldsBackward());
+                                            if(myProfile.getPropertyId() < 0){
+                                                myProfile.setPropertyId(40 + myProfile.getPropertyId());
+                                            }
+                                            property = propertiesList.get(myProfile.getPropertyId());
+                                            System.out.println("Now u statnding at: " + property.getNameProperty());
+                                            if(propertyBuyable(property)){
+                                                if(property.getOwnerID() == myProfile.getPlayerNumber()){
+                                                    System.out.println("You are at home take a bear!");
+                                                }
+                                                else if(property.getOwnerID() == 0){
+                                                    System.out.println("Your cash: " + myProfile.getCash());
+                                                    System.out.println("Cost buy this property is: " + property.getBuyCost() + "$");
+                                                    System.out.println("Do you want to buy this property? (0-No OR 1-Yes): ");
+                                                    int answear = Integer.parseInt(scanner.nextLine());
+                                                    if(answear == 1){
+                                                        if(myProfile.getCash() >= property.getBuyCost()){
+                                                            ifPlayerBoughtProperty = 1;
+                                                            myProfile.setCash(myProfile.getCash() - property.getBuyCost());
+                                                            property.setOwnerID(myProfile.getPlayerNumber());
+                                                            System.out.println("Your cash after transaction: " + myProfile.getCash());
+                                                            updatePropertiesList(propertiesList,property);
+                                                        }
+                                                        else{
+                                                            System.out.println("You cant aford it!\n");
+                                                        }
+                                                    }
+                                                }
+                                                else{
+                                                    Player oponent = new Player();
+                                                    oponent = getPlayer(playersList,property.getOwnerID());
+                                                    if(oponent.getIsInJail()){
+                                                        System.out.println(oponent.getPlayerName() + " is in jail go on!");
+                                                    }
+                                                    else{
+                                                        System.out.println("This property have owner u have to pay " + property.getPaymentForStay() + "$ to " + oponent.getPlayerName());
+                                                        myProfile.setCash(myProfile.getCash() - property.getPaymentForStay());
+                                                        oponent.setCash(oponent.getCash() + property.getPaymentForStay());
+                                                    }
+                                                }
+                                            }
+
+                                        }
+
                                     }
                                     else{
                                         System.out.println("Your cash: " + myProfile.getCash());
@@ -394,8 +777,9 @@ public class Client2 {
                                 System.out.println("\nPress < enter > to end your tour: ");
                                 scanner.nextLine();
                                 System.out.println("Player ready before: " + PlayerTourReady);
-                                dOut.writeUTF("PlayerTourReady " + 0 + " " + isInPrison + " " +passStart + " " + ifPlayerBoughtProperty + " " +Integer.parseInt(info.substring(10)) +  " " + property.getIDproperty());
+                                dOut.writeUTF("PlayerTourReady " + blueRedCardID + " " + 0 + " " + isInPrison + " " +passStart + " " + ifPlayerBoughtProperty + " " +Integer.parseInt(info.substring(10)) +  " " + property.getIDproperty());
                                 PlayerTourReady += 1;
+                                blueRedCardID = 0;
                                 ifPlayerBoughtProperty = 0;
                                 System.out.println("Player ready before: " + PlayerTourReady);
                                 passStart = 0;
@@ -447,6 +831,58 @@ public class Client2 {
 
     }
 
+    public static int card4ClientFromServer(char cardID){
+        switch (cardID){
+            case '1': return 1;
+            case '2': return 2;
+            case '3': return 3;
+            case '4': return 4;
+            case '5': return 5;
+            case '6': return 6;
+            case '7': return 7;
+            case '8': return 8;
+            case '9': return 9;
+            case 'a': return 10;
+            case 'b': return 11;
+            case 'c': return 12;
+            case 'd': return 13;
+            case 'e': return 14;
+            case 'f': return 15;
+            case 'g': return 16;
+        }
+        return 0;
+    }
+
+    public static char cardId4Server(int cardID){
+        switch (cardID){
+            case 1: return '1';
+            case 2: return '2';
+            case 3: return '3';
+            case 4: return '4';
+            case 5: return '5';
+            case 6: return '6';
+            case 7: return '7';
+            case 8: return '8';
+            case 9: return '9';
+            case 10: return 'a';
+            case 11: return 'b';
+            case 12: return 'c';
+            case 13: return 'd';
+            case 14: return 'e';
+            case 15: return 'f';
+            case 16: return 'g';
+        }
+        return '0';
+    }
+
+    public static boolean idQuestionMark(Properties property){
+        if(property.getNameProperty().equals("BlueQuestionMark") || property.getNameProperty().equals("RedQuestionMark")){
+            return true;
+        }
+        else
+            return false;
+    }
+
     public static void getCashAllPlayers(ArrayList<Player> playersList){
         for(Player p : playersList){
             System.out.println("Players " + p.getCash() + "$ " + p.getPlayerName());
@@ -462,21 +898,29 @@ public class Client2 {
     }
 
     public static boolean propertyBuyable(Properties property){
-        switch (property.getIDproperty()){
-            case 1:{return false;}
-            case 3:{return false;}
-            case 5:{return false;}
-            case 8:{return false;}
-            case 11:{return false;}
-            case 18:{return false;}
-            case 21:{return false;}
-            case 23:{return false;}
-            case 31:{return false;}
-            case 34:{return false;}
-            case 37:{return false;}
-            case 39:{return false;}
-            default: return true;
-        }
+        if(property.getNameProperty().startsWith("Blue")
+                || property.getNameProperty().startsWith("Red") || property.getNameProperty().startsWith("Podatek") ||
+                property.getNameProperty().startsWith("Parking") || property.getNameProperty().startsWith("Wiezienie") ||
+                property.getNameProperty().startsWith("Go") || property.getNameProperty().startsWith("Idziesz") ||
+                property.getNameProperty().startsWith("Darmowy"))
+            return false;
+        else
+            return true;
+//        switch (property.getIDproperty()){
+//            case 1:{return false;}
+//            case 3:{return false;}
+//            case 5:{return false;}
+//            case 8:{return false;}
+//            case 11:{return false;}
+//            case 18:{return false;}
+//            case 21:{return false;}
+//            case 23:{return false;}
+//            case 31:{return false;}
+//            case 34:{return false;}
+//            case 37:{return false;}
+//            case 39:{return false;}
+//            default: return true;
+//        }
     }
 
     public static void updatePlayerMove(ArrayList<Player> players,int idPlayer, int idProperty){

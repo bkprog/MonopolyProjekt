@@ -75,12 +75,28 @@ public class Client {
                         propertyNew.setBuyCost(Integer.parseInt(dIn.readUTF()));
                         propertyNew.setCountryName(dIn.readUTF());
                         propertyNew.setOwnerID(Integer.parseInt(dIn.readUTF()));
+                        propertyNew.setLvl1(Integer.parseInt(dIn.readUTF()));
+                        propertyNew.setLvl2(Integer.parseInt(dIn.readUTF()));
+                        propertyNew.setLvl3(Integer.parseInt(dIn.readUTF()));
+                        propertyNew.setLvl4(Integer.parseInt(dIn.readUTF()));
                         propertiesList.add(propertyNew);
                     }
 
-//                    for(int i=0;i<propertiesList.size();i++){
-//
-//                    }
+                    for(int i=0;i<propertiesList.size();i++){
+                        Properties prop = propertiesList.get(i);
+                        System.out.println("\nPropertyname: " + prop.getNameProperty());
+                        System.out.println("Payyment for stay with lvl " + prop.getActualLvlProperty() + " is: " + prop.getPaymentForStay());
+                        prop.buildPropertyLvl1();
+                        System.out.println("Payyment for stay with lvl " + prop.getActualLvlProperty() + " is: " + prop.getPaymentForStay());
+                        prop.buildPropertyLvl2();
+                        System.out.println("Payyment for stay with lvl " + prop.getActualLvlProperty() + " is: " + prop.getPaymentForStay());
+                        prop.buildPropertyLvl3();
+                        System.out.println("Payyment for stay with lvl " + prop.getActualLvlProperty() + " is: " + prop.getPaymentForStay());
+                        prop.buildPropertyLvl4();
+                        System.out.println("Payyment for stay with lvl " + prop.getActualLvlProperty() + " is: " + prop.getPaymentForStay());
+                        prop.destroyHouses();
+                        System.out.println("Payyment for stay with lvl " + prop.getActualLvlProperty() + " is: " + prop.getPaymentForStay());
+                    }
                 }
                 else if(info.equals("PlayersInGame")){
                     int number = dIn.readInt();
@@ -511,6 +527,9 @@ public class Client {
                                 }
                             }
                             else {
+                                myProfile = getPlayer(playersList,nickname);
+
+
                                 System.out.println("Its your turn press <Enter> to Dice!");
                                 scanner.nextLine();
                                 int isInPrison = 0;
@@ -522,7 +541,7 @@ public class Client {
                                 System.out.println("Sum of dices is: " + (dice2 + dice1) + "\n");
 
 
-                                myProfile = getPlayer(playersList,nickname);
+
                                 int newPosition = myProfile.getPropertyId() + dice1 + dice2;
                                 System.out.println(newPosition);
                                 if(newPosition + 1 == 31){
@@ -828,6 +847,9 @@ public class Client {
         }
 
     }
+
+
+
 
     public static int card4ClientFromServer(char cardID){
         switch (cardID){
