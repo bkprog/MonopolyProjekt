@@ -994,7 +994,7 @@ public class Client1 {
         if(property.getNameProperty().startsWith("Blue")
                 || property.getNameProperty().startsWith("Red") || property.getNameProperty().startsWith("Podatek") ||
                 property.getNameProperty().startsWith("Parking") || property.getNameProperty().startsWith("Wiezienie") ||
-                property.getNameProperty().startsWith("Go") || property.getNameProperty().startsWith("Idziesz") ||
+                property.getNameProperty().startsWith("Go!") || property.getNameProperty().startsWith("Idziesz") ||
                 property.getNameProperty().startsWith("Darmowy"))
             return false;
         else

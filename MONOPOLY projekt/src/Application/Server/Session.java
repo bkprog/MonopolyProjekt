@@ -39,7 +39,7 @@ public class Session extends Thread {
                 Player newPlayer = new Player();
                 newPlayer.setPlayerName(playerName);
                 newPlayer.setPlayerNumber(playerNumber);
-                newPlayer.setCash(2000);
+                newPlayer.setCash(8000);
                 newPlayer.setPropertyId(0);
                 playersList.add(newPlayer);
 
@@ -340,7 +340,7 @@ public class Session extends Thread {
 
     public ArrayList<Properties> setAllProperties(ArrayList<Properties> propertiesList){
 
-        Properties property1 = new Properties(1,0,"Go","NONE",0,0,0,0,0);
+        Properties property1 = new Properties(1,0,"Go!","NONE",0,0,0,0,0);
         Properties property2 = new Properties(2,10,"Saloniki","Grecja",120,40,120,360,640);
         Properties property3 = new Properties(3,0,"BlueQuestionMark","NONE",0,0,0,0,0);
         Properties property4 = new Properties(4,10,"Ateny","Grecja",120,40,120,360,640);
