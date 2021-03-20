@@ -531,7 +531,8 @@ public class Client1 {
                             }
                             else {
                                 myProfile = getPlayer(playersList,nickname);
-                                ArrayList<String> playerCountries = allCountriesPlayers(propertiesList,myProfile);
+                                ArrayList<String> playerCountries = new ArrayList<>();
+                                playerCountries = allCountriesPlayers(propertiesList,myProfile);
                                 if(playerCountries.isEmpty()){
                                     System.out.println("You dont have any country yet");
                                 }
@@ -861,6 +862,7 @@ public class Client1 {
 
     public static ArrayList<String> allCountriesPlayers(ArrayList<Properties> propertiesList,Player player){
         ArrayList <String> countries = new ArrayList<>();
+        boolean g = true,i = true,s = true,e = true,b = true,S = true,r = true,a = true;
         int Greece = 0;
         int Italy = 0;
         int Spain = 0;
@@ -873,50 +875,74 @@ public class Client1 {
             if(p.getCountryName().equals("Grecja")){
                 if(player.getPlayerNumber() == p.getOwnerID())
                     Greece++;
-                if(Greece == 2)
+                if(Greece == 2 && g){
                     countries.add("Grecja");
+                    g = false;
+                }
+
             }
             else if(p.getCountryName().equals("Włochy")){
                 if(player.getPlayerNumber() == p.getOwnerID())
                     Italy++;
-                if(Italy == 3)
+                if(Italy == 3 && i){
                     countries.add("Włochy");
+                    i = false;
+                }
+
             }
             else if(p.getCountryName().equals("Hiszpania")){
                 if(player.getPlayerNumber() == p.getOwnerID())
                     Spain++;
-                if(Spain == 3)
+                if(Spain == 3 && s){
                     countries.add("Hiszpania");
+                    s = false;
+                }
+
             }
             else if(p.getCountryName().equals("Anglia")){
                 if(player.getPlayerNumber() == p.getOwnerID())
                     England++;
-                if(England == 3)
+                if(England == 3 && e){
                     countries.add("Anglia");
+                    e = false;
+                }
+
             }
             else if(p.getCountryName().equals("Benelux")){
                 if(player.getPlayerNumber() == p.getOwnerID())
                     Benelux++;
-                if(Benelux == 3)
+                if(Benelux == 3 && b){
                     countries.add("Benelux");
+                    b = false;
+                }
+
             }
             else if(p.getCountryName().equals("Szwecja")){
                 if(player.getPlayerNumber() == p.getOwnerID())
                     Sweden++;
-                if(Sweden == 3)
+                if(Sweden == 3 && S){
                     countries.add("Szwecja");
+                    S = false;
+                }
+
             }
             else if(p.getCountryName().equals("RFN")){
                 if(player.getPlayerNumber() == p.getOwnerID())
                     RFN++;
-                if(RFN == 3)
+                if(RFN == 3 && r){
                     countries.add("RFN");
+                    r = false;
+                }
+
             }
             else if(p.getCountryName().equals("Austria")){
                 if(player.getPlayerNumber() == p.getOwnerID())
                     Austria++;
-                if(Austria == 2)
+                if(Austria == 2 && a){
                     countries.add("Austria");
+                    a = false;
+                }
+
             }
         }
         return countries;
