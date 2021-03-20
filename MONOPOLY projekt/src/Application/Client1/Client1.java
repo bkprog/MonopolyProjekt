@@ -84,22 +84,22 @@ public class Client1 {
                         propertiesList.add(propertyNew);
                     }
 
-                    for(int i=0;i<propertiesList.size();i++){
-                        Properties prop = propertiesList.get(i);
-                        System.out.println("\nPropertyname: " + prop.getNameProperty());
-                        System.out.println("Payyment for stay with lvl " + prop.getActualLvlProperty() + " is: " + prop.getPaymentForStay());
-                        prop.buildHouseOnProperty();
-                        System.out.println("Payyment for stay with lvl " + prop.getActualLvlProperty() + " is: " + prop.getPaymentForStay());
-                        prop.buildHouseOnProperty();
-                        System.out.println("Payyment for stay with lvl " + prop.getActualLvlProperty() + " is: " + prop.getPaymentForStay());
-                        prop.buildHouseOnProperty();
-                        System.out.println("Payyment for stay with lvl " + prop.getActualLvlProperty() + " is: " + prop.getPaymentForStay());
-                        prop.buildHouseOnProperty();
-                        System.out.println("Payyment for stay with lvl " + prop.getActualLvlProperty() + " is: " + prop.getPaymentForStay());
-                        prop.destroyHouses();
-                        System.out.println("Payyment for stay with lvl " + prop.getActualLvlProperty() + " is: " + prop.getPaymentForStay());
-                        System.out.println("House cost on this property is: " + prop.getHouseCost() + "$");
-                    }
+//                    for(int i=0;i<propertiesList.size();i++){
+//                        Properties prop = propertiesList.get(i);
+//                        System.out.println("\nPropertyname: " + prop.getNameProperty());
+//                        System.out.println("Payyment for stay with lvl " + prop.getActualLvlProperty() + " is: " + prop.getPaymentForStay());
+//                        prop.buildHouseOnProperty();
+//                        System.out.println("Payyment for stay with lvl " + prop.getActualLvlProperty() + " is: " + prop.getPaymentForStay());
+//                        prop.buildHouseOnProperty();
+//                        System.out.println("Payyment for stay with lvl " + prop.getActualLvlProperty() + " is: " + prop.getPaymentForStay());
+//                        prop.buildHouseOnProperty();
+//                        System.out.println("Payyment for stay with lvl " + prop.getActualLvlProperty() + " is: " + prop.getPaymentForStay());
+//                        prop.buildHouseOnProperty();
+//                        System.out.println("Payyment for stay with lvl " + prop.getActualLvlProperty() + " is: " + prop.getPaymentForStay());
+//                        prop.destroyHouses();
+//                        System.out.println("Payyment for stay with lvl " + prop.getActualLvlProperty() + " is: " + prop.getPaymentForStay());
+//                        System.out.println("House cost on this property is: " + prop.getHouseCost() + "$");
+//                    }
                 }
                 else if(info.equals("PlayersInGame")){
                     int number = dIn.readInt();
@@ -531,7 +531,15 @@ public class Client1 {
                             }
                             else {
                                 myProfile = getPlayer(playersList,nickname);
-
+                                ArrayList<String> playerCountries = allCountriesPlayers(propertiesList,myProfile);
+                                if(playerCountries.isEmpty()){
+                                    System.out.println("You dont have any country yet");
+                                }
+                                else{
+                                    for(String s : playerCountries){
+                                        System.out.println("Country: " + s);
+                                    }
+                                }
 
                                 System.out.println("Its your turn press <Enter> to Dice!");
                                 scanner.nextLine();
@@ -851,7 +859,69 @@ public class Client1 {
 
     }
 
+    public static ArrayList<String> allCountriesPlayers(ArrayList<Properties> propertiesList,Player player){
+        ArrayList <String> countries = new ArrayList<>();
+        int Greece = 0;
+        int Italy = 0;
+        int Spain = 0;
+        int England = 0;
+        int Benelux = 0;
+        int Sweden = 0;
+        int RFN = 0;
+        int Austria = 0;
+        for(Properties p : propertiesList){
+            if(p.getCountryName().equals("Grecja")){
+                if(player.getPlayerNumber() == p.getOwnerID())
+                    Greece++;
+                if(Greece == 2)
+                    countries.add("Grecja");
+            }
+            else if(p.getCountryName().equals("Włochy")){
+                if(player.getPlayerNumber() == p.getOwnerID())
+                    Italy++;
+                if(Italy == 3)
+                    countries.add("Włochy");
+            }
+            else if(p.getCountryName().equals("Hiszpania")){
+                if(player.getPlayerNumber() == p.getOwnerID())
+                    Spain++;
+                if(Spain == 3)
+                    countries.add("Hiszpania");
+            }
+            else if(p.getCountryName().equals("Anglia")){
+                if(player.getPlayerNumber() == p.getOwnerID())
+                    England++;
+                if(England == 3)
+                    countries.add("Anglia");
+            }
+            else if(p.getCountryName().equals("Benelux")){
+                if(player.getPlayerNumber() == p.getOwnerID())
+                    Benelux++;
+                if(Benelux == 3)
+                    countries.add("Benelux");
+            }
+            else if(p.getCountryName().equals("Szwecja")){
+                if(player.getPlayerNumber() == p.getOwnerID())
+                    Sweden++;
+                if(Sweden == 3)
+                    countries.add("Szwecja");
+            }
+            else if(p.getCountryName().equals("RFN")){
+                if(player.getPlayerNumber() == p.getOwnerID())
+                    RFN++;
+                if(RFN == 3)
+                    countries.add("RFN");
+            }
+            else if(p.getCountryName().equals("Austria")){
+                if(player.getPlayerNumber() == p.getOwnerID())
+                    Austria++;
+                if(Austria == 2)
+                    countries.add("Austria");
+            }
+        }
+        return countries;
 
+    }
 
 
     public static int card4ClientFromServer(char cardID){
