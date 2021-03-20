@@ -539,7 +539,6 @@ public class Client {
                                     }
                                 }
 
-
                                 System.out.println("Its your turn press <Enter> to Dice!");
                                 scanner.nextLine();
                                 int isInPrison = 0;
@@ -922,6 +921,7 @@ public class Client {
 
     }
 
+
     public static int card4ClientFromServer(char cardID){
         switch (cardID){
             case '1': return 1;
@@ -992,7 +992,7 @@ public class Client {
         if(property.getNameProperty().startsWith("Blue")
                 || property.getNameProperty().startsWith("Red") || property.getNameProperty().startsWith("Podatek") ||
                 property.getNameProperty().startsWith("Parking") || property.getNameProperty().startsWith("Wiezienie") ||
-                property.getNameProperty().startsWith("Go") || property.getNameProperty().startsWith("Idziesz") ||
+                property.getNameProperty().startsWith("Go!") || property.getNameProperty().startsWith("Idziesz") ||
                 property.getNameProperty().startsWith("Darmowy"))
             return false;
         else
