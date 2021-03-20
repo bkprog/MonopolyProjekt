@@ -88,16 +88,17 @@ public class Client1 {
                         Properties prop = propertiesList.get(i);
                         System.out.println("\nPropertyname: " + prop.getNameProperty());
                         System.out.println("Payyment for stay with lvl " + prop.getActualLvlProperty() + " is: " + prop.getPaymentForStay());
-                        prop.buildPropertyLvl1();
+                        prop.buildHouseOnProperty();
                         System.out.println("Payyment for stay with lvl " + prop.getActualLvlProperty() + " is: " + prop.getPaymentForStay());
-                        prop.buildPropertyLvl2();
+                        prop.buildHouseOnProperty();
                         System.out.println("Payyment for stay with lvl " + prop.getActualLvlProperty() + " is: " + prop.getPaymentForStay());
-                        prop.buildPropertyLvl3();
+                        prop.buildHouseOnProperty();
                         System.out.println("Payyment for stay with lvl " + prop.getActualLvlProperty() + " is: " + prop.getPaymentForStay());
-                        prop.buildPropertyLvl4();
+                        prop.buildHouseOnProperty();
                         System.out.println("Payyment for stay with lvl " + prop.getActualLvlProperty() + " is: " + prop.getPaymentForStay());
                         prop.destroyHouses();
                         System.out.println("Payyment for stay with lvl " + prop.getActualLvlProperty() + " is: " + prop.getPaymentForStay());
+                        System.out.println("House cost on this property is: " + prop.getHouseCost() + "$");
                     }
                 }
                 else if(info.equals("PlayersInGame")){

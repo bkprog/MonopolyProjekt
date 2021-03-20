@@ -47,25 +47,48 @@ public class Properties {
         this.actualLvlProperty = 0;
     }
 
-    public void buildPropertyLvl1(){
-        this.lvl0 = this.paymentForStay;
-        this.paymentForStay = this.lvl1;
-        this.actualLvlProperty = 1;
+    public int getHouseCost(){
+        if(this.IDproperty>1 && this.IDproperty<11 && ifBuyableHouseproperty())
+            return 100;
+        else if(this.IDproperty>11 && this.IDproperty<21 && ifBuyableHouseproperty())
+            return 200;
+        else if(this.IDproperty>21 && this.IDproperty<31 && ifBuyableHouseproperty())
+            return 300;
+        else if(this.IDproperty>31 && this.IDproperty<=40 && ifBuyableHouseproperty())
+            return 400;
+        else
+            return 0;
     }
 
-    public void buildPropertyLvl2(){
-        this.paymentForStay = this.lvl2;
-        this.actualLvlProperty = 2;
+    private boolean ifBuyableHouseproperty(){
+        if(this.Name.startsWith("Linie") || this.Name.startsWith("Go")
+        ||this.Name.startsWith("Elektrownia") || this.Name.startsWith("Wodo")
+        || this.Name.startsWith("Red") || this.Name.startsWith("Blue")
+        || this.Name.startsWith("Parking") || this.Name.startsWith("Wiezienie")
+        || this.Name.startsWith("Darmowy") || this.Name.startsWith("Idziesz")
+        || this.Name.startsWith("Podatek"))
+            return false;
+        else
+            return true;
     }
 
-    public void buildPropertyLvl3(){
-        this.paymentForStay = this.lvl3;
-        this.actualLvlProperty = 3;
-    }
-
-    public void buildPropertyLvl4(){
-        this.paymentForStay = this.lvl4;
-        this.actualLvlProperty = 4;
+    public void buildHouseOnProperty(){
+        if(this.actualLvlProperty == 0){
+            this.paymentForStay = this.lvl1;
+            this.actualLvlProperty = 1;
+        }
+        else if(this.actualLvlProperty == 1){
+            this.paymentForStay = this.lvl2;
+            this.actualLvlProperty = 2;
+        }
+        else if(this.actualLvlProperty == 2){
+            this.paymentForStay = this.lvl3;
+            this.actualLvlProperty = 3;
+        }
+        else if(this.actualLvlProperty == 3){
+            this.paymentForStay = this.lvl4;
+            this.actualLvlProperty = 4;
+        }
     }
 
     public void destroyHouses(){
