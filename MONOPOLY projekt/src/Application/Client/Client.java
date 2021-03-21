@@ -120,6 +120,14 @@ public class Client {
                     }
                 }
 
+                else if(info.startsWith("houseBuy ")){
+                    int playerId = Integer.parseInt(info.substring(11));
+                    int numeberHouses = Character.getNumericValue(info.charAt(9));
+                    System.out.println("HousesUpdate!!");
+                    System.out.println("playerindex: " + playerId);
+                    System.out.println("number houses: " + numeberHouses);
+                }
+
                 else if(info.startsWith("CardMove ")){
                     int cardID = card4ClientFromServer(info.charAt(9));
                     int playerID = Character.getNumericValue(info.charAt(11));
@@ -563,12 +571,16 @@ public class Client {
                                         if(decision == 1){
                                             propertiesList.get(myProfile.getPropertyId()).buildHouseOnProperty();
                                             System.out.println("Now paynemt on this property is: " + propertiesList.get(myProfile.getPropertyId()).getPaymentForStay() + "$");
+                                            myProfile.setCash(myProfile.getCash() - propertiesList.get(myProfile.getPropertyId()).getHouseCost());
+                                            updatePlayersCash(playersList,myProfile.getPlayerNumber(),myProfile.getCash());
                                             houseBought = 1;
                                         }
                                         else if(decision == 2){
                                             propertiesList.get(myProfile.getPropertyId()).buildHouseOnProperty();
                                             propertiesList.get(myProfile.getPropertyId()).buildHouseOnProperty();
                                             System.out.println("Now paynemt on this property is: " + propertiesList.get(myProfile.getPropertyId()).getPaymentForStay() + "$");
+                                            myProfile.setCash(myProfile.getCash() - (propertiesList.get(myProfile.getPropertyId()).getHouseCost()*2));
+                                            updatePlayersCash(playersList,myProfile.getPlayerNumber(),myProfile.getCash());
                                             houseBought = 2;
                                         }
                                         else if(decision == 3){
@@ -576,6 +588,8 @@ public class Client {
                                             propertiesList.get(myProfile.getPropertyId()).buildHouseOnProperty();
                                             propertiesList.get(myProfile.getPropertyId()).buildHouseOnProperty();
                                             System.out.println("Now paynemt on this property is: " + propertiesList.get(myProfile.getPropertyId()).getPaymentForStay() + "$");
+                                            myProfile.setCash(myProfile.getCash() - (propertiesList.get(myProfile.getPropertyId()).getHouseCost()*3));
+                                            updatePlayersCash(playersList,myProfile.getPlayerNumber(),myProfile.getCash());
                                             houseBought = 3;
                                         }
                                         else if(decision == 4){
@@ -584,6 +598,8 @@ public class Client {
                                             propertiesList.get(myProfile.getPropertyId()).buildHouseOnProperty();
                                             propertiesList.get(myProfile.getPropertyId()).buildHouseOnProperty();
                                             System.out.println("Now paynemt on this property is: " + propertiesList.get(myProfile.getPropertyId()).getPaymentForStay() + "$");
+                                            myProfile.setCash(myProfile.getCash() - (propertiesList.get(myProfile.getPropertyId()).getHouseCost()*4));
+                                            updatePlayersCash(playersList,myProfile.getPlayerNumber(),myProfile.getCash());
                                             houseBought = 4;
                                         }
                                     }
