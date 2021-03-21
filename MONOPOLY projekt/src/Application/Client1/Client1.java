@@ -533,12 +533,56 @@ public class Client1 {
                                 myProfile = getPlayer(playersList,nickname);
                                 ArrayList<String> playerCountries = new ArrayList<>();
                                 playerCountries = allCountriesPlayers(propertiesList,myProfile);
+                                boolean playerStandingonHisCountry = false;
                                 if(playerCountries.isEmpty()){
                                     System.out.println("You dont have any country yet");
                                 }
                                 else{
                                     for(String s : playerCountries){
                                         System.out.println("Country: " + s);
+                                        if(propertiesList.get(myProfile.getPropertyId()).getCountryName().equals(s))
+                                            playerStandingonHisCountry = true;
+                                    }
+                                    if(playerStandingonHisCountry){
+                                        int decision = 0;
+                                        if(myProfile.getCash() >= propertiesList.get(myProfile.getPropertyId()).getHouseCost() && (-propertiesList.get(myProfile.getPropertyId()).getActualLvlProperty()+4) > 0){
+                                            System.out.println("You can buy house!!!");
+                                            System.out.println("how many houses do you want to buy?");
+                                            System.out.println("[1] One house cost: " + propertiesList.get(myProfile.getPropertyId()).getHouseCost() + "$");
+                                            if(myProfile.getCash() >= (propertiesList.get(myProfile.getPropertyId()).getHouseCost()*2) && (-propertiesList.get(myProfile.getPropertyId()).getActualLvlProperty()+4) > 1){
+                                                System.out.println("[2] Two house cost: " + (propertiesList.get(myProfile.getPropertyId()).getHouseCost()*2) + "$");
+                                                if(myProfile.getCash() >= (propertiesList.get(myProfile.getPropertyId()).getHouseCost()*3) && (-propertiesList.get(myProfile.getPropertyId()).getActualLvlProperty()+4) > 2){
+                                                    System.out.println("[3] Three house cost: " + (propertiesList.get(myProfile.getPropertyId()).getHouseCost()*3) + "$");
+                                                    if(myProfile.getCash() >= (propertiesList.get(myProfile.getPropertyId()).getHouseCost()*4) && (-propertiesList.get(myProfile.getPropertyId()).getActualLvlProperty()+4) > 3){
+                                                        System.out.println("[4] Four house cost: " + (propertiesList.get(myProfile.getPropertyId()).getHouseCost()*4) + "$");
+                                                    }
+                                                }
+                                            }
+                                            decision = Integer.parseInt(scanner.nextLine());
+                                        }
+
+                                        if(decision == 1){
+                                            propertiesList.get(myProfile.getPropertyId()).buildHouseOnProperty();
+                                            System.out.println("Now paynemt on this property is: " + propertiesList.get(myProfile.getPropertyId()).getPaymentForStay() + "$");
+                                        }
+                                        else if(decision == 2){
+                                            propertiesList.get(myProfile.getPropertyId()).buildHouseOnProperty();
+                                            propertiesList.get(myProfile.getPropertyId()).buildHouseOnProperty();
+                                            System.out.println("Now paynemt on this property is: " + propertiesList.get(myProfile.getPropertyId()).getPaymentForStay() + "$");
+                                        }
+                                        else if(decision == 3){
+                                            propertiesList.get(myProfile.getPropertyId()).buildHouseOnProperty();
+                                            propertiesList.get(myProfile.getPropertyId()).buildHouseOnProperty();
+                                            propertiesList.get(myProfile.getPropertyId()).buildHouseOnProperty();
+                                            System.out.println("Now paynemt on this property is: " + propertiesList.get(myProfile.getPropertyId()).getPaymentForStay() + "$");
+                                        }
+                                        else if(decision == 4){
+                                            propertiesList.get(myProfile.getPropertyId()).buildHouseOnProperty();
+                                            propertiesList.get(myProfile.getPropertyId()).buildHouseOnProperty();
+                                            propertiesList.get(myProfile.getPropertyId()).buildHouseOnProperty();
+                                            propertiesList.get(myProfile.getPropertyId()).buildHouseOnProperty();
+                                            System.out.println("Now paynemt on this property is: " + propertiesList.get(myProfile.getPropertyId()).getPaymentForStay() + "$");
+                                        }
                                     }
                                 }
 
