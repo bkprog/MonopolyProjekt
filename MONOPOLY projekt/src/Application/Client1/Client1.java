@@ -480,7 +480,7 @@ public class Client1 {
                             System.out.println("\nPress < enter > to end your tour: ");
                             scanner.nextLine();
                             System.out.println("Player ready before: " + PlayerTourReady);
-                            dOut.writeUTF("PlayerTourReady " + blueRedCardID + " " +  0 + " " + isInPrison + " " +passStart + " " + ifPlayerBoughtProperty + " " +Integer.parseInt(info.substring(10)) +  " " + property.getIDproperty());
+                            dOut.writeUTF("PlayerTourReady " + 0 + " " + blueRedCardID + " " +  0 + " " + isInPrison + " " +passStart + " " + ifPlayerBoughtProperty + " " +Integer.parseInt(info.substring(10)) +  " " + property.getIDproperty());
                             ifPlayerBoughtProperty = 0;
                             blueRedCardID = '0';
                             PlayerTourReady += 1;
@@ -524,12 +524,13 @@ public class Client1 {
                                     System.out.println("Great you are no longer in prison!");
                                     System.out.println("Press < enter > : ");
                                     scanner.nextLine();
-                                    dOut.writeUTF("PlayerTourReady "  + blueRedCardID + " " + 1 + " " +  0 + " " + 0 + " " + 0 + " " + Integer.parseInt(info.substring(10)) +  " " + 11);
+                                    dOut.writeUTF("PlayerTourReady "  +  0 + " " + blueRedCardID + " " + 1 + " " +  0 + " " + 0 + " " + 0 + " " + Integer.parseInt(info.substring(10)) +  " " + 11);
                                     blueRedCardID = '0';
                                     PlayerTourReady += 1;
                                 }
                             }
                             else {
+                                int houseBought = 0;
                                 myProfile = getPlayer(playersList,nickname);
                                 ArrayList<String> playerCountries = new ArrayList<>();
                                 playerCountries = allCountriesPlayers(propertiesList,myProfile);
@@ -564,17 +565,20 @@ public class Client1 {
                                         if(decision == 1){
                                             propertiesList.get(myProfile.getPropertyId()).buildHouseOnProperty();
                                             System.out.println("Now paynemt on this property is: " + propertiesList.get(myProfile.getPropertyId()).getPaymentForStay() + "$");
+                                            houseBought = 1;
                                         }
                                         else if(decision == 2){
                                             propertiesList.get(myProfile.getPropertyId()).buildHouseOnProperty();
                                             propertiesList.get(myProfile.getPropertyId()).buildHouseOnProperty();
                                             System.out.println("Now paynemt on this property is: " + propertiesList.get(myProfile.getPropertyId()).getPaymentForStay() + "$");
+                                            houseBought = 2;
                                         }
                                         else if(decision == 3){
                                             propertiesList.get(myProfile.getPropertyId()).buildHouseOnProperty();
                                             propertiesList.get(myProfile.getPropertyId()).buildHouseOnProperty();
                                             propertiesList.get(myProfile.getPropertyId()).buildHouseOnProperty();
                                             System.out.println("Now paynemt on this property is: " + propertiesList.get(myProfile.getPropertyId()).getPaymentForStay() + "$");
+                                            houseBought = 3;
                                         }
                                         else if(decision == 4){
                                             propertiesList.get(myProfile.getPropertyId()).buildHouseOnProperty();
@@ -582,6 +586,7 @@ public class Client1 {
                                             propertiesList.get(myProfile.getPropertyId()).buildHouseOnProperty();
                                             propertiesList.get(myProfile.getPropertyId()).buildHouseOnProperty();
                                             System.out.println("Now paynemt on this property is: " + propertiesList.get(myProfile.getPropertyId()).getPaymentForStay() + "$");
+                                            houseBought = 4;
                                         }
                                     }
                                 }
@@ -850,7 +855,7 @@ public class Client1 {
                                 System.out.println("\nPress < enter > to end your tour: ");
                                 scanner.nextLine();
                                 System.out.println("Player ready before: " + PlayerTourReady);
-                                dOut.writeUTF("PlayerTourReady " + blueRedCardID + " " + 0 + " " + isInPrison + " " +passStart + " " + ifPlayerBoughtProperty + " " +Integer.parseInt(info.substring(10)) +  " " + property.getIDproperty());
+                                dOut.writeUTF("PlayerTourReady " + houseBought + " " +blueRedCardID + " " + 0 + " " + isInPrison + " " +passStart + " " + ifPlayerBoughtProperty + " " +Integer.parseInt(info.substring(10)) +  " " + property.getIDproperty());
                                 PlayerTourReady += 1;
                                 blueRedCardID = 0;
                                 ifPlayerBoughtProperty = 0;

@@ -83,10 +83,12 @@ public class Session extends Thread {
                 String clientResponse = socketIn.readUTF();
                 if(clientResponse.startsWith("PlayerTourReady")){
                     if(clientResponse.length() > 15){
-                        String playerMove = clientResponse.substring(22);
-                        char cardId = clientResponse.charAt(16);
-                        char prisionDecion = clientResponse.charAt(20);
-                        char prisionBuy = clientResponse.charAt(18);
+                        char houseBought = clientResponse.charAt(16);
+                        String playerMove = clientResponse.substring(24);
+                        char cardId = clientResponse.charAt(18);
+                        char prisionDecion = clientResponse.charAt(22);
+                        char prisionBuy = clientResponse.charAt(20);
+                        System.out.println(houseBought);
                         System.out.println("prison decision: " + prisionDecion);
                         System.out.println("prison buy: " + prisionDecion);
                         System.out.println("cardId : " + cardId);
