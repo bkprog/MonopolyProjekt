@@ -38,7 +38,7 @@ public class Properties {
         this.lvl0 = this.paymentForStay;
         this.countryName = countryName;
         this.buyCost = buyCost;
-        this.ownerID = 1;
+        this.ownerID = 0;
         this.propertyLVL = 0;
         this.lvl1 = lvl1;
         this.lvl2 = lvl2;
