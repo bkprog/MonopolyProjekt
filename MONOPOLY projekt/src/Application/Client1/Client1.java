@@ -125,9 +125,42 @@ public class Client1 {
                 else if(info.startsWith("houseBuy ")){
                     int playerId = Integer.parseInt(info.substring(11));
                     int numeberHouses = Character.getNumericValue(info.charAt(9));
-                    System.out.println("HousesUpdate!!");
-                    System.out.println("playerindex: " + playerId);
-                    System.out.println("number houses: " + numeberHouses);
+                    if(numeberHouses != 0){
+                        System.out.println("HousesUpdate!!");
+                        System.out.println("playerindex: " + playerId);
+                        System.out.println("number houses: " + numeberHouses);
+                        if(numeberHouses == 1){
+                            propertiesList.get(playerId).buildHouseOnProperty();
+                            System.out.println("Player " + playersList.get(playerId - 1).getPlayerName() + " Build " +
+                                    numeberHouses + " now you will have to pay on this property: " + propertiesList.get(playerId).getPaymentForStay());
+                            playersList.get(playerId - 1).setCash(playersList.get(playerId - 1).getCash() - propertiesList.get(playerId).getHouseCost());
+                        }
+                        else if(numeberHouses == 2){
+                            propertiesList.get(playerId).buildHouseOnProperty();
+                            propertiesList.get(playerId).buildHouseOnProperty();
+                            System.out.println("Player " + playersList.get(playerId - 1).getPlayerName() + " Build " +
+                                    numeberHouses + " now you will have to pay on this property: " + propertiesList.get(playerId).getPaymentForStay());
+                            playersList.get(playerId - 1).setCash(playersList.get(playerId - 1).getCash() - propertiesList.get(playerId).getHouseCost());
+                        }
+                        else if(numeberHouses == 3){
+                            propertiesList.get(playerId).buildHouseOnProperty();
+                            propertiesList.get(playerId).buildHouseOnProperty();
+                            propertiesList.get(playerId).buildHouseOnProperty();
+                            propertiesList.get(playerId).buildHouseOnProperty();
+                            System.out.println("Player " + playersList.get(playerId - 1).getPlayerName() + " Build " +
+                                    numeberHouses + " now you will have to pay on this property: " + propertiesList.get(playerId).getPaymentForStay());
+                            playersList.get(playerId - 1).setCash(playersList.get(playerId - 1).getCash() - propertiesList.get(playerId).getHouseCost());
+                        }
+                        else if(numeberHouses == 4){
+                            propertiesList.get(playerId).buildHouseOnProperty();
+                            propertiesList.get(playerId).buildHouseOnProperty();
+                            propertiesList.get(playerId).buildHouseOnProperty();
+                            propertiesList.get(playerId).buildHouseOnProperty();
+                            System.out.println("Player " + playersList.get(playerId - 1).getPlayerName() + " Build " +
+                                    numeberHouses + " now you will have to pay on this property: " + propertiesList.get(playerId).getPaymentForStay());
+                            playersList.get(playerId - 1).setCash(playersList.get(playerId - 1).getCash() - propertiesList.get(playerId).getHouseCost());
+                        }
+                    }
                 }
 
                 else if(info.startsWith("CardMove ")){
