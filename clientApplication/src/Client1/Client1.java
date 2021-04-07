@@ -149,19 +149,19 @@ public class Client1 extends Application {
 
                             Properties actualProperty = propertiesList.get(newPositionPlayer-1);
 
-                            if(playersList.get(actualProperty.getOwnerID()-1).getPlayerNumber() == 1){
-                                player1.setText("Player 1 : " + playersList.get(actualProperty.getOwnerID()-1).getPlayerName() + " his cash: " + playersList.get(actualProperty.getOwnerID()-1).getCash() + "$" + " standing on: " + actualProperty.getNameProperty());
+                            if(playersList.get(actualProperty.getOwnerID()).getPlayerNumber() == 1){
+                                player1.setText("Player 1 : " + playersList.get(actualProperty.getOwnerID()).getPlayerName() + " his cash: " + playersList.get(actualProperty.getOwnerID()).getCash() + "$" + " standing on: " + actualProperty.getNameProperty());
                             }
 
-                            else if(playersList.get(actualProperty.getOwnerID()-1).getPlayerNumber() == 2){
-                                player2.setText("Player 2 : " + playersList.get(actualProperty.getOwnerID()-1).getPlayerName() + " his cash: " + playersList.get(actualProperty.getOwnerID()-1).getCash() + "$" + " standing on: " + actualProperty.getNameProperty());
+                            else if(playersList.get(actualProperty.getOwnerID()).getPlayerNumber() == 2){
+                                player2.setText("Player 2 : " + playersList.get(actualProperty.getOwnerID()).getPlayerName() + " his cash: " + playersList.get(actualProperty.getOwnerID()).getCash() + "$" + " standing on: " + actualProperty.getNameProperty());
                             }
 
-                            else if(playersList.get(actualProperty.getOwnerID()-1).getPlayerNumber() == 3){
-                                player3.setText("Player 3 : " + playersList.get(actualProperty.getOwnerID()-1).getPlayerName() + " his cash: " + playersList.get(actualProperty.getOwnerID()-1).getCash() + "$" + " standing on: " + actualProperty.getNameProperty());
+                            else if(playersList.get(actualProperty.getOwnerID()).getPlayerNumber() == 3){
+                                player3.setText("Player 3 : " + playersList.get(actualProperty.getOwnerID()).getPlayerName() + " his cash: " + playersList.get(actualProperty.getOwnerID()).getCash() + "$" + " standing on: " + actualProperty.getNameProperty());
                             }
-                            else if(playersList.get(actualProperty.getOwnerID()-1).getPlayerNumber() == 4){
-                                player4.setText("Player 4 : " + playersList.get(actualProperty.getOwnerID()-1).getPlayerName() + " his cash: " + playersList.get(actualProperty.getOwnerID()-1).getCash() + "$" + " standing on: " + actualProperty.getNameProperty());
+                            else if(playersList.get(actualProperty.getOwnerID()).getPlayerNumber() == 4){
+                                player4.setText("Player 4 : " + playersList.get(actualProperty.getOwnerID()).getPlayerName() + " his cash: " + playersList.get(actualProperty.getOwnerID()).getCash() + "$" + " standing on: " + actualProperty.getNameProperty());
                             }
                         }
                         else if(respond.startsWith("PlayersInGame")){
@@ -636,40 +636,49 @@ public class Client1 extends Application {
 
             if(propertyBuyable(propertiesList.get(position-1).getNameProperty())){
                 if(propertiesList.get(position-1).getOwnerID() == 0){
-                    BuyPoropertyInfo.setText("Do You want to Buy this property?");
-                    BuyPropertyBtn.setVisible(true);
-                    NoBuyPropertyBtn.setVisible(true);
-                    buyingPopertyBox.setVisible(true);
-                    BuyPropertyBtn.setOnAction(event->{
+                    if(TourPlayerProfile.getCash() >= actualProperty.getBuyCost()){
+                        BuyPoropertyInfo.setText("Do You want to Buy this property?");
+                        BuyPropertyBtn.setVisible(true);
+                        NoBuyPropertyBtn.setVisible(true);
+                        buyingPopertyBox.setVisible(true);
+                        BuyPropertyBtn.setOnAction(event->{
 
-                        buyPropertyMessage = 1;
-                        BuyPoropertyInfo.setText("");
-                        readyTour.setVisible(true);
+                            buyPropertyMessage = 1;
+                            BuyPoropertyInfo.setText("");
+                            readyTour.setVisible(true);
+                            BuyPropertyBtn.setVisible(false);
+                            NoBuyPropertyBtn.setVisible(false);
+                            TourPlayerProfile.setCash(TourPlayerProfile.getCash() - actualProperty.getBuyCost());
+                            actualProperty.setOwnerID(TourPlayerProfile.getPlayerNumber());
+                            propertyInformation.setText("You have purchase " + actualProperty.getNameProperty() + " in country " + actualProperty.getCountryName() + " oponents will pay: " + actualProperty.getPaymentForStay() + "$");
+
+                            if(TourPlayerProfile.getPlayerNumber() == 1){
+                                player1.setText("Player 1 : " + TourPlayerProfile.getPlayerName() + " his cash: " + TourPlayerProfile.getCash() + "$" + " standing on: " + actualProperty.getNameProperty());
+                            }
+                            else if(TourPlayerProfile.getPlayerNumber() == 2){
+                                player2.setText("Player 2 : " + TourPlayerProfile.getPlayerName() + " his cash: " + TourPlayerProfile.getCash() + "$" + " standing on: " + actualProperty.getNameProperty());
+                            }
+                            else if(TourPlayerProfile.getPlayerNumber() == 3){
+                                player3.setText("Player 3 : " + TourPlayerProfile.getPlayerName() + " his cash: " + TourPlayerProfile.getCash() + "$" + " standing on: " + actualProperty.getNameProperty());
+                            }
+                            else if(TourPlayerProfile.getPlayerNumber() == 4){
+                                player4.setText("Player 4 : " + TourPlayerProfile.getPlayerName() + " his cash: " + TourPlayerProfile.getCash() + "$" + " standing on: " + actualProperty.getNameProperty());
+                            }
+                        });
+                        NoBuyPropertyBtn.setOnAction(actionEvent -> {
+                            BuyPoropertyInfo.setText("");
+                            readyTour.setVisible(true);
+                            BuyPropertyBtn.setVisible(false);
+                            NoBuyPropertyBtn.setVisible(false);
+                        });
+                    }
+                    else{
+                        propertyInformation.setText("You can't affor it!");
                         BuyPropertyBtn.setVisible(false);
                         NoBuyPropertyBtn.setVisible(false);
-                        TourPlayerProfile.setCash(TourPlayerProfile.getCash() - actualProperty.getBuyCost());
-                        actualProperty.setOwnerID(TourPlayerProfile.getPlayerNumber());
-                        propertyInformation.setText("You have purchase " + actualProperty.getNameProperty() + " in country " + actualProperty.getCountryName() + " oponents will pay: " + actualProperty.getPaymentForStay() + "$");
-
-                        if(TourPlayerProfile.getPlayerNumber() == 1){
-                            player1.setText("Player 1 : " + TourPlayerProfile.getPlayerName() + " his cash: " + TourPlayerProfile.getCash() + "$" + " standing on: " + actualProperty.getNameProperty());
-                        }
-                        else if(TourPlayerProfile.getPlayerNumber() == 2){
-                            player2.setText("Player 2 : " + TourPlayerProfile.getPlayerName() + " his cash: " + TourPlayerProfile.getCash() + "$" + " standing on: " + actualProperty.getNameProperty());
-                        }
-                        else if(TourPlayerProfile.getPlayerNumber() == 3){
-                            player3.setText("Player 3 : " + TourPlayerProfile.getPlayerName() + " his cash: " + TourPlayerProfile.getCash() + "$" + " standing on: " + actualProperty.getNameProperty());
-                        }
-                        else if(TourPlayerProfile.getPlayerNumber() == 4){
-                            player4.setText("Player 4 : " + TourPlayerProfile.getPlayerName() + " his cash: " + TourPlayerProfile.getCash() + "$" + " standing on: " + actualProperty.getNameProperty());
-                        }
-                    });
-                    NoBuyPropertyBtn.setOnAction(actionEvent -> {
-                        BuyPoropertyInfo.setText("");
+                        buyingPopertyBox.setVisible(false);
                         readyTour.setVisible(true);
-                        BuyPropertyBtn.setVisible(false);
-                        NoBuyPropertyBtn.setVisible(false);
-                    });
+                    }
                 }
                 else if(propertiesList.get(position-1).getOwnerID() == TourPlayerProfile.getPlayerNumber()){
                     BuyPropertyBtn.setVisible(false);
