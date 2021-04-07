@@ -92,24 +92,30 @@ public class Session extends Thread {
                 String clientResponse = socketIn.readUTF();
                 if(clientResponse.startsWith("PlayerTourReady")){
                     if(clientResponse.length() > 15){
+                        int prisionDecion = Character.getNumericValue(clientResponse.charAt(22));
+                        int prisionBuy = Character.getNumericValue(clientResponse.charAt(24));
+                        int propBuy = Character.getNumericValue(clientResponse.charAt(26));
+                        if(prisionDecion != 0){
+                            prisonDecisionUpdate(socketPlayers,playerTourIndex);
+                            System.out.println("Player is in jail!");
+                        }
+                        if(prisionBuy != 0){
+                            prisonPayFine(socketPlayers,playerTourIndex);
+                        }
 //                        char houseBought = clientResponse.charAt(16);
                         String playerMove = clientResponse.substring(30);
-                        int propBuy = Character.getNumericValue(clientResponse.charAt(26));
-                        System.out.println(propBuy);
                         if (propBuy != 0){
                             System.out.println("Player bought this property");
                             BuyPorpertyMessage(socketPlayers,playerMove);
                         }
 //                        char cardId = clientResponse.charAt(18);
-//                        char prisionDecion = clientResponse.charAt(22);
-//                        char prisionBuy = clientResponse.charAt(20);
+
 //                        System.out.println(houseBought);
 //                        System.out.println("prison decision: " + prisionDecion);
 //                        System.out.println("prison buy: " + prisionDecion);
 //                        System.out.println("cardId : " + cardId);
 //                        houseUpdate(socketPlayers,houseBought,playerTourIndex);
 //                        cardMoveSend(socketPlayers,cardId,playerTourIndex);
-//                        prisonDecisionUpdate(socketPlayers,prisionDecion,prisionBuy,playerTourIndex);
                         updateMove(socketPlayers,playerMove);
                     }
                     System.out.println(clientResponse);
@@ -185,12 +191,26 @@ public class Session extends Thread {
         }
     }
 
-    public void prisonDecisionUpdate(ArrayList<Socket> socketPlayers,char prisonChar,char prisonBuy,int playerindex){
+    public void prisonPayFine(ArrayList<Socket> socketPlayers,int playerindex){
         try{
             for(Socket s : socketPlayers){
                 if(s != client){
                     DataOutputStream socketOut = new DataOutputStream(s.getOutputStream());
-                    socketOut.writeUTF("PrisonDecision " + prisonChar + " " + playerindex + " " + prisonBuy);
+                    socketOut.writeUTF("PrisonPayFine " + playerindex);
+                }
+            }
+        }
+        catch(Exception ex){
+            System.out.println("Error sending info about start game: " + ex.getMessage());
+        }
+    }
+
+    public void prisonDecisionUpdate(ArrayList<Socket> socketPlayers,int playerindex){
+        try{
+            for(Socket s : socketPlayers){
+                if(s != client){
+                    DataOutputStream socketOut = new DataOutputStream(s.getOutputStream());
+                    socketOut.writeUTF("InPrison " + playerindex );
                 }
             }
         }
