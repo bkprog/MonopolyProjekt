@@ -60,6 +60,7 @@ public class Client2 extends Application {
     ImageView pawnView4 = new ImageView(pawnPlayer4);
     VBox panelOponents = new VBox();
     VBox panelTourPlayer = new VBox();
+    VBox panelTourPlayerInJail = new VBox();
     VBox box = new VBox();
     Button dicing = new Button("Dice!");
     Button readyTour = new Button("Ready");
@@ -78,6 +79,8 @@ public class Client2 extends Application {
     VBox propertyInfo = new VBox();
     ArrayList <BlueRedCards> questionMarkList = initializeRandomCards();
     int buyPropertyMessage = 0;
+    int isInPrisonMessage = 0;
+    int playerPayedFinePrison = 0;
 
     public void startTask(){
         Runnable task = new Runnable() {
@@ -785,6 +788,110 @@ public class Client2 extends Application {
 //            panelOponents.setVisible(false);
             GetReadyTourButton.setVisible(false);
         });
+    }
+
+    public void TourPlayerInJailScene(){
+        panelTourPlayerInJail.setAlignment(Pos.CENTER);
+        Label prisonInfo1 = new Label("You are in prison!");
+        Label prisonInfo2 = new Label("You have two options Dice or Pay 400$");
+        Label prisonInfo3 = new Label("Dice - if you thow double you will get out jail");
+        Label prisonInfo4 = new Label("Pay - you will pay 400$ and you will get out of jail");
+        Label prisonInfo5 = new Label("");
+        prisonInfo5.setTextFill(Color.RED);
+        Label prisonInfo6 = new Label("");
+        prisonInfo5.setVisible(false);
+        prisonInfo6.setVisible(false);
+        HBox decisionButtons = new HBox();
+        HBox diceImages = new HBox();
+        Image dice1image = new Image("/images/Dice/dice0.png");
+        Image dice2image = new Image("/images/Dice/dice0.png");
+        ImageView dice1ViewPrison = new ImageView(dice1image);
+        ImageView dice2ViewPrison = new ImageView(dice2image);
+        dice1ViewPrison.setFitHeight(50);
+        dice1ViewPrison.setFitWidth(50);
+        dice2ViewPrison.setFitHeight(50);
+        dice2ViewPrison.setFitWidth(50);
+        diceImages.setAlignment(Pos.CENTER);
+        diceImages.setSpacing(50);
+        decisionButtons.setSpacing(70);
+        Button diceButton = new Button("Dice!");
+        Button payButton = new Button("Pay!");
+        decisionButtons.getChildren().addAll(diceButton,payButton);
+
+        ObservableList componentsList = panelTourPlayerInJail.getChildren();
+        componentsList.addAll(prisonInfo1,prisonInfo2,prisonInfo3,prisonInfo4,prisonInfo5,diceImages,prisonInfo6,readyTour);
+
+        payButton.setOnAction(actionEvent -> {
+            if(TourPlayerProfile.getCash() >= 400){
+                Properties actualProperty = propertiesList.get(TourPlayerProfile.getPropertyId()-1);
+                payButton.setVisible(false);
+                diceButton.setVisible(false);
+                prisonInfo6.setText("Great you have payed 400$ and now you are free");
+                TourPlayerProfile.setCash(TourPlayerProfile.getCash() - 400);
+                TourPlayerProfile.setInJail(false);
+
+                if(TourPlayerProfile.getPlayerNumber() == 1){
+                    player1.setText("Player 1 : " + TourPlayerProfile.getPlayerName() + " his cash: " + TourPlayerProfile.getCash() + "$" + " standing on: " + actualProperty.getNameProperty());
+                }
+                else if(TourPlayerProfile.getPlayerNumber() == 2){
+                    player2.setText("Player 2 : " + TourPlayerProfile.getPlayerName() + " his cash: " + TourPlayerProfile.getCash() + "$" + " standing on: " + actualProperty.getNameProperty());
+                }
+                else if(TourPlayerProfile.getPlayerNumber() == 3){
+                    player3.setText("Player 3 : " + TourPlayerProfile.getPlayerName() + " his cash: " + TourPlayerProfile.getCash() + "$" + " standing on: " + actualProperty.getNameProperty());
+                }
+                else if(TourPlayerProfile.getPlayerNumber() == 4){
+                    player4.setText("Player 4 : " + TourPlayerProfile.getPlayerName() + " his cash: " + TourPlayerProfile.getCash() + "$" + " standing on: " + actualProperty.getNameProperty());
+                }
+
+                readyTour.setVisible(true);
+                playerPayedFinePrison = 1;
+                isInPrisonMessage = 0;
+            }
+            else{
+                prisonInfo5.setText("You don't have 400$ you have to Dice!");
+            }
+        });
+
+        diceButton.setOnAction(actionEvent -> {
+            dice = new Dice();
+            int dice1 = dice.throwfunction();
+            int dice2 = dice.throwfunction();
+            Image dicePrison1 = new Image("/images/Dice/" + dice1 + ".png");
+            Image dicePrison2 = new Image("/images/Dice/" + dice2 + ".png");
+
+            dice1ViewPrison.setImage(dicePrison1);
+            dice2ViewPrison.setImage(dicePrison2);
+
+            if(dice1 == dice2){
+                prisonInfo6.setText("You have Double and now you are free");
+                TourPlayerProfile.setInJail(false);
+                isInPrisonMessage = 0;
+            }
+            else {
+                prisonInfo6.setText("Good luck next time!");
+                isInPrisonMessage = 1;
+            }
+
+            payButton.setVisible(false);
+            diceButton.setVisible(false);
+            readyTour.setVisible(true);
+            playerPayedFinePrison = 0;
+        });
+
+        readyTour.setOnAction(actionEvent -> {
+            PlayerToursReady++;
+            SendPlayerTourReadyCurrentPlayer();
+            if(PlayerToursReady == NubmerOfPlayersInGame){
+                SendAllPlayersReady();
+                PlayerToursReady = 0;
+                diceedInfo.setText("");
+                DiceBox.setVisible(false);
+            }
+//            panelTourPlayer.setVisible(false);
+            readyTour.setVisible(false);
+        });
+
+
     }
 
     public static void createConnection(){
