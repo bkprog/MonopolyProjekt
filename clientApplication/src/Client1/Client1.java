@@ -81,6 +81,13 @@ public class Client1 extends Application {
     int buyPropertyMessage = 0;
     int isInPrisonMessage = 0;
     int playerPayedFinePrison = 0;
+    Button diceButtonPrison = new Button("Dice!");
+    Button payButton = new Button("Pay!");
+    Button PrisonReady = new Button("Ready");
+    Image dice1image = new Image("/images/Dice/dice0.png");
+    Image dice2image = new Image("/images/Dice/dice0.png");
+    ImageView dice1ViewPrison = new ImageView(dice1image);
+    ImageView dice2ViewPrison = new ImageView(dice2image);
 
     public void startTask(){
         Runnable task = new Runnable() {
@@ -216,7 +223,11 @@ public class Client1 extends Application {
 
                             if(playerNickname.equals(tplayerNick)){
                                 if(TourPlayerProfile.getIsInJail()){
-
+                                    PrisonReady.setVisible(false);
+                                    payButton.setVisible(true);
+                                    diceButtonPrison.setVisible(true);
+                                    panelTourPlayerInJail.setVisible(true);
+                                    readyTour.setVisible(false);
                                 }
                                 else{
                                     viewDice1.setImage(blankDice);
@@ -466,13 +477,13 @@ public class Client1 extends Application {
 
         panelOponents.setVisible(false);
         panelTourPlayer.setVisible(false);
-        //panelTourPlayerInJail.setVisible(false);
+        panelTourPlayerInJail.setVisible(false);
 
         grp.add(MapPane,0,0);
         grp.add(box,1,0);
         grp.add(panelOponents,1,0);
         grp.add(panelTourPlayer,1,0);
-        //grp.add(panelTourPlayerInJail,1,0);
+        grp.add(panelTourPlayerInJail,1,0);
         grp.setAlignment(Pos.CENTER);
         grp.setHgap(50);
         box.setSpacing(10);
@@ -501,7 +512,7 @@ public class Client1 extends Application {
         });
         oponetsMoveScene();
         TourPlayerScene();
-        //TourPlayerInJailScene();
+        TourPlayerInJailScene();
         box.setAlignment(Pos.CENTER);
         Scene scena = new Scene(grp,1200,800);
         stage.setScene(scena);
@@ -597,6 +608,7 @@ public class Client1 extends Application {
             }
             else{
                 if(position == 31){
+                    position = 11;
                     if(TourPlayerProfile.getPlayerNumber() == 1){
                         pawnView1.setX(cordsPlayersMap.getCorXProperty(position,1));
                         pawnView1.setY(cordsPlayersMap.getCorYProperty(position,1));
@@ -613,9 +625,10 @@ public class Client1 extends Application {
                         pawnView4.setX(cordsPlayersMap.getCorXProperty(position,4));
                         pawnView4.setY(cordsPlayersMap.getCorYProperty(position,4));
                     }
-                    propertyView.setImage(blankProperty);
+                    Image prisonCard = new Image("/images/Properties/property-11j.png");
+                    propertyView.setImage(prisonCard);
                     propertyInformation.setText("You go to jail!");
-                    position = 11;
+                    TourPlayerProfile.setInJail(true);
                 }
                 else if(position != 1 &&
                         position != 11 &&
@@ -745,6 +758,19 @@ public class Client1 extends Application {
                 readyTour.setVisible(true);
             }
 
+            if(TourPlayerProfile.getPlayerNumber() == 1){
+                player1.setText("Player 1 : " + TourPlayerProfile.getPlayerName() + " his cash: " + TourPlayerProfile.getCash() + "$" + " standing on: " + actualProperty.getNameProperty());
+            }
+            else if(TourPlayerProfile.getPlayerNumber() == 2){
+                player2.setText("Player 2 : " + TourPlayerProfile.getPlayerName() + " his cash: " + TourPlayerProfile.getCash() + "$" + " standing on: " + actualProperty.getNameProperty());
+            }
+            else if(TourPlayerProfile.getPlayerNumber() == 3){
+                player3.setText("Player 3 : " + TourPlayerProfile.getPlayerName() + " his cash: " + TourPlayerProfile.getCash() + "$" + " standing on: " + actualProperty.getNameProperty());
+            }
+            else if(TourPlayerProfile.getPlayerNumber() == 4){
+                player4.setText("Player 4 : " + TourPlayerProfile.getPlayerName() + " his cash: " + TourPlayerProfile.getCash() + "$" + " standing on: " + actualProperty.getNameProperty());
+            }
+
 
             dicing.setVisible(false);
             String dd = "You have diced: " + dice1 + " and " + dice2 + " sum of dice: " + (dice1+dice2);
@@ -794,6 +820,7 @@ public class Client1 extends Application {
     }
 
     public void TourPlayerInJailScene(){
+        PrisonReady.setVisible(false);
         panelTourPlayerInJail.setAlignment(Pos.CENTER);
         Label prisonInfo1 = new Label("You are in prison!");
         Label prisonInfo2 = new Label("You have two options Dice or Pay 400$");
@@ -806,10 +833,7 @@ public class Client1 extends Application {
         prisonInfo6.setVisible(false);
         HBox decisionButtons = new HBox();
         HBox diceImages = new HBox();
-        Image dice1image = new Image("/images/Dice/dice0.png");
-        Image dice2image = new Image("/images/Dice/dice0.png");
-        ImageView dice1ViewPrison = new ImageView(dice1image);
-        ImageView dice2ViewPrison = new ImageView(dice2image);
+        diceImages.getChildren().addAll(dice1ViewPrison,dice2ViewPrison);
         dice1ViewPrison.setFitHeight(50);
         dice1ViewPrison.setFitWidth(50);
         dice2ViewPrison.setFitHeight(50);
@@ -817,36 +841,38 @@ public class Client1 extends Application {
         diceImages.setAlignment(Pos.CENTER);
         diceImages.setSpacing(50);
         decisionButtons.setSpacing(70);
-        Button diceButton = new Button("Dice!");
-        Button payButton = new Button("Pay!");
-        decisionButtons.getChildren().addAll(diceButton,payButton);
+        diceImages.setVisible(true);
+        decisionButtons.getChildren().addAll(diceButtonPrison,payButton);
+        decisionButtons.setVisible(true);
+        decisionButtons.setAlignment(Pos.CENTER);
+        panelTourPlayerInJail.setSpacing(10);
 
         ObservableList componentsList = panelTourPlayerInJail.getChildren();
-        componentsList.addAll(prisonInfo1,prisonInfo2,prisonInfo3,prisonInfo4,prisonInfo5,diceImages,prisonInfo6,readyTour);
+        componentsList.addAll(prisonInfo1,prisonInfo2,prisonInfo3,prisonInfo4,prisonInfo5,decisionButtons,diceImages,prisonInfo6,PrisonReady);
 
         payButton.setOnAction(actionEvent -> {
             if(TourPlayerProfile.getCash() >= 400){
-                Properties actualProperty = propertiesList.get(TourPlayerProfile.getPropertyId()-1);
+                //Properties actualProperty = propertiesList.get(TourPlayerProfile.getPropertyId()-1);
                 payButton.setVisible(false);
-                diceButton.setVisible(false);
+                diceButtonPrison.setVisible(false);
                 prisonInfo6.setText("Great you have payed 400$ and now you are free");
                 TourPlayerProfile.setCash(TourPlayerProfile.getCash() - 400);
                 TourPlayerProfile.setInJail(false);
 
                 if(TourPlayerProfile.getPlayerNumber() == 1){
-                    player1.setText("Player 1 : " + TourPlayerProfile.getPlayerName() + " his cash: " + TourPlayerProfile.getCash() + "$" + " standing on: " + actualProperty.getNameProperty());
+                    player1.setText("Player 1 : " + TourPlayerProfile.getPlayerName() + " his cash: " + TourPlayerProfile.getCash() + "$" + " standing on: " + propertiesList.get(10).getNameProperty());
                 }
                 else if(TourPlayerProfile.getPlayerNumber() == 2){
-                    player2.setText("Player 2 : " + TourPlayerProfile.getPlayerName() + " his cash: " + TourPlayerProfile.getCash() + "$" + " standing on: " + actualProperty.getNameProperty());
+                    player2.setText("Player 2 : " + TourPlayerProfile.getPlayerName() + " his cash: " + TourPlayerProfile.getCash() + "$" + " standing on: " + propertiesList.get(10).getNameProperty());
                 }
                 else if(TourPlayerProfile.getPlayerNumber() == 3){
-                    player3.setText("Player 3 : " + TourPlayerProfile.getPlayerName() + " his cash: " + TourPlayerProfile.getCash() + "$" + " standing on: " + actualProperty.getNameProperty());
+                    player3.setText("Player 3 : " + TourPlayerProfile.getPlayerName() + " his cash: " + TourPlayerProfile.getCash() + "$" + " standing on: " + propertiesList.get(10).getNameProperty());
                 }
                 else if(TourPlayerProfile.getPlayerNumber() == 4){
-                    player4.setText("Player 4 : " + TourPlayerProfile.getPlayerName() + " his cash: " + TourPlayerProfile.getCash() + "$" + " standing on: " + actualProperty.getNameProperty());
+                    player4.setText("Player 4 : " + TourPlayerProfile.getPlayerName() + " his cash: " + TourPlayerProfile.getCash() + "$" + " standing on: " + propertiesList.get(10).getNameProperty());
                 }
 
-                readyTour.setVisible(true);
+                PrisonReady.setVisible(true);
                 playerPayedFinePrison = 1;
                 isInPrisonMessage = 0;
             }
@@ -855,12 +881,12 @@ public class Client1 extends Application {
             }
         });
 
-        diceButton.setOnAction(actionEvent -> {
+        diceButtonPrison.setOnAction(ev ->{
             dice = new Dice();
             int dice1 = dice.throwfunction();
             int dice2 = dice.throwfunction();
-            Image dicePrison1 = new Image("/images/Dice/" + dice1 + ".png");
-            Image dicePrison2 = new Image("/images/Dice/" + dice2 + ".png");
+            Image dicePrison1 = new Image("/images/Dice/dice" + dice1 + ".png");
+            Image dicePrison2 = new Image("/images/Dice/dice" + dice2 + ".png");
 
             dice1ViewPrison.setImage(dicePrison1);
             dice2ViewPrison.setImage(dicePrison2);
@@ -875,13 +901,14 @@ public class Client1 extends Application {
                 isInPrisonMessage = 1;
             }
 
+            PrisonReady.setVisible(true);
             payButton.setVisible(false);
-            diceButton.setVisible(false);
-            readyTour.setVisible(true);
+            diceButtonPrison.setVisible(false);
             playerPayedFinePrison = 0;
         });
 
-        readyTour.setOnAction(actionEvent -> {
+
+        PrisonReady.setOnAction(actionEvent -> {
             PlayerToursReady++;
             SendPlayerTourReadyCurrentPlayer();
             if(PlayerToursReady == NubmerOfPlayersInGame){
@@ -891,7 +918,7 @@ public class Client1 extends Application {
                 DiceBox.setVisible(false);
             }
 //            panelTourPlayer.setVisible(false);
-            readyTour.setVisible(false);
+            PrisonReady.setVisible(false);
         });
 
 
