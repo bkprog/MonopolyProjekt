@@ -59,6 +59,9 @@ public class Session extends Thread {
                 //sprawdza czy wszyscy gracze sa gotowi do gry
                 BroadcastReady(socketPlayers,numberOfPlayersInGame);
 
+                propertiesList = setAllProperties(propertiesList);
+                sendSettingPropertiesArray(socketPlayers,propertiesList);
+
 //                //wysyła informacje o iliści graczy w grze
                 sendInformationOfNumberOfPlayers(socketPlayers);
 //
@@ -68,8 +71,7 @@ public class Session extends Thread {
                     BroadcastReadyToOtherClients(socketPlayers,readyClient);
                 }
 
-                propertiesList = setAllProperties(propertiesList);
-                sendSettingPropertiesArray(socketPlayers,propertiesList);
+
 //                setStartGame(socketPlayers,propertiesList,playersList);
                 sendSettingsPlayerArray(socketPlayers,playersList);
 

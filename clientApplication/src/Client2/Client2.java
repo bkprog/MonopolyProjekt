@@ -894,6 +894,7 @@ public class Client2 extends Application {
 
     }
 
+
     public static void createConnection(){
         try {
             socket = new Socket("localhost", 2115);

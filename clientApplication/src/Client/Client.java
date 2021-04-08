@@ -90,6 +90,9 @@ public class Client extends Application {
     ImageView dice2ViewPrison = new ImageView(dice2image);
     Label prisonInfo5 = new Label("");
     Label prisonInfo6 = new Label("");
+    GridMapImages gridMapImages;
+    GridPane propertiesMap = new GridPane();
+    boolean propertiesMapFlag = true;
 
     public void startTask(){
         Runnable task = new Runnable() {
@@ -238,6 +241,12 @@ public class Client extends Application {
                             }
                         }
                         else if(respond.startsWith("StartGame") && playersReady == NubmerOfPlayersInGame){
+                            if(propertiesMapFlag){
+                                gridMapImages = new GridMapImages(propertiesMap,propertiesList,playersList);
+                                propertiesMap = gridMapImages.getPanelMapGrid();
+                                propertiesMapFlag = false;
+                            }
+
                             int playerId = Integer.parseInt(respond.substring(10));
                             TourPlayerProfile = playersList.get(playerId-1);
                             String tplayerNick = playersList.get(playerId-1).getPlayerName();
@@ -480,7 +489,6 @@ public class Client extends Application {
     }
 
     public void showGame(){
-
         readyButton.setVisible(false);
         readyCheckInfo.setVisible(false);
 
@@ -517,6 +525,7 @@ public class Client extends Application {
         grp.add(panelOponents,1,0);
         grp.add(panelTourPlayer,1,0);
         grp.add(panelTourPlayerInJail,1,0);
+        grp.add(propertiesMap,2,0);
         grp.setAlignment(Pos.CENTER);
         grp.setHgap(50);
         box.setSpacing(10);
