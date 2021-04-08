@@ -91,6 +91,7 @@ public class Client1 extends Application {
     Label prisonInfo5 = new Label("");
     Label prisonInfo6 = new Label("");
     GridMapImages gridMapImages;
+    GridMapImages gridMapImages1;
     GridPane propertiesMap = new GridPane();
     boolean propertiesMapFlag = true;
 
@@ -128,6 +129,9 @@ public class Client1 extends Application {
                             TourPlayerProfile.setCash(TourPlayerProfile.getCash() - propertiesList.get(propId-1).getBuyCost());
                             System.out.println("Player: " + TourPlayerProfile.getPlayerName() + " Bought property: " + propertiesList.get(propId-1).getNameProperty());
                             propertiesList.get(propId-1).setOwnerID(TourPlayerProfile.getPlayerNumber());
+//                            gridMapImages.setOwnerGrid(propertiesList,playersList);
+                            gridMapImages = new GridMapImages(propertiesMap,propertiesList,playersList);
+                            propertiesMap = gridMapImages.getPanelMapGrid();
                         }
                         else if(respond.startsWith("InPrison ")){
                             //Player oponent = playersList.get(Integer.parseInt(respond.substring(9)));
@@ -241,6 +245,7 @@ public class Client1 extends Application {
                             }
                         }
                         else if(respond.startsWith("StartGame") && playersReady == NubmerOfPlayersInGame){
+
                             if(propertiesMapFlag){
                                 gridMapImages = new GridMapImages(propertiesMap,propertiesList,playersList);
                                 propertiesMap = gridMapImages.getPanelMapGrid();
@@ -731,6 +736,9 @@ public class Client1 extends Application {
                             else if(TourPlayerProfile.getPlayerNumber() == 4){
                                 player4.setText("Player 4 : " + TourPlayerProfile.getPlayerName() + " his cash: " + TourPlayerProfile.getCash() + "$" + " standing on: " + actualProperty.getNameProperty());
                             }
+
+                            gridMapImages = new GridMapImages(propertiesMap,propertiesList,playersList);
+                            propertiesMap = gridMapImages.getPanelMapGrid();
                         });
                         NoBuyPropertyBtn.setOnAction(actionEvent -> {
                             BuyPoropertyInfo.setText("");
