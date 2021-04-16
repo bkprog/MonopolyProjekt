@@ -24,6 +24,7 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.Iterator;
 
 
 public class Client extends Application {
@@ -168,15 +169,12 @@ public class Client extends Application {
                                     Properties actualPropertyPlayer = propertiesList.get(newPositionPlayer-1);
                                     if(newPositionPlayer == 6 || newPositionPlayer == 16 || newPositionPlayer == 26 || newPositionPlayer == 36) {
                                         int ownedStations = 0;
-                                        int oponentId = oponent.getPlayerNumber();
-                                        int owner6 = propertiesList.get(7).getOwnerID();
-                                        int owner16 = propertiesList.get(17).getOwnerID();
-                                        int owner26 = propertiesList.get(27).getOwnerID();
-                                        int owner36 = propertiesList.get(37).getOwnerID();
-                                        int stationOwners[] = {owner6, owner16, owner26, owner36};
-                                        for (int i : stationOwners) {
-                                            if (i == oponentId)
-                                                ownedStations++;
+                                        for(Properties prop : propertiesList){
+                                            if(prop.getIDproperty() == 6 || prop.getIDproperty() == 16 ||prop.getIDproperty() == 26 ||prop.getIDproperty() == 36){
+                                                if(prop.getOwnerID() == oponent.getPlayerNumber()){
+                                                    ownedStations++;
+                                                }
+                                            }
                                         }
                                         if (ownedStations == 1) {
                                             TourPlayerProfile.setCash(TourPlayerProfile.getCash() - actualPropertyPlayer.getPaymentForStay());
@@ -200,12 +198,12 @@ public class Client extends Application {
                                         int sumDices = newPositionPlayer - previousPosition;
                                         System.out.println(sumDices);
                                         int ownedPW = 0;
-                                        int owner13 = propertiesList.get(14).getOwnerID();
-                                        int owner29 = propertiesList.get(29).getOwnerID();
-                                        int ownersPW[] = {owner13,owner29};
-                                        for(int i : ownersPW){
-                                            if(oponent.getPlayerNumber() == i)
-                                                ownedPW++;
+                                        for(Properties prop : propertiesList){
+                                            if(prop.getIDproperty() == 13 || prop.getIDproperty() == 29){
+                                                if(prop.getOwnerID() == oponent.getPlayerNumber()){
+                                                    ownedPW++;
+                                                }
+                                            }
                                         }
                                         if(ownedPW == 1){
                                             int fine = sumDices * 10;
@@ -459,6 +457,7 @@ public class Client extends Application {
                                 //System.out.println(property.getIDproperty() + " name: " + property.getNameProperty());
                                 property = null;
                                 property = new Properties();
+                                ifMorePropertiesThan40DeleteUnsessesery();
                             }
                         }
 
@@ -817,16 +816,15 @@ public class Client extends Application {
                         Properties actualPropertyPlayer = propertiesList.get(position-1);
                         if(position == 6 || position == 16 || position == 26 || position == 36){
                             int ownedStations = 0;
-                            int oponentId = oponent.getPlayerNumber();
-                            int owner6 = propertiesList.get(7).getOwnerID();
-                            int owner16 = propertiesList.get(17).getOwnerID();
-                            int owner26 = propertiesList.get(27).getOwnerID();
-                            int owner36 = propertiesList.get(37).getOwnerID();
-                            int stationOwners[] = {owner6,owner16,owner26,owner36};
-                            for(int i : stationOwners){
-                                if(i == oponentId)
-                                    ownedStations++;
+                            for(Properties prop : propertiesList){
+                                if(prop.getIDproperty() == 6 || prop.getIDproperty() == 16 ||prop.getIDproperty() == 26 ||prop.getIDproperty() == 36){
+                                    if(prop.getOwnerID() == oponent.getPlayerNumber()){
+                                        ownedStations++;
+                                    }
+                                }
                             }
+                            System.out.println("This property owns: " + actualPropertyPlayer.getOwnerID());
+                            System.out.println("This player owned Stations: " + ownedStations);
                             if(ownedStations == 1){
                                 TourPlayerProfile.setCash(TourPlayerProfile.getCash() - actualPropertyPlayer.getPaymentForStay());
                                 oponent.setCash(oponent.getCash() + actualPropertyPlayer.getPaymentForStay());
@@ -851,12 +849,12 @@ public class Client extends Application {
                         else if(position == 13 || position == 29){
                             int sumDices = dice1 + dice2;
                             int ownedPW = 0;
-                            int owner13 = propertiesList.get(14).getOwnerID();
-                            int owner29 = propertiesList.get(29).getOwnerID();
-                            int ownersPW[] = {owner13,owner29};
-                            for(int i : ownersPW){
-                                if(oponent.getPlayerNumber() == i)
-                                    ownedPW++;
+                            for(Properties prop : propertiesList){
+                                if(prop.getIDproperty() == 13 || prop.getIDproperty() == 29){
+                                    if(prop.getOwnerID() == oponent.getPlayerNumber()){
+                                        ownedPW++;
+                                    }
+                                }
                             }
                             if(ownedPW == 1){
                                 int fine = sumDices * 10;
@@ -1212,5 +1210,18 @@ public class Client extends Application {
                 pawnView4.setY(cordsPlayersMap.getCorYProperty(actualPlayerProperty.getIDproperty(),p.getPlayerNumber()));
             }
         }
+    }
+
+    public void ifMorePropertiesThan40DeleteUnsessesery(){
+        Iterator itr = propertiesList.iterator();
+        int i = 1;
+        while(itr.hasNext()){
+            Properties x = (Properties)itr.next();
+            if(i > 40){
+                itr.remove();
+            }
+            i++;
+        }
+        System.out.println("Size of properties list is: " + propertiesList.size());
     }
 }
