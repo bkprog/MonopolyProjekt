@@ -97,6 +97,8 @@ public class Client1 extends Application {
     GridPane propertiesMap = new GridPane();
     boolean propertiesMapFlag = true;
     boolean diceFlag = true;
+    int passedStart = 0;
+    char cardNumber = '0';
 
     public void startTask(){
         Runnable task = new Runnable() {
@@ -127,6 +129,34 @@ public class Client1 extends Application {
                         }
                         else if(respond.startsWith("You"))
                             clientConnected.setText(respond);
+                        else if(respond.startsWith("BlueRedCard ")){
+                            int cardNumber = card4ClientFromServer(respond.charAt(12));
+                            int passedStart = Character.getNumericValue(respond.charAt(14));
+                            if(cardNumber == 2){
+                                TourPlayerProfile.setCash(TourPlayerProfile.getCash() + 100);
+                            }
+                            else if(cardNumber == 4){
+                                TourPlayerProfile.setCash(TourPlayerProfile.getCash() + 300);
+                            }
+                            else if(cardNumber == 6){
+                                TourPlayerProfile.setCash(TourPlayerProfile.getCash() - 40);
+                            }
+                            else if(cardNumber == 8){
+                                TourPlayerProfile.setCash(TourPlayerProfile.getCash() - 300);
+                            }
+                            else if(cardNumber == 10){
+                                TourPlayerProfile.setCash(TourPlayerProfile.getCash() + 200);
+                            }
+                            else if(cardNumber == 14){
+                                TourPlayerProfile.setCash(TourPlayerProfile.getCash() - 30);
+                            }
+                            else if(cardNumber == 15){
+                                TourPlayerProfile.setCash(TourPlayerProfile.getCash() + 400);
+                            }
+                            if (passedStart == 1){
+                                TourPlayerProfile.setCash(TourPlayerProfile.getCash() + 400);
+                            }
+                        }
                         else if(respond.startsWith("Purchase Property ")){
                             int propId = Integer.parseInt(respond.substring(18));
                             TourPlayerProfile.setCash(TourPlayerProfile.getCash() - propertiesList.get(propId-1).getBuyCost());
@@ -657,11 +687,12 @@ public class Client1 extends Application {
         dicing.setOnAction(e->{
             buyingPopertyBox.setVisible(true);
             int randomCard = dice.throwQuestionMarkCard();
+
             dice = new Dice();
             int dice1 = dice.throwfunction();
             int dice2 = dice.throwfunction();
 
-            position = position + dice1 + dice2;
+            position = 3;//position + dice1 + dice2;
 
             if(position > 40){
                 position = position - 40;
@@ -728,14 +759,166 @@ public class Client1 extends Application {
                     String Cardname = propertiesList.get(position-1).getNameProperty();
                     System.out.println(propertiesList.get(position-1).getNameProperty());
                     if(Cardname.startsWith("Red")){
+                        cardNumber = cardId4Server(randomCard);
                         propertyInformation.setText("Red Questionmark Field!");
                         Image RedQuestionMarkCard = new Image("/images/RedBlueCards/RedCards/" + randomCard + ".png");
                         propertyView.setImage(RedQuestionMarkCard);
+                        if(randomCard == 1){
+                            position = 15;
+                        }
+                        else if(randomCard == 2){
+                            TourPlayerProfile.setCash(TourPlayerProfile.getCash() + 100);
+                        }
+                        else if(randomCard == 3){
+                            int destination = 36;
+                            if(position >= destination){
+                                System.out.println("Przechodzisz przez start dostajesz 400$");
+                                TourPlayerProfile.setCash(TourPlayerProfile.getCash() + 400);
+                                passedStart = 1;
+                            }
+                            position = destination;
+                        }
+                        else if(randomCard == 4){
+                            TourPlayerProfile.setCash(TourPlayerProfile.getCash() + 300);
+                        }
+                        else if(randomCard == 5){
+                            int destination = 25;
+                            if(position >= destination){
+                                System.out.println("Przechodzisz przez start dostajesz 400$");
+                                TourPlayerProfile.setCash(TourPlayerProfile.getCash() + 400);
+                                passedStart = 1;
+                            }
+                            position = destination;
+                        }
+                        else if(randomCard == 6){
+                            TourPlayerProfile.setCash(TourPlayerProfile.getCash() - 40);
+                        }
+                        else if(randomCard == 7){
+                            int destination = 7;
+                            if(position >= destination){
+                                System.out.println("Przechodzisz przez start dostajesz 400$");
+                                TourPlayerProfile.setCash(TourPlayerProfile.getCash() + 400);
+                                passedStart = 1;
+                            }
+                            position = destination;
+                        }
+                        else if(randomCard == 8){
+                            TourPlayerProfile.setCash(TourPlayerProfile.getCash() - 300);
+                        }
+                        else if(randomCard == 9){
+                            position = 31;
+                        }
+                        else if(randomCard == 10){
+                            TourPlayerProfile.setCash(TourPlayerProfile.getCash() + 200);
+                        }
+                        else if(randomCard == 11){
+                            position = 1;
+                        }
+                        else if(randomCard == 12){
+                            position = position - 3;
+                            if(position == 0)
+                                position = 40;
+                        }
+                        else if(randomCard == 13){
+                            position = position + 3;
+                            if(position > 40){
+                                position = position - 40;
+                                TourPlayerProfile.setCash(TourPlayerProfile.getCash() + 400);
+                                info.setText("You passed Start and get reward 400$!");
+                                TourPlayerProfile.setPropertyId(position);
+                                passedStart = 1;
+                            }
+                        }
+                        else if(randomCard == 14){
+                            TourPlayerProfile.setCash(TourPlayerProfile.getCash() - 30);
+                        }
+                        else if(randomCard == 15){
+                            TourPlayerProfile.setCash(TourPlayerProfile.getCash() + 400);
+                        }
+                        else if(randomCard == 16){
+                            position = 40;
+                        }
                     }
                     else if(Cardname.startsWith("Blue")){
+                        cardNumber = cardId4Server(randomCard);
                         propertyInformation.setText("Blue Questionmark Field!");
                         Image BlueQuestionMarkCard = new Image("/images/RedBlueCards/BlueCards/" + randomCard + ".png");
                         propertyView.setImage(BlueQuestionMarkCard);
+                        if(randomCard == 1){
+                            position = 15;
+                        }
+                        else if(randomCard == 2){
+                            TourPlayerProfile.setCash(TourPlayerProfile.getCash() + 100);
+                        }
+                        else if(randomCard == 3){
+                            int destination = 36;
+                            if(position >= destination){
+                                System.out.println("Przechodzisz przez start dostajesz 400$");
+                                TourPlayerProfile.setCash(TourPlayerProfile.getCash() + 400);
+                                passedStart = 1;
+                            }
+                            position = destination;
+                        }
+                        else if(randomCard == 4){
+                            TourPlayerProfile.setCash(TourPlayerProfile.getCash() + 300);
+                        }
+                        else if(randomCard == 5){
+                            int destination = 25;
+                            if(position >= destination){
+                                System.out.println("Przechodzisz przez start dostajesz 400$");
+                                TourPlayerProfile.setCash(TourPlayerProfile.getCash() + 400);
+                                passedStart = 1;
+                            }
+                            position = destination;
+                        }
+                        else if(randomCard == 6){
+                            TourPlayerProfile.setCash(TourPlayerProfile.getCash() - 40);
+                        }
+                        else if(randomCard == 7){
+                            int destination = 7;
+                            if(position >= destination){
+                                System.out.println("Przechodzisz przez start dostajesz 400$");
+                                TourPlayerProfile.setCash(TourPlayerProfile.getCash() + 400);
+                                passedStart = 1;
+                            }
+                            position = destination;
+                        }
+                        else if(randomCard == 8){
+                            TourPlayerProfile.setCash(TourPlayerProfile.getCash() - 300);
+                        }
+                        else if(randomCard == 9){
+                            position = 31;
+                        }
+                        else if(randomCard == 10){
+                            TourPlayerProfile.setCash(TourPlayerProfile.getCash() + 200);
+                        }
+                        else if(randomCard == 11){
+                            position = 1;
+                        }
+                        else if(randomCard == 12){
+                            position = position - 3;
+                            if(position == 0)
+                                position = 40;
+                        }
+                        else if(randomCard == 13){
+                            position = position + 3;
+                            if(position > 40){
+                                position = position - 40;
+                                TourPlayerProfile.setCash(TourPlayerProfile.getCash() + 400);
+                                info.setText("You passed Start and get reward 400$!");
+                                TourPlayerProfile.setPropertyId(position);
+                                passedStart = 1;
+                            }
+                        }
+                        else if(randomCard == 14){
+                            TourPlayerProfile.setCash(TourPlayerProfile.getCash() - 30);
+                        }
+                        else if(randomCard == 15){
+                            TourPlayerProfile.setCash(TourPlayerProfile.getCash() + 400);
+                        }
+                        else if(randomCard == 16){
+                            position = 40;
+                        }
                     }
                     else{
                         propertyInformation.setText("You are ane not standing on Buyable property or payable");
@@ -745,10 +928,11 @@ public class Client1 extends Application {
             }
 
 
-
+            Properties actualNEWProperty = propertiesList.get(position-1);
             if(propertyBuyable(propertiesList.get(position-1).getNameProperty())){
                 if(propertiesList.get(position-1).getOwnerID() == 0){
-                    if(TourPlayerProfile.getCash() >= actualProperty.getBuyCost()){
+
+                    if(TourPlayerProfile.getCash() >= actualNEWProperty.getBuyCost()){
                         BuyPoropertyInfo.setText("Do You want to Buy this property?");
                         BuyPropertyBtn.setVisible(true);
                         NoBuyPropertyBtn.setVisible(true);
@@ -760,21 +944,21 @@ public class Client1 extends Application {
                             readyTour.setVisible(true);
                             BuyPropertyBtn.setVisible(false);
                             NoBuyPropertyBtn.setVisible(false);
-                            TourPlayerProfile.setCash(TourPlayerProfile.getCash() - actualProperty.getBuyCost());
-                            actualProperty.setOwnerID(TourPlayerProfile.getPlayerNumber());
-                            propertyInformation.setText("You have purchase " + actualProperty.getNameProperty() + " in country " + actualProperty.getCountryName() + " oponents will pay: " + actualProperty.getPaymentForStay() + "$");
+                            TourPlayerProfile.setCash(TourPlayerProfile.getCash() - actualNEWProperty.getBuyCost());
+                            actualNEWProperty.setOwnerID(TourPlayerProfile.getPlayerNumber());
+                            propertyInformation.setText("You have purchase " + actualNEWProperty.getNameProperty() + " in country " + actualNEWProperty.getCountryName() + " oponents will pay: " + actualNEWProperty.getPaymentForStay() + "$");
 
                             if(TourPlayerProfile.getPlayerNumber() == 1){
-                                player1.setText("Player 1 : " + TourPlayerProfile.getPlayerName() + " his cash: " + TourPlayerProfile.getCash() + "$" + " standing on: " + actualProperty.getNameProperty());
+                                player1.setText("Player 1 : " + TourPlayerProfile.getPlayerName() + " his cash: " + TourPlayerProfile.getCash() + "$" + " standing on: " + actualNEWProperty.getNameProperty());
                             }
                             else if(TourPlayerProfile.getPlayerNumber() == 2){
-                                player2.setText("Player 2 : " + TourPlayerProfile.getPlayerName() + " his cash: " + TourPlayerProfile.getCash() + "$" + " standing on: " + actualProperty.getNameProperty());
+                                player2.setText("Player 2 : " + TourPlayerProfile.getPlayerName() + " his cash: " + TourPlayerProfile.getCash() + "$" + " standing on: " + actualNEWProperty.getNameProperty());
                             }
                             else if(TourPlayerProfile.getPlayerNumber() == 3){
-                                player3.setText("Player 3 : " + TourPlayerProfile.getPlayerName() + " his cash: " + TourPlayerProfile.getCash() + "$" + " standing on: " + actualProperty.getNameProperty());
+                                player3.setText("Player 3 : " + TourPlayerProfile.getPlayerName() + " his cash: " + TourPlayerProfile.getCash() + "$" + " standing on: " + actualNEWProperty.getNameProperty());
                             }
                             else if(TourPlayerProfile.getPlayerNumber() == 4){
-                                player4.setText("Player 4 : " + TourPlayerProfile.getPlayerName() + " his cash: " + TourPlayerProfile.getCash() + "$" + " standing on: " + actualProperty.getNameProperty());
+                                player4.setText("Player 4 : " + TourPlayerProfile.getPlayerName() + " his cash: " + TourPlayerProfile.getCash() + "$" + " standing on: " + actualNEWProperty.getNameProperty());
                             }
 
                             gridMapImages = new GridMapImages(propertiesMap,propertiesList,playersList);
@@ -803,7 +987,7 @@ public class Client1 extends Application {
                     propertyInformation.setText("It's your home!");
                 }
                 else{
-                    if(playersList.get(actualProperty.getOwnerID()-1).getIsInJail()){
+                    if(playersList.get(actualNEWProperty.getOwnerID()-1).getIsInJail()){
                         readyTour.setVisible(true);
                         propertyInformation.setText("Owner is in prison you dont have to pay! Hurra!");
                     }
@@ -812,7 +996,7 @@ public class Client1 extends Application {
                         NoBuyPropertyBtn.setVisible(false);
                         buyingPopertyBox.setVisible(false);
                         readyTour.setVisible(true);
-                        Player oponent = playersList.get(actualProperty.getOwnerID()-1);
+                        Player oponent = playersList.get(actualNEWProperty.getOwnerID()-1);
                         Properties actualPropertyPlayer = propertiesList.get(position-1);
                         if(position == 6 || position == 16 || position == 26 || position == 36){
                             int ownedStations = 0;
@@ -870,10 +1054,10 @@ public class Client1 extends Application {
                             }
                         }
                         else{
-                            System.out.println( TourPlayerProfile.getPlayerName() + " paying to " + playersList.get(actualProperty.getOwnerID()-1).getPlayerName());
-                            TourPlayerProfile.setCash(TourPlayerProfile.getCash() - actualProperty.getPaymentForStay());
-                            playersList.get(actualProperty.getOwnerID()-1).setCash(playersList.get(actualProperty.getOwnerID()-1).getCash() + actualProperty.getPaymentForStay());
-                            propertyInformation.setText("This property have owner: " + playersList.get(actualProperty.getOwnerID()-1).getPlayerName() + " you have to pay him " + actualProperty.getPaymentForStay() + "$");
+                            System.out.println( TourPlayerProfile.getPlayerName() + " paying to " + playersList.get(actualNEWProperty.getOwnerID()-1).getPlayerName());
+                            TourPlayerProfile.setCash(TourPlayerProfile.getCash() - actualNEWProperty.getPaymentForStay());
+                            playersList.get(actualNEWProperty.getOwnerID()-1).setCash(playersList.get(actualNEWProperty.getOwnerID()-1).getCash() + actualNEWProperty.getPaymentForStay());
+                            propertyInformation.setText("This property have owner: " + playersList.get(actualNEWProperty.getOwnerID()-1).getPlayerName() + " you have to pay him " + actualNEWProperty.getPaymentForStay() + "$");
                         }
                     }
                 }
@@ -1086,11 +1270,13 @@ public class Client1 extends Application {
     }
     public void SendPlayerTourReadyCurrentPlayer(){
         try{
-            dOut.writeUTF("PlayerTourReady 0 0 0 " + isInPrisonMessage + " " + playerPayedFinePrison + " " + buyPropertyMessage + " " + TourPlayerProfile.getPlayerNumber() + " " + position);
+            dOut.writeUTF("PlayerTourReady 0 " + passedStart + " " +  cardNumber + " " + isInPrisonMessage + " " + playerPayedFinePrison + " " + buyPropertyMessage + " " + TourPlayerProfile.getPlayerNumber() + " " + position);
         }
         catch (Exception ex){
 
         }
+        passedStart = 0;
+        cardNumber = '0';
         isInPrisonMessage = 0;
         playerPayedFinePrison = 0;
         buyPropertyMessage = 0;
@@ -1223,5 +1409,49 @@ public class Client1 extends Application {
             i++;
         }
         System.out.println("Size of properties list is: " + propertiesList.size());
+    }
+
+    public static char cardId4Server(int cardID){
+        switch (cardID){
+            case 1: return '1';
+            case 2: return '2';
+            case 3: return '3';
+            case 4: return '4';
+            case 5: return '5';
+            case 6: return '6';
+            case 7: return '7';
+            case 8: return '8';
+            case 9: return '9';
+            case 10: return 'a';
+            case 11: return 'b';
+            case 12: return 'c';
+            case 13: return 'd';
+            case 14: return 'e';
+            case 15: return 'f';
+            case 16: return 'g';
+        }
+        return '0';
+    }
+
+    public static int card4ClientFromServer(char cardID){
+        switch (cardID){
+            case '1': return 1;
+            case '2': return 2;
+            case '3': return 3;
+            case '4': return 4;
+            case '5': return 5;
+            case '6': return 6;
+            case '7': return 7;
+            case '8': return 8;
+            case '9': return 9;
+            case 'a': return 10;
+            case 'b': return 11;
+            case 'c': return 12;
+            case 'd': return 13;
+            case 'e': return 14;
+            case 'f': return 15;
+            case 'g': return 16;
+        }
+        return 0;
     }
 }

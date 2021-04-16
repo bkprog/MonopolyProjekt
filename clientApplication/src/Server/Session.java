@@ -97,12 +97,18 @@ public class Session extends Thread {
                         int prisionDecion = Character.getNumericValue(clientResponse.charAt(22));
                         int prisionBuy = Character.getNumericValue(clientResponse.charAt(24));
                         int propBuy = Character.getNumericValue(clientResponse.charAt(26));
+                        char cardId = clientResponse.charAt(20);
+                        int passedStrat = Character.getNumericValue(clientResponse.charAt(18));
                         if(prisionDecion != 0){
                             prisonDecisionUpdate(socketPlayers,playerTourIndex);
                             System.out.println("Player is in jail!");
                         }
                         if(prisionBuy != 0){
                             prisonPayFine(socketPlayers,playerTourIndex);
+                        }
+                        if(cardId != '0'){
+                            System.out.println("Card " + cardId);
+                            CardMessage(socketPlayers,cardId,passedStrat);
                         }
 //                        char houseBought = clientResponse.charAt(16);
                         String playerMove = clientResponse.substring(30);
@@ -213,6 +219,20 @@ public class Session extends Thread {
                 if(s != client){
                     DataOutputStream socketOut = new DataOutputStream(s.getOutputStream());
                     socketOut.writeUTF("InPrison " + playerindex );
+                }
+            }
+        }
+        catch(Exception ex){
+            System.out.println("Error sending info about start game: " + ex.getMessage());
+        }
+    }
+
+    public void CardMessage(ArrayList<Socket> socketPlayers,char cardId,int passedStrat){
+        try{
+            for(Socket s : socketPlayers){
+                if(s != client){
+                    DataOutputStream socketOut = new DataOutputStream(s.getOutputStream());
+                    socketOut.writeUTF("BlueRedCard " + cardId + " " + passedStrat);
                 }
             }
         }
