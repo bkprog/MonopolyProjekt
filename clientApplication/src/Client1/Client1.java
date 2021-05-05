@@ -99,7 +99,6 @@ public class Client1 extends Application {
     Label prisonInfo5 = new Label("");
     Label prisonInfo6 = new Label("");
     int bankrupt = 0;
-    GridPane propertiesMap = new GridPane();
     boolean propertiesMapFlag = true;
     boolean diceFlag = true;
     int passedStart = 0;
@@ -110,6 +109,11 @@ public class Client1 extends Application {
     Boolean standingOnCountry = false;
     private int previousPosition;
     private int boughtHouses = 0;
+    private VBox propertiesMap = new VBox();
+    private PropertyMapImages player1Map;
+    private PropertyMapImages player2Map;
+    private PropertyMapImages player3Map;
+    private PropertyMapImages player4Map;
 
     public void startTask(){
         Runnable task = new Runnable() {
@@ -209,6 +213,16 @@ public class Client1 extends Application {
                             TourPlayerProfile.setCash(TourPlayerProfile.getCash() - propertiesList.get(propId-1).getBuyCost());
                             System.out.println("Player: " + TourPlayerProfile.getPlayerName() + " Bought property: " + propertiesList.get(propId-1).getNameProperty());
                             propertiesList.get(propId-1).setOwnerID(TourPlayerProfile.getPlayerNumber());
+                            if(playersList.size() >= 2){
+                                player1Map.updatePropertiesMap(propertiesList,playersList.get(0));
+                                player2Map.updatePropertiesMap(propertiesList,playersList.get(1));
+                                if(playersList.size() >= 3){
+                                    player3Map.updatePropertiesMap(propertiesList,playersList.get(2));
+                                    if(playersList.size() == 4){
+                                        player4Map.updatePropertiesMap(propertiesList,playersList.get(3));
+                                    }
+                                }
+                            }
 //                            gridMapImages.setOwnerGrid(propertiesList,playersList);
                         }
                         else if(respond.startsWith("InPrison ")){
@@ -356,6 +370,25 @@ public class Client1 extends Application {
                             }
                         }
                         else if(respond.startsWith("StartGame") && playersReady == NubmerOfPlayersInGame){
+
+                            if(propertiesMapFlag){
+                                if(playersList.size() >= 2){
+                                    System.out.println("elo");
+                                    player1Map = new PropertyMapImages(playersList.get(0).getPlayerName());
+                                    player2Map = new PropertyMapImages(playersList.get(1).getPlayerName());
+                                    propertiesMap.getChildren().add(player1Map.getMainBox());
+                                    propertiesMap.getChildren().add(player2Map.getMainBox());
+                                    if(playersList.size() >= 3){
+                                        player3Map = new PropertyMapImages(playersList.get(2).getPlayerName());
+                                        propertiesMap.getChildren().add(player3Map.getMainBox());
+                                        if(playersList.size() == 4){
+                                            player4Map = new PropertyMapImages(playersList.get(3).getPlayerName());
+                                            propertiesMap.getChildren().add(player4Map.getMainBox());
+                                        }
+                                    }
+                                }
+                                propertiesMapFlag = false;
+                            }
 
                             int playerId = Integer.parseInt(respond.substring(10));
                             TourPlayerProfile = playersList.get(playerId-1);
@@ -647,6 +680,9 @@ public class Client1 extends Application {
     }
 
     public void showGame(){
+
+
+
         readyButton.setVisible(false);
         readyCheckInfo.setVisible(false);
 
@@ -748,7 +784,9 @@ public class Client1 extends Application {
         grp.add(panelOponents,1,0);
         grp.add(panelTourPlayer,1,0);
         grp.add(panelTourPlayerInJail,1,0);
-        //grp.add(propertiesMap,2,0);
+        grp.add(propertiesMap,2,0);
+        propertiesMap.setAlignment(Pos.CENTER);
+        propertiesMap.setSpacing(40);
         grp.setAlignment(Pos.CENTER);
         grp.setHgap(50);
         box.setSpacing(10);
@@ -791,8 +829,6 @@ public class Client1 extends Application {
         viewDice1.setFitWidth(50);
         viewDice2.setFitHeight(50);
         viewDice2.setFitWidth(50);
-
-
 
         Button BuyPropertyBtn = new Button("Buy");
         Button NoBuyPropertyBtn = new Button("No thanks!");
@@ -1155,6 +1191,16 @@ public class Client1 extends Application {
                                 player4.setText("Player 4 : " + TourPlayerProfile.getPlayerName() + " his cash: " + TourPlayerProfile.getCash() + "$" + " standing on: " + actualNEWProperty.getNameProperty());
                             }
 
+                            if(playersList.size() >= 2){
+                                player1Map.updatePropertiesMap(propertiesList,playersList.get(0));
+                                player2Map.updatePropertiesMap(propertiesList,playersList.get(1));
+                                if(playersList.size() >= 3){
+                                    player3Map.updatePropertiesMap(propertiesList,playersList.get(2));
+                                    if(playersList.size() == 4){
+                                        player4Map.updatePropertiesMap(propertiesList,playersList.get(3));
+                                    }
+                                }
+                            }
                         });
                         NoBuyPropertyBtn.setOnAction(actionEvent -> {
                             BuyPoropertyInfo.setText("");
