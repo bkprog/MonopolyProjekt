@@ -64,6 +64,13 @@ public class Client1 extends Application {
     VBox panelTourPlayerInJail = new VBox();
     VBox box = new VBox();
     Button dicing = new Button("Dice!");
+    VBox BuyingHousesBox = new VBox();
+    HBox HousesBox = new HBox();
+    Label buyingHousesinfo = new Label("Ile domków chcesz kupić?");
+    Button BuyHouse1 = new Button("1");
+    Button BuyHouse2 = new Button("2");
+    Button BuyHouse3 = new Button("3");
+    Button BuyHouse4 = new Button("4");
     Button readyTour = new Button("Ready");
     Label info = new Label("Click button to dice");
     Label diceedInfo = new Label();
@@ -99,6 +106,12 @@ public class Client1 extends Application {
     boolean diceFlag = true;
     int passedStart = 0;
     char cardNumber = '0';
+    HousesOnPropertiesVertical hv;
+    HousesOnPropertiesHorizontal hh;
+    ArrayList<String> countries_player;
+    Boolean standingOnCountry = false;
+    private int previousPosition;
+    private int boughtHouses = 0;
 
     public void startTask(){
         Runnable task = new Runnable() {
@@ -129,6 +142,42 @@ public class Client1 extends Application {
                         }
                         else if(respond.startsWith("You"))
                             clientConnected.setText(respond);
+                        else if(respond.startsWith("HouseBought")){
+                            int houseBought = Character.getNumericValue(respond.charAt(12));
+//                            System.out.println(TourPlayerProfile.getPlayerName() + " bought " + houseBought + " houses!\n" +
+//                                    "On property " + propertiesList.get(previousPosition-1).getNameProperty());
+                            switch (houseBought){
+                                case 1:{
+                                    propertiesList.get(previousPosition-1).buildHouseOnProperty();
+                                    TourPlayerProfile.setCash(TourPlayerProfile.getCash() - propertiesList.get(previousPosition-1).getHouseCost());
+                                    break;
+                                }
+                                case 2:{
+                                    propertiesList.get(previousPosition-1).buildHouseOnProperty();
+                                    propertiesList.get(previousPosition-1).buildHouseOnProperty();
+                                    TourPlayerProfile.setCash(TourPlayerProfile.getCash() - (2*propertiesList.get(previousPosition-1).getHouseCost()));
+                                    break;
+                                }
+                                case 3:{
+                                    propertiesList.get(previousPosition-1).buildHouseOnProperty();
+                                    propertiesList.get(previousPosition-1).buildHouseOnProperty();
+                                    propertiesList.get(previousPosition-1).buildHouseOnProperty();
+                                    TourPlayerProfile.setCash(TourPlayerProfile.getCash() - (3*propertiesList.get(previousPosition-1).getHouseCost()));
+                                    break;
+                                }
+                                case 4:{
+                                    propertiesList.get(previousPosition-1).buildHouseOnProperty();
+                                    propertiesList.get(previousPosition-1).buildHouseOnProperty();
+                                    propertiesList.get(previousPosition-1).buildHouseOnProperty();
+                                    propertiesList.get(previousPosition-1).buildHouseOnProperty();
+                                    TourPlayerProfile.setCash(TourPlayerProfile.getCash() - (4*propertiesList.get(previousPosition-1).getHouseCost()));
+                                    break;
+                                }
+
+                            }
+                            hv.updateHousesOnMap(propertiesList);
+                            hh.updateHousesOnMap(propertiesList);
+                        }
                         else if(respond.startsWith("BlueRedCard ")){
                             int cardNumber = card4ClientFromServer(respond.charAt(12));
                             int passedStart = Character.getNumericValue(respond.charAt(14));
@@ -182,7 +231,7 @@ public class Client1 extends Application {
                         else if(respond.startsWith("UpdateMove ")){
                             int newPositionPlayer = Integer.parseInt(respond.substring(11));
                             System.out.println(TourPlayerProfile.getPlayerName() + " movead to property ID: " + newPositionPlayer);
-                            int previousPosition = TourPlayerProfile.getPropertyId();
+                            previousPosition = TourPlayerProfile.getPropertyId();
                             TourPlayerProfile.setPropertyId(newPositionPlayer);
                             Properties actualProperty = propertiesList.get(newPositionPlayer-1);
                             System.out.println(TourPlayerProfile.getPlayerName() + "standing on: " + actualProperty.getNameProperty());
@@ -312,6 +361,9 @@ public class Client1 extends Application {
                         }
                         else if(respond.startsWith("StartGame") && playersReady == NubmerOfPlayersInGame){
 
+
+
+
                             if(propertiesMapFlag){
                                 gridMapImages = new GridMapImages(propertiesMap,propertiesList,playersList);
                                 propertiesMap = gridMapImages.getPanelMapGrid();
@@ -321,6 +373,13 @@ public class Client1 extends Application {
                             int playerId = Integer.parseInt(respond.substring(10));
                             TourPlayerProfile = playersList.get(playerId-1);
                             String tplayerNick = playersList.get(playerId-1).getPlayerName();
+
+                            countries_player = allCountriesPlayers(propertiesList,TourPlayerProfile);
+
+                            System.out.println(countries_player.size());
+                            for(String s : countries_player){
+                                System.out.println(s);
+                            }
 
                             System.out.println(tplayerNick);
                             System.out.println(playerNickname);
@@ -348,7 +407,47 @@ public class Client1 extends Application {
                                     diceedInfo.setText("");
                                     panelTourPlayer.setVisible(true);
                                     readyTour.setVisible(false);
-                                    dicing.setVisible(true);
+                                    standingOnCountry = false;
+                                    dicing.setVisible(false);
+                                    for(String s : countries_player){
+                                        if(propertiesList.get(position-1).getCountryName().equals(s)) {
+                                            standingOnCountry = true;
+                                        }
+                                    }
+                                    if(standingOnCountry){
+                                        dicing.setVisible(false);
+                                        BuyingHousesBox.setVisible(true);
+                                        BuyHouse1.setVisible(false);
+                                        BuyHouse2.setVisible(false);
+                                        BuyHouse3.setVisible(false);
+                                        BuyHouse4.setVisible(false);
+                                        System.out.println(TourPlayerProfile.getCash());
+                                        if(TourPlayerProfile.getCash() >= (propertiesList.get(position-1).getHouseCost()) && 4-propertiesList.get(position-1).getActualLvlProperty() >= 1){
+                                            BuyHouse1.setVisible(true);
+                                        }
+                                        if(TourPlayerProfile.getCash() >= (2*(propertiesList.get(position-1).getHouseCost())) && 4-propertiesList.get(position-1).getActualLvlProperty() >= 2){
+                                            BuyHouse2.setVisible(true);
+                                        }
+                                        if(TourPlayerProfile.getCash() >= (3*propertiesList.get(position-1).getHouseCost()) && 4-propertiesList.get(position-1).getActualLvlProperty() >= 3){
+                                            BuyHouse3.setVisible(true);
+                                        }
+                                        if(TourPlayerProfile.getCash() >= (4*propertiesList.get(position-1).getHouseCost()) && 4-propertiesList.get(position-1).getActualLvlProperty() >= 4){
+                                            BuyHouse4.setVisible(true);
+                                        }
+                                        if(TourPlayerProfile.getCash() < (propertiesList.get(position-1).getHouseCost())){
+                                            BuyingHousesBox.setVisible(false);
+                                            dicing.setVisible(true);
+                                        }
+                                        BuyHouse1.setText("1 -" + propertiesList.get(position-1).getHouseCost() + "$");
+                                        BuyHouse2.setText("2 -" + (2*propertiesList.get(position-1).getHouseCost()) + "$");
+                                        BuyHouse3.setText("3 -" + (3*propertiesList.get(position-1).getHouseCost()) + "$");
+                                        BuyHouse4.setText("4 -" + (4*propertiesList.get(position-1).getHouseCost()) + "$");
+                                    }
+                                    else{
+                                        dicing.setVisible(true);
+                                        BuyingHousesBox.setVisible(false);
+                                    }
+
                                 }
                             }
                             else{
@@ -570,6 +669,67 @@ public class Client1 extends Application {
         stage.getIcons().add(new Image("images/DolarBussines.png"));
         GridPane grp = new GridPane();
 
+        BuyingHousesBox.getChildren().add(buyingHousesinfo);
+        HousesBox.getChildren().add(BuyHouse1);
+        HousesBox.getChildren().add(BuyHouse2);
+        HousesBox.getChildren().add(BuyHouse3);
+        HousesBox.getChildren().add(BuyHouse4);
+        HousesBox.setAlignment(Pos.CENTER);
+        HousesBox.setSpacing(20);
+        BuyingHousesBox.setSpacing(10);
+        BuyingHousesBox.setAlignment(Pos.CENTER);
+        BuyingHousesBox.getChildren().add(HousesBox);
+
+        BuyHouse1.setOnAction(actionEvent -> {
+            propertiesList.get(position-1).buildHouseOnProperty();
+            hv.updateHousesOnMap(propertiesList);
+            hh.updateHousesOnMap(propertiesList);
+            BuyingHousesBox.setVisible(false);
+            TourPlayerProfile.setCash(TourPlayerProfile.getCash() - (propertiesList.get(position-1).getHouseCost()));
+            dicing.setVisible(true);
+            makeUpdateMapANdTables();
+            boughtHouses = 1;
+        });
+
+        BuyHouse2.setOnAction(actionEvent -> {
+            propertiesList.get(position-1).buildHouseOnProperty();
+            propertiesList.get(position-1).buildHouseOnProperty();
+            hv.updateHousesOnMap(propertiesList);
+            hh.updateHousesOnMap(propertiesList);
+            BuyingHousesBox.setVisible(false);
+            TourPlayerProfile.setCash(TourPlayerProfile.getCash() - (2*propertiesList.get(position-1).getHouseCost()));
+            dicing.setVisible(true);
+            makeUpdateMapANdTables();
+            boughtHouses = 2;
+        });
+
+        BuyHouse3.setOnAction(actionEvent -> {
+            propertiesList.get(position-1).buildHouseOnProperty();
+            propertiesList.get(position-1).buildHouseOnProperty();
+            propertiesList.get(position-1).buildHouseOnProperty();
+            hv.updateHousesOnMap(propertiesList);
+            hh.updateHousesOnMap(propertiesList);
+            BuyingHousesBox.setVisible(false);
+            TourPlayerProfile.setCash(TourPlayerProfile.getCash() - (3*propertiesList.get(position-1).getHouseCost()));
+            dicing.setVisible(true);
+            makeUpdateMapANdTables();
+            boughtHouses = 3;
+        });
+
+        BuyHouse4.setOnAction(actionEvent -> {
+            propertiesList.get(position-1).buildHouseOnProperty();
+            propertiesList.get(position-1).buildHouseOnProperty();
+            propertiesList.get(position-1).buildHouseOnProperty();
+            propertiesList.get(position-1).buildHouseOnProperty();
+            hv.updateHousesOnMap(propertiesList);
+            hh.updateHousesOnMap(propertiesList);
+            BuyingHousesBox.setVisible(false);
+            TourPlayerProfile.setCash(TourPlayerProfile.getCash() - (4*propertiesList.get(position-1).getHouseCost()));
+            dicing.setVisible(true);
+            makeUpdateMapANdTables();
+            boughtHouses = 4;
+        });
+
         Image map = new Image("/images/eurobussinesmap.png");
 
         ImageView mapView = new ImageView(map);
@@ -582,6 +742,10 @@ public class Client1 extends Application {
         MapPane.getChildren().add(pawnView2);
         MapPane.getChildren().add(pawnView3);
         MapPane.getChildren().add(pawnView4);
+        hv = new HousesOnPropertiesVertical(MapPane);
+        hv.setNoVisibleHousesVertical();
+        hh = new HousesOnPropertiesHorizontal(MapPane,propertiesList);
+        hh.setNoVisibleHousesHorizontal();
 
         pawnView1.setVisible(false);
         pawnView2.setVisible(false);
@@ -597,7 +761,7 @@ public class Client1 extends Application {
         grp.add(panelOponents,1,0);
         grp.add(panelTourPlayer,1,0);
         grp.add(panelTourPlayerInJail,1,0);
-        grp.add(propertiesMap,2,0);
+        //grp.add(propertiesMap,2,0);
         grp.setAlignment(Pos.CENTER);
         grp.setHgap(50);
         box.setSpacing(10);
@@ -634,13 +798,14 @@ public class Client1 extends Application {
     }
 
     public void TourPlayerScene(){
-
         DiceBox.setAlignment(Pos.CENTER);
         DiceBox.setSpacing(50);
         viewDice1.setFitHeight(50);
         viewDice1.setFitWidth(50);
         viewDice2.setFitHeight(50);
         viewDice2.setFitWidth(50);
+
+
 
         Button BuyPropertyBtn = new Button("Buy");
         Button NoBuyPropertyBtn = new Button("No thanks!");
@@ -678,13 +843,16 @@ public class Client1 extends Application {
         diceImages.addAll(viewDice1,viewDice2);
 
         ObservableList list = panelTourPlayer.getChildren();
-        list.addAll(player1,player2,player3,player4,info,dicing,diceedInfo,DiceBox,propertyInfo,buyingPopertyBox,readyTour);
+        list.addAll(player1,player2,player3,player4,BuyingHousesBox,info,dicing,diceedInfo,DiceBox,propertyInfo,buyingPopertyBox,readyTour);
 
         panelTourPlayer.setAlignment(Pos.CENTER);
 //        readyTour.setVisible(false);
 
         panelTourPlayer.setSpacing(10);
         dicing.setOnAction(e->{
+            hv.updateHousesOnMap(propertiesList);
+            hh.updateHousesOnMap(propertiesList);
+
             buyingPopertyBox.setVisible(true);
             int randomCard = dice.throwQuestionMarkCard();
 
@@ -692,7 +860,8 @@ public class Client1 extends Application {
             int dice1 = dice.throwfunction();
             int dice2 = dice.throwfunction();
 
-            position = 3;//position + dice1 + dice2;
+
+            position = position + dice1 + dice2;
 
             if(position > 40){
                 position = position - 40;
@@ -744,7 +913,7 @@ public class Client1 extends Application {
                     }
                     else if(TourPlayerProfile.getPlayerNumber() == 3){
                         pawnView3.setX(cordsPlayersMap.getCorXProperty(position,3));
-                        pawnView3.setY(cordsPlayersMap.getCorYProperty(position,4));
+                        pawnView3.setY(cordsPlayersMap.getCorYProperty(position,3));
                     }
                     else if(TourPlayerProfile.getPlayerNumber() == 4){
                         pawnView4.setX(cordsPlayersMap.getCorXProperty(position,4));
@@ -806,7 +975,26 @@ public class Client1 extends Application {
                             TourPlayerProfile.setCash(TourPlayerProfile.getCash() - 300);
                         }
                         else if(randomCard == 9){
-                            position = 31;
+                            position = 11;
+                            isInPrisonMessage = 1;
+                            if(TourPlayerProfile.getPlayerNumber() == 1){
+                                pawnView1.setX(cordsPlayersMap.getCorXProperty(position,1));
+                                pawnView1.setY(cordsPlayersMap.getCorYProperty(position,1));
+                            }
+                            else if(TourPlayerProfile.getPlayerNumber() == 2){
+                                pawnView2.setX(cordsPlayersMap.getCorXProperty(position,2));
+                                pawnView2.setY(cordsPlayersMap.getCorYProperty(position,2));
+                            }
+                            else if(TourPlayerProfile.getPlayerNumber() == 3){
+                                pawnView3.setX(cordsPlayersMap.getCorXProperty(position,3));
+                                pawnView3.setY(cordsPlayersMap.getCorYProperty(position,3));
+                            }
+                            else if(TourPlayerProfile.getPlayerNumber() == 4){
+                                pawnView4.setX(cordsPlayersMap.getCorXProperty(position,4));
+                                pawnView4.setY(cordsPlayersMap.getCorYProperty(position,4));
+                            }
+                            propertyInformation.setText("You go to jail!");
+                            TourPlayerProfile.setInJail(true);
                         }
                         else if(randomCard == 10){
                             TourPlayerProfile.setCash(TourPlayerProfile.getCash() + 200);
@@ -887,7 +1075,26 @@ public class Client1 extends Application {
                             TourPlayerProfile.setCash(TourPlayerProfile.getCash() - 300);
                         }
                         else if(randomCard == 9){
-                            position = 31;
+                            position = 11;
+                            isInPrisonMessage = 1;
+                            if(TourPlayerProfile.getPlayerNumber() == 1){
+                                pawnView1.setX(cordsPlayersMap.getCorXProperty(position,1));
+                                pawnView1.setY(cordsPlayersMap.getCorYProperty(position,1));
+                            }
+                            else if(TourPlayerProfile.getPlayerNumber() == 2){
+                                pawnView2.setX(cordsPlayersMap.getCorXProperty(position,2));
+                                pawnView2.setY(cordsPlayersMap.getCorYProperty(position,2));
+                            }
+                            else if(TourPlayerProfile.getPlayerNumber() == 3){
+                                pawnView3.setX(cordsPlayersMap.getCorXProperty(position,3));
+                                pawnView3.setY(cordsPlayersMap.getCorYProperty(position,3));
+                            }
+                            else if(TourPlayerProfile.getPlayerNumber() == 4){
+                                pawnView4.setX(cordsPlayersMap.getCorXProperty(position,4));
+                                pawnView4.setY(cordsPlayersMap.getCorYProperty(position,4));
+                            }
+                            propertyInformation.setText("You go to jail!");
+                            TourPlayerProfile.setInJail(true);
                         }
                         else if(randomCard == 10){
                             TourPlayerProfile.setCash(TourPlayerProfile.getCash() + 200);
@@ -1270,11 +1477,12 @@ public class Client1 extends Application {
     }
     public void SendPlayerTourReadyCurrentPlayer(){
         try{
-            dOut.writeUTF("PlayerTourReady 0 " + passedStart + " " +  cardNumber + " " + isInPrisonMessage + " " + playerPayedFinePrison + " " + buyPropertyMessage + " " + TourPlayerProfile.getPlayerNumber() + " " + position);
+            dOut.writeUTF("PlayerTourReady " + boughtHouses + " " + passedStart + " " +  cardNumber + " " + isInPrisonMessage + " " + playerPayedFinePrison + " " + buyPropertyMessage + " " + TourPlayerProfile.getPlayerNumber() + " " + position);
         }
         catch (Exception ex){
 
         }
+        boughtHouses = 0;
         passedStart = 0;
         cardNumber = '0';
         isInPrisonMessage = 0;
@@ -1454,4 +1662,78 @@ public class Client1 extends Application {
         }
         return 0;
     }
+
+    public ArrayList<String> allCountriesPlayers(ArrayList<Properties> propertiesList,Player player) {
+        ArrayList<String> countries = new ArrayList<>();
+        boolean g = true,i = true,s = true,e = true,b = true,S = true,r = true,a = true;
+        int Greece = 0;
+        int Italy = 0;
+        int Spain = 0;
+        int England = 0;
+        int Benelux = 0;
+        int Sweden = 0;
+        int RFN = 0;
+        int Austria = 0;
+        for (Properties p : propertiesList) {
+            if (p.getCountryName().equals("Grecja")) {
+                if (player.getPlayerNumber() == p.getOwnerID())
+                    Greece++;
+                if (Greece == 2 && g){
+                    countries.add("Grecja");
+                    g = false;
+                }
+            } else if (p.getCountryName().equals("Włochy")) {
+                if (player.getPlayerNumber() == p.getOwnerID())
+                    Italy++;
+                if (Italy == 3 && i){
+                    countries.add("Włochy");
+                    i = false;
+                }
+            } else if (p.getCountryName().equals("Hiszpania")) {
+                if (player.getPlayerNumber() == p.getOwnerID())
+                    Spain++;
+                if (Spain == 3 && s){
+                    countries.add("Hiszpania");
+                    s = false;
+                }
+            } else if (p.getCountryName().equals("Anglia")) {
+                if (player.getPlayerNumber() == p.getOwnerID())
+                    England++;
+                if (England == 3 && e){
+                    countries.add("Anglia");
+                    e = false;
+                }
+            } else if (p.getCountryName().equals("Benelux")) {
+                if (player.getPlayerNumber() == p.getOwnerID())
+                    Benelux++;
+                if (Benelux == 3 && b){
+                    countries.add("Benelux");
+                    b = false;
+                }
+            } else if (p.getCountryName().equals("Szwecja")) {
+                if (player.getPlayerNumber() == p.getOwnerID())
+                    Sweden++;
+                if (Sweden == 3 && S){
+                    countries.add("Szwecja");
+                    S = false;
+                }
+            } else if (p.getCountryName().equals("RFN")) {
+                if (player.getPlayerNumber() == p.getOwnerID())
+                    RFN++;
+                if (RFN == 3 && r){
+                    countries.add("RFN");
+                    r = false;
+                }
+            } else if (p.getCountryName().equals("Austria")) {
+                if (player.getPlayerNumber() == p.getOwnerID())
+                    Austria++;
+                if (Austria == 2 && a){
+                    countries.add("Austria");
+                    a = false;
+                }
+            }
+        }
+        return countries;
+    }
+
 }

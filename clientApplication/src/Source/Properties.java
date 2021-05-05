@@ -97,7 +97,7 @@ public class Properties {
     }
 
     public int getActualLvlProperty(){
-        return this.actualLvlProperty;
+        return actualLvlProperty;
     }
 
     public int getLvl1(){
@@ -133,7 +133,7 @@ public class Properties {
     }
 
     public int getPropertyLVL(){
-        return this.propertyLVL;
+        return propertyLVL;
     }
 
     public String getNameProperty(){

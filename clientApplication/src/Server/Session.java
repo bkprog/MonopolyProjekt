@@ -99,6 +99,8 @@ public class Session extends Thread {
                         int propBuy = Character.getNumericValue(clientResponse.charAt(26));
                         char cardId = clientResponse.charAt(20);
                         int passedStrat = Character.getNumericValue(clientResponse.charAt(18));
+                        int boughtHouses = Character.getNumericValue(clientResponse.charAt(16));
+                        System.out.println("Player Bought " + boughtHouses + " Houses!");
                         if(prisionDecion != 0){
                             prisonDecisionUpdate(socketPlayers,playerTourIndex);
                             System.out.println("Player is in jail!");
@@ -125,6 +127,8 @@ public class Session extends Thread {
 //                        houseUpdate(socketPlayers,houseBought,playerTourIndex);
 //                        cardMoveSend(socketPlayers,cardId,playerTourIndex);
                         updateMove(socketPlayers,playerMove);
+                        if(boughtHouses != 0)
+                            BuyHouseMessage(socketPlayers,boughtHouses);
                     }
                     System.out.println(clientResponse);
                     BroadcastReadyToOtherClientsTour(socketPlayers);
@@ -252,6 +256,20 @@ public class Session extends Thread {
         }
         catch(Exception ex){
             System.out.println("Error sending info about start game: " + ex.getMessage());
+        }
+    }
+
+    public void BuyHouseMessage(ArrayList<Socket> socketPlayers,int numberOfHouses){
+        try{
+            for(Socket s : socketPlayers){
+                if(s != client){
+                    DataOutputStream socketOut = new DataOutputStream(s.getOutputStream());
+                    socketOut.writeUTF("HouseBought " + numberOfHouses);
+                }
+            }
+        }
+        catch(Exception ex){
+            System.out.println("Error sending info about HousesBought: " + ex.getMessage());
         }
     }
 

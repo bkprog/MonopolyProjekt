@@ -24,6 +24,7 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.Iterator;
 
 
 public class Client2 extends Application {
@@ -63,6 +64,13 @@ public class Client2 extends Application {
     VBox panelTourPlayerInJail = new VBox();
     VBox box = new VBox();
     Button dicing = new Button("Dice!");
+    VBox BuyingHousesBox = new VBox();
+    HBox HousesBox = new HBox();
+    Label buyingHousesinfo = new Label("Ile domków chcesz kupić?");
+    Button BuyHouse1 = new Button("1");
+    Button BuyHouse2 = new Button("2");
+    Button BuyHouse3 = new Button("3");
+    Button BuyHouse4 = new Button("4");
     Button readyTour = new Button("Ready");
     Label info = new Label("Click button to dice");
     Label diceedInfo = new Label();
@@ -96,6 +104,14 @@ public class Client2 extends Application {
     GridPane propertiesMap = new GridPane();
     boolean propertiesMapFlag = true;
     boolean diceFlag = true;
+    int passedStart = 0;
+    char cardNumber = '0';
+    HousesOnPropertiesVertical hv;
+    HousesOnPropertiesHorizontal hh;
+    ArrayList<String> countries_player;
+    Boolean standingOnCountry = false;
+    private int previousPosition;
+    private int boughtHouses = 0;
 
     public void startTask(){
         Runnable task = new Runnable() {
@@ -126,6 +142,70 @@ public class Client2 extends Application {
                         }
                         else if(respond.startsWith("You"))
                             clientConnected.setText(respond);
+                        else if(respond.startsWith("HouseBought")){
+                            int houseBought = Character.getNumericValue(respond.charAt(12));
+//                            System.out.println(TourPlayerProfile.getPlayerName() + " bought " + houseBought + " houses!\n" +
+//                                    "On property " + propertiesList.get(previousPosition-1).getNameProperty());
+                            switch (houseBought){
+                                case 1:{
+                                    propertiesList.get(previousPosition-1).buildHouseOnProperty();
+                                    TourPlayerProfile.setCash(TourPlayerProfile.getCash() - propertiesList.get(previousPosition-1).getHouseCost());
+                                    break;
+                                }
+                                case 2:{
+                                    propertiesList.get(previousPosition-1).buildHouseOnProperty();
+                                    propertiesList.get(previousPosition-1).buildHouseOnProperty();
+                                    TourPlayerProfile.setCash(TourPlayerProfile.getCash() - (2*propertiesList.get(previousPosition-1).getHouseCost()));
+                                    break;
+                                }
+                                case 3:{
+                                    propertiesList.get(previousPosition-1).buildHouseOnProperty();
+                                    propertiesList.get(previousPosition-1).buildHouseOnProperty();
+                                    propertiesList.get(previousPosition-1).buildHouseOnProperty();
+                                    TourPlayerProfile.setCash(TourPlayerProfile.getCash() - (3*propertiesList.get(previousPosition-1).getHouseCost()));
+                                    break;
+                                }
+                                case 4:{
+                                    propertiesList.get(previousPosition-1).buildHouseOnProperty();
+                                    propertiesList.get(previousPosition-1).buildHouseOnProperty();
+                                    propertiesList.get(previousPosition-1).buildHouseOnProperty();
+                                    propertiesList.get(previousPosition-1).buildHouseOnProperty();
+                                    TourPlayerProfile.setCash(TourPlayerProfile.getCash() - (4*propertiesList.get(previousPosition-1).getHouseCost()));
+                                    break;
+                                }
+
+                            }
+                            hv.updateHousesOnMap(propertiesList);
+                            hh.updateHousesOnMap(propertiesList);
+                        }
+                        else if(respond.startsWith("BlueRedCard ")){
+                            int cardNumber = card4ClientFromServer(respond.charAt(12));
+                            int passedStart = Character.getNumericValue(respond.charAt(14));
+                            if(cardNumber == 2){
+                                TourPlayerProfile.setCash(TourPlayerProfile.getCash() + 100);
+                            }
+                            else if(cardNumber == 4){
+                                TourPlayerProfile.setCash(TourPlayerProfile.getCash() + 300);
+                            }
+                            else if(cardNumber == 6){
+                                TourPlayerProfile.setCash(TourPlayerProfile.getCash() - 40);
+                            }
+                            else if(cardNumber == 8){
+                                TourPlayerProfile.setCash(TourPlayerProfile.getCash() - 300);
+                            }
+                            else if(cardNumber == 10){
+                                TourPlayerProfile.setCash(TourPlayerProfile.getCash() + 200);
+                            }
+                            else if(cardNumber == 14){
+                                TourPlayerProfile.setCash(TourPlayerProfile.getCash() - 30);
+                            }
+                            else if(cardNumber == 15){
+                                TourPlayerProfile.setCash(TourPlayerProfile.getCash() + 400);
+                            }
+                            if (passedStart == 1){
+                                TourPlayerProfile.setCash(TourPlayerProfile.getCash() + 400);
+                            }
+                        }
                         else if(respond.startsWith("Purchase Property ")){
                             int propId = Integer.parseInt(respond.substring(18));
                             TourPlayerProfile.setCash(TourPlayerProfile.getCash() - propertiesList.get(propId-1).getBuyCost());
@@ -151,7 +231,7 @@ public class Client2 extends Application {
                         else if(respond.startsWith("UpdateMove ")){
                             int newPositionPlayer = Integer.parseInt(respond.substring(11));
                             System.out.println(TourPlayerProfile.getPlayerName() + " movead to property ID: " + newPositionPlayer);
-                            int previousPosition = TourPlayerProfile.getPropertyId();
+                            previousPosition = TourPlayerProfile.getPropertyId();
                             TourPlayerProfile.setPropertyId(newPositionPlayer);
                             Properties actualProperty = propertiesList.get(newPositionPlayer-1);
                             System.out.println(TourPlayerProfile.getPlayerName() + "standing on: " + actualProperty.getNameProperty());
@@ -168,15 +248,12 @@ public class Client2 extends Application {
                                     Properties actualPropertyPlayer = propertiesList.get(newPositionPlayer-1);
                                     if(newPositionPlayer == 6 || newPositionPlayer == 16 || newPositionPlayer == 26 || newPositionPlayer == 36) {
                                         int ownedStations = 0;
-                                        int oponentId = oponent.getPlayerNumber();
-                                        int owner6 = propertiesList.get(7).getOwnerID();
-                                        int owner16 = propertiesList.get(17).getOwnerID();
-                                        int owner26 = propertiesList.get(27).getOwnerID();
-                                        int owner36 = propertiesList.get(37).getOwnerID();
-                                        int stationOwners[] = {owner6, owner16, owner26, owner36};
-                                        for (int i : stationOwners) {
-                                            if (i == oponentId)
-                                                ownedStations++;
+                                        for(Properties prop : propertiesList){
+                                            if(prop.getIDproperty() == 6 || prop.getIDproperty() == 16 ||prop.getIDproperty() == 26 ||prop.getIDproperty() == 36){
+                                                if(prop.getOwnerID() == oponent.getPlayerNumber()){
+                                                    ownedStations++;
+                                                }
+                                            }
                                         }
                                         if (ownedStations == 1) {
                                             TourPlayerProfile.setCash(TourPlayerProfile.getCash() - actualPropertyPlayer.getPaymentForStay());
@@ -200,12 +277,12 @@ public class Client2 extends Application {
                                         int sumDices = newPositionPlayer - previousPosition;
                                         System.out.println(sumDices);
                                         int ownedPW = 0;
-                                        int owner13 = propertiesList.get(14).getOwnerID();
-                                        int owner29 = propertiesList.get(29).getOwnerID();
-                                        int ownersPW[] = {owner13,owner29};
-                                        for(int i : ownersPW){
-                                            if(oponent.getPlayerNumber() == i)
-                                                ownedPW++;
+                                        for(Properties prop : propertiesList){
+                                            if(prop.getIDproperty() == 13 || prop.getIDproperty() == 29){
+                                                if(prop.getOwnerID() == oponent.getPlayerNumber()){
+                                                    ownedPW++;
+                                                }
+                                            }
                                         }
                                         if(ownedPW == 1){
                                             int fine = sumDices * 10;
@@ -284,6 +361,9 @@ public class Client2 extends Application {
                         }
                         else if(respond.startsWith("StartGame") && playersReady == NubmerOfPlayersInGame){
 
+
+
+
                             if(propertiesMapFlag){
                                 gridMapImages = new GridMapImages(propertiesMap,propertiesList,playersList);
                                 propertiesMap = gridMapImages.getPanelMapGrid();
@@ -293,6 +373,13 @@ public class Client2 extends Application {
                             int playerId = Integer.parseInt(respond.substring(10));
                             TourPlayerProfile = playersList.get(playerId-1);
                             String tplayerNick = playersList.get(playerId-1).getPlayerName();
+
+                            countries_player = allCountriesPlayers(propertiesList,TourPlayerProfile);
+
+                            System.out.println(countries_player.size());
+                            for(String s : countries_player){
+                                System.out.println(s);
+                            }
 
                             System.out.println(tplayerNick);
                             System.out.println(playerNickname);
@@ -320,7 +407,47 @@ public class Client2 extends Application {
                                     diceedInfo.setText("");
                                     panelTourPlayer.setVisible(true);
                                     readyTour.setVisible(false);
-                                    dicing.setVisible(true);
+                                    standingOnCountry = false;
+                                    dicing.setVisible(false);
+                                    for(String s : countries_player){
+                                        if(propertiesList.get(position-1).getCountryName().equals(s)) {
+                                            standingOnCountry = true;
+                                        }
+                                    }
+                                    if(standingOnCountry){
+                                        dicing.setVisible(false);
+                                        BuyingHousesBox.setVisible(true);
+                                        BuyHouse1.setVisible(false);
+                                        BuyHouse2.setVisible(false);
+                                        BuyHouse3.setVisible(false);
+                                        BuyHouse4.setVisible(false);
+                                        System.out.println(TourPlayerProfile.getCash());
+                                        if(TourPlayerProfile.getCash() >= (propertiesList.get(position-1).getHouseCost()) && 4-propertiesList.get(position-1).getActualLvlProperty() >= 1){
+                                            BuyHouse1.setVisible(true);
+                                        }
+                                        if(TourPlayerProfile.getCash() >= (2*(propertiesList.get(position-1).getHouseCost())) && 4-propertiesList.get(position-1).getActualLvlProperty() >= 2){
+                                            BuyHouse2.setVisible(true);
+                                        }
+                                        if(TourPlayerProfile.getCash() >= (3*propertiesList.get(position-1).getHouseCost()) && 4-propertiesList.get(position-1).getActualLvlProperty() >= 3){
+                                            BuyHouse3.setVisible(true);
+                                        }
+                                        if(TourPlayerProfile.getCash() >= (4*propertiesList.get(position-1).getHouseCost()) && 4-propertiesList.get(position-1).getActualLvlProperty() >= 4){
+                                            BuyHouse4.setVisible(true);
+                                        }
+                                        if(TourPlayerProfile.getCash() < (propertiesList.get(position-1).getHouseCost())){
+                                            BuyingHousesBox.setVisible(false);
+                                            dicing.setVisible(true);
+                                        }
+                                        BuyHouse1.setText("1 -" + propertiesList.get(position-1).getHouseCost() + "$");
+                                        BuyHouse2.setText("2 -" + (2*propertiesList.get(position-1).getHouseCost()) + "$");
+                                        BuyHouse3.setText("3 -" + (3*propertiesList.get(position-1).getHouseCost()) + "$");
+                                        BuyHouse4.setText("4 -" + (4*propertiesList.get(position-1).getHouseCost()) + "$");
+                                    }
+                                    else{
+                                        dicing.setVisible(true);
+                                        BuyingHousesBox.setVisible(false);
+                                    }
+
                                 }
                             }
                             else{
@@ -459,6 +586,7 @@ public class Client2 extends Application {
                                 //System.out.println(property.getIDproperty() + " name: " + property.getNameProperty());
                                 property = null;
                                 property = new Properties();
+                                ifMorePropertiesThan40DeleteUnsessesery();
                             }
                         }
 
@@ -541,6 +669,67 @@ public class Client2 extends Application {
         stage.getIcons().add(new Image("images/DolarBussines.png"));
         GridPane grp = new GridPane();
 
+        BuyingHousesBox.getChildren().add(buyingHousesinfo);
+        HousesBox.getChildren().add(BuyHouse1);
+        HousesBox.getChildren().add(BuyHouse2);
+        HousesBox.getChildren().add(BuyHouse3);
+        HousesBox.getChildren().add(BuyHouse4);
+        HousesBox.setAlignment(Pos.CENTER);
+        HousesBox.setSpacing(20);
+        BuyingHousesBox.setSpacing(10);
+        BuyingHousesBox.setAlignment(Pos.CENTER);
+        BuyingHousesBox.getChildren().add(HousesBox);
+
+        BuyHouse1.setOnAction(actionEvent -> {
+            propertiesList.get(position-1).buildHouseOnProperty();
+            hv.updateHousesOnMap(propertiesList);
+            hh.updateHousesOnMap(propertiesList);
+            BuyingHousesBox.setVisible(false);
+            TourPlayerProfile.setCash(TourPlayerProfile.getCash() - (propertiesList.get(position-1).getHouseCost()));
+            dicing.setVisible(true);
+            makeUpdateMapANdTables();
+            boughtHouses = 1;
+        });
+
+        BuyHouse2.setOnAction(actionEvent -> {
+            propertiesList.get(position-1).buildHouseOnProperty();
+            propertiesList.get(position-1).buildHouseOnProperty();
+            hv.updateHousesOnMap(propertiesList);
+            hh.updateHousesOnMap(propertiesList);
+            BuyingHousesBox.setVisible(false);
+            TourPlayerProfile.setCash(TourPlayerProfile.getCash() - (2*propertiesList.get(position-1).getHouseCost()));
+            dicing.setVisible(true);
+            makeUpdateMapANdTables();
+            boughtHouses = 2;
+        });
+
+        BuyHouse3.setOnAction(actionEvent -> {
+            propertiesList.get(position-1).buildHouseOnProperty();
+            propertiesList.get(position-1).buildHouseOnProperty();
+            propertiesList.get(position-1).buildHouseOnProperty();
+            hv.updateHousesOnMap(propertiesList);
+            hh.updateHousesOnMap(propertiesList);
+            BuyingHousesBox.setVisible(false);
+            TourPlayerProfile.setCash(TourPlayerProfile.getCash() - (3*propertiesList.get(position-1).getHouseCost()));
+            dicing.setVisible(true);
+            makeUpdateMapANdTables();
+            boughtHouses = 3;
+        });
+
+        BuyHouse4.setOnAction(actionEvent -> {
+            propertiesList.get(position-1).buildHouseOnProperty();
+            propertiesList.get(position-1).buildHouseOnProperty();
+            propertiesList.get(position-1).buildHouseOnProperty();
+            propertiesList.get(position-1).buildHouseOnProperty();
+            hv.updateHousesOnMap(propertiesList);
+            hh.updateHousesOnMap(propertiesList);
+            BuyingHousesBox.setVisible(false);
+            TourPlayerProfile.setCash(TourPlayerProfile.getCash() - (4*propertiesList.get(position-1).getHouseCost()));
+            dicing.setVisible(true);
+            makeUpdateMapANdTables();
+            boughtHouses = 4;
+        });
+
         Image map = new Image("/images/eurobussinesmap.png");
 
         ImageView mapView = new ImageView(map);
@@ -553,6 +742,10 @@ public class Client2 extends Application {
         MapPane.getChildren().add(pawnView2);
         MapPane.getChildren().add(pawnView3);
         MapPane.getChildren().add(pawnView4);
+        hv = new HousesOnPropertiesVertical(MapPane);
+        hv.setNoVisibleHousesVertical();
+        hh = new HousesOnPropertiesHorizontal(MapPane,propertiesList);
+        hh.setNoVisibleHousesHorizontal();
 
         pawnView1.setVisible(false);
         pawnView2.setVisible(false);
@@ -568,7 +761,7 @@ public class Client2 extends Application {
         grp.add(panelOponents,1,0);
         grp.add(panelTourPlayer,1,0);
         grp.add(panelTourPlayerInJail,1,0);
-        grp.add(propertiesMap,2,0);
+        //grp.add(propertiesMap,2,0);
         grp.setAlignment(Pos.CENTER);
         grp.setHgap(50);
         box.setSpacing(10);
@@ -605,13 +798,14 @@ public class Client2 extends Application {
     }
 
     public void TourPlayerScene(){
-
         DiceBox.setAlignment(Pos.CENTER);
         DiceBox.setSpacing(50);
         viewDice1.setFitHeight(50);
         viewDice1.setFitWidth(50);
         viewDice2.setFitHeight(50);
         viewDice2.setFitWidth(50);
+
+
 
         Button BuyPropertyBtn = new Button("Buy");
         Button NoBuyPropertyBtn = new Button("No thanks!");
@@ -649,18 +843,23 @@ public class Client2 extends Application {
         diceImages.addAll(viewDice1,viewDice2);
 
         ObservableList list = panelTourPlayer.getChildren();
-        list.addAll(player1,player2,player3,player4,info,dicing,diceedInfo,DiceBox,propertyInfo,buyingPopertyBox,readyTour);
+        list.addAll(player1,player2,player3,player4,BuyingHousesBox,info,dicing,diceedInfo,DiceBox,propertyInfo,buyingPopertyBox,readyTour);
 
         panelTourPlayer.setAlignment(Pos.CENTER);
 //        readyTour.setVisible(false);
 
         panelTourPlayer.setSpacing(10);
         dicing.setOnAction(e->{
+            hv.updateHousesOnMap(propertiesList);
+            hh.updateHousesOnMap(propertiesList);
+
             buyingPopertyBox.setVisible(true);
             int randomCard = dice.throwQuestionMarkCard();
+
             dice = new Dice();
             int dice1 = dice.throwfunction();
             int dice2 = dice.throwfunction();
+
 
             position = position + dice1 + dice2;
 
@@ -714,7 +913,7 @@ public class Client2 extends Application {
                     }
                     else if(TourPlayerProfile.getPlayerNumber() == 3){
                         pawnView3.setX(cordsPlayersMap.getCorXProperty(position,3));
-                        pawnView3.setY(cordsPlayersMap.getCorYProperty(position,4));
+                        pawnView3.setY(cordsPlayersMap.getCorYProperty(position,3));
                     }
                     else if(TourPlayerProfile.getPlayerNumber() == 4){
                         pawnView4.setX(cordsPlayersMap.getCorXProperty(position,4));
@@ -729,14 +928,204 @@ public class Client2 extends Application {
                     String Cardname = propertiesList.get(position-1).getNameProperty();
                     System.out.println(propertiesList.get(position-1).getNameProperty());
                     if(Cardname.startsWith("Red")){
+                        cardNumber = cardId4Server(randomCard);
                         propertyInformation.setText("Red Questionmark Field!");
                         Image RedQuestionMarkCard = new Image("/images/RedBlueCards/RedCards/" + randomCard + ".png");
                         propertyView.setImage(RedQuestionMarkCard);
+                        if(randomCard == 1){
+                            position = 15;
+                        }
+                        else if(randomCard == 2){
+                            TourPlayerProfile.setCash(TourPlayerProfile.getCash() + 100);
+                        }
+                        else if(randomCard == 3){
+                            int destination = 36;
+                            if(position >= destination){
+                                System.out.println("Przechodzisz przez start dostajesz 400$");
+                                TourPlayerProfile.setCash(TourPlayerProfile.getCash() + 400);
+                                passedStart = 1;
+                            }
+                            position = destination;
+                        }
+                        else if(randomCard == 4){
+                            TourPlayerProfile.setCash(TourPlayerProfile.getCash() + 300);
+                        }
+                        else if(randomCard == 5){
+                            int destination = 25;
+                            if(position >= destination){
+                                System.out.println("Przechodzisz przez start dostajesz 400$");
+                                TourPlayerProfile.setCash(TourPlayerProfile.getCash() + 400);
+                                passedStart = 1;
+                            }
+                            position = destination;
+                        }
+                        else if(randomCard == 6){
+                            TourPlayerProfile.setCash(TourPlayerProfile.getCash() - 40);
+                        }
+                        else if(randomCard == 7){
+                            int destination = 7;
+                            if(position >= destination){
+                                System.out.println("Przechodzisz przez start dostajesz 400$");
+                                TourPlayerProfile.setCash(TourPlayerProfile.getCash() + 400);
+                                passedStart = 1;
+                            }
+                            position = destination;
+                        }
+                        else if(randomCard == 8){
+                            TourPlayerProfile.setCash(TourPlayerProfile.getCash() - 300);
+                        }
+                        else if(randomCard == 9){
+                            position = 11;
+                            isInPrisonMessage = 1;
+                            if(TourPlayerProfile.getPlayerNumber() == 1){
+                                pawnView1.setX(cordsPlayersMap.getCorXProperty(position,1));
+                                pawnView1.setY(cordsPlayersMap.getCorYProperty(position,1));
+                            }
+                            else if(TourPlayerProfile.getPlayerNumber() == 2){
+                                pawnView2.setX(cordsPlayersMap.getCorXProperty(position,2));
+                                pawnView2.setY(cordsPlayersMap.getCorYProperty(position,2));
+                            }
+                            else if(TourPlayerProfile.getPlayerNumber() == 3){
+                                pawnView3.setX(cordsPlayersMap.getCorXProperty(position,3));
+                                pawnView3.setY(cordsPlayersMap.getCorYProperty(position,3));
+                            }
+                            else if(TourPlayerProfile.getPlayerNumber() == 4){
+                                pawnView4.setX(cordsPlayersMap.getCorXProperty(position,4));
+                                pawnView4.setY(cordsPlayersMap.getCorYProperty(position,4));
+                            }
+                            propertyInformation.setText("You go to jail!");
+                            TourPlayerProfile.setInJail(true);
+                        }
+                        else if(randomCard == 10){
+                            TourPlayerProfile.setCash(TourPlayerProfile.getCash() + 200);
+                        }
+                        else if(randomCard == 11){
+                            position = 1;
+                        }
+                        else if(randomCard == 12){
+                            position = position - 3;
+                            if(position == 0)
+                                position = 40;
+                        }
+                        else if(randomCard == 13){
+                            position = position + 3;
+                            if(position > 40){
+                                position = position - 40;
+                                TourPlayerProfile.setCash(TourPlayerProfile.getCash() + 400);
+                                info.setText("You passed Start and get reward 400$!");
+                                TourPlayerProfile.setPropertyId(position);
+                                passedStart = 1;
+                            }
+                        }
+                        else if(randomCard == 14){
+                            TourPlayerProfile.setCash(TourPlayerProfile.getCash() - 30);
+                        }
+                        else if(randomCard == 15){
+                            TourPlayerProfile.setCash(TourPlayerProfile.getCash() + 400);
+                        }
+                        else if(randomCard == 16){
+                            position = 40;
+                        }
                     }
                     else if(Cardname.startsWith("Blue")){
+                        cardNumber = cardId4Server(randomCard);
                         propertyInformation.setText("Blue Questionmark Field!");
                         Image BlueQuestionMarkCard = new Image("/images/RedBlueCards/BlueCards/" + randomCard + ".png");
                         propertyView.setImage(BlueQuestionMarkCard);
+                        if(randomCard == 1){
+                            position = 15;
+                        }
+                        else if(randomCard == 2){
+                            TourPlayerProfile.setCash(TourPlayerProfile.getCash() + 100);
+                        }
+                        else if(randomCard == 3){
+                            int destination = 36;
+                            if(position >= destination){
+                                System.out.println("Przechodzisz przez start dostajesz 400$");
+                                TourPlayerProfile.setCash(TourPlayerProfile.getCash() + 400);
+                                passedStart = 1;
+                            }
+                            position = destination;
+                        }
+                        else if(randomCard == 4){
+                            TourPlayerProfile.setCash(TourPlayerProfile.getCash() + 300);
+                        }
+                        else if(randomCard == 5){
+                            int destination = 25;
+                            if(position >= destination){
+                                System.out.println("Przechodzisz przez start dostajesz 400$");
+                                TourPlayerProfile.setCash(TourPlayerProfile.getCash() + 400);
+                                passedStart = 1;
+                            }
+                            position = destination;
+                        }
+                        else if(randomCard == 6){
+                            TourPlayerProfile.setCash(TourPlayerProfile.getCash() - 40);
+                        }
+                        else if(randomCard == 7){
+                            int destination = 7;
+                            if(position >= destination){
+                                System.out.println("Przechodzisz przez start dostajesz 400$");
+                                TourPlayerProfile.setCash(TourPlayerProfile.getCash() + 400);
+                                passedStart = 1;
+                            }
+                            position = destination;
+                        }
+                        else if(randomCard == 8){
+                            TourPlayerProfile.setCash(TourPlayerProfile.getCash() - 300);
+                        }
+                        else if(randomCard == 9){
+                            position = 11;
+                            isInPrisonMessage = 1;
+                            if(TourPlayerProfile.getPlayerNumber() == 1){
+                                pawnView1.setX(cordsPlayersMap.getCorXProperty(position,1));
+                                pawnView1.setY(cordsPlayersMap.getCorYProperty(position,1));
+                            }
+                            else if(TourPlayerProfile.getPlayerNumber() == 2){
+                                pawnView2.setX(cordsPlayersMap.getCorXProperty(position,2));
+                                pawnView2.setY(cordsPlayersMap.getCorYProperty(position,2));
+                            }
+                            else if(TourPlayerProfile.getPlayerNumber() == 3){
+                                pawnView3.setX(cordsPlayersMap.getCorXProperty(position,3));
+                                pawnView3.setY(cordsPlayersMap.getCorYProperty(position,3));
+                            }
+                            else if(TourPlayerProfile.getPlayerNumber() == 4){
+                                pawnView4.setX(cordsPlayersMap.getCorXProperty(position,4));
+                                pawnView4.setY(cordsPlayersMap.getCorYProperty(position,4));
+                            }
+                            propertyInformation.setText("You go to jail!");
+                            TourPlayerProfile.setInJail(true);
+                        }
+                        else if(randomCard == 10){
+                            TourPlayerProfile.setCash(TourPlayerProfile.getCash() + 200);
+                        }
+                        else if(randomCard == 11){
+                            position = 1;
+                        }
+                        else if(randomCard == 12){
+                            position = position - 3;
+                            if(position == 0)
+                                position = 40;
+                        }
+                        else if(randomCard == 13){
+                            position = position + 3;
+                            if(position > 40){
+                                position = position - 40;
+                                TourPlayerProfile.setCash(TourPlayerProfile.getCash() + 400);
+                                info.setText("You passed Start and get reward 400$!");
+                                TourPlayerProfile.setPropertyId(position);
+                                passedStart = 1;
+                            }
+                        }
+                        else if(randomCard == 14){
+                            TourPlayerProfile.setCash(TourPlayerProfile.getCash() - 30);
+                        }
+                        else if(randomCard == 15){
+                            TourPlayerProfile.setCash(TourPlayerProfile.getCash() + 400);
+                        }
+                        else if(randomCard == 16){
+                            position = 40;
+                        }
                     }
                     else{
                         propertyInformation.setText("You are ane not standing on Buyable property or payable");
@@ -746,10 +1135,11 @@ public class Client2 extends Application {
             }
 
 
-
+            Properties actualNEWProperty = propertiesList.get(position-1);
             if(propertyBuyable(propertiesList.get(position-1).getNameProperty())){
                 if(propertiesList.get(position-1).getOwnerID() == 0){
-                    if(TourPlayerProfile.getCash() >= actualProperty.getBuyCost()){
+
+                    if(TourPlayerProfile.getCash() >= actualNEWProperty.getBuyCost()){
                         BuyPoropertyInfo.setText("Do You want to Buy this property?");
                         BuyPropertyBtn.setVisible(true);
                         NoBuyPropertyBtn.setVisible(true);
@@ -761,21 +1151,21 @@ public class Client2 extends Application {
                             readyTour.setVisible(true);
                             BuyPropertyBtn.setVisible(false);
                             NoBuyPropertyBtn.setVisible(false);
-                            TourPlayerProfile.setCash(TourPlayerProfile.getCash() - actualProperty.getBuyCost());
-                            actualProperty.setOwnerID(TourPlayerProfile.getPlayerNumber());
-                            propertyInformation.setText("You have purchase " + actualProperty.getNameProperty() + " in country " + actualProperty.getCountryName() + " oponents will pay: " + actualProperty.getPaymentForStay() + "$");
+                            TourPlayerProfile.setCash(TourPlayerProfile.getCash() - actualNEWProperty.getBuyCost());
+                            actualNEWProperty.setOwnerID(TourPlayerProfile.getPlayerNumber());
+                            propertyInformation.setText("You have purchase " + actualNEWProperty.getNameProperty() + " in country " + actualNEWProperty.getCountryName() + " oponents will pay: " + actualNEWProperty.getPaymentForStay() + "$");
 
                             if(TourPlayerProfile.getPlayerNumber() == 1){
-                                player1.setText("Player 1 : " + TourPlayerProfile.getPlayerName() + " his cash: " + TourPlayerProfile.getCash() + "$" + " standing on: " + actualProperty.getNameProperty());
+                                player1.setText("Player 1 : " + TourPlayerProfile.getPlayerName() + " his cash: " + TourPlayerProfile.getCash() + "$" + " standing on: " + actualNEWProperty.getNameProperty());
                             }
                             else if(TourPlayerProfile.getPlayerNumber() == 2){
-                                player2.setText("Player 2 : " + TourPlayerProfile.getPlayerName() + " his cash: " + TourPlayerProfile.getCash() + "$" + " standing on: " + actualProperty.getNameProperty());
+                                player2.setText("Player 2 : " + TourPlayerProfile.getPlayerName() + " his cash: " + TourPlayerProfile.getCash() + "$" + " standing on: " + actualNEWProperty.getNameProperty());
                             }
                             else if(TourPlayerProfile.getPlayerNumber() == 3){
-                                player3.setText("Player 3 : " + TourPlayerProfile.getPlayerName() + " his cash: " + TourPlayerProfile.getCash() + "$" + " standing on: " + actualProperty.getNameProperty());
+                                player3.setText("Player 3 : " + TourPlayerProfile.getPlayerName() + " his cash: " + TourPlayerProfile.getCash() + "$" + " standing on: " + actualNEWProperty.getNameProperty());
                             }
                             else if(TourPlayerProfile.getPlayerNumber() == 4){
-                                player4.setText("Player 4 : " + TourPlayerProfile.getPlayerName() + " his cash: " + TourPlayerProfile.getCash() + "$" + " standing on: " + actualProperty.getNameProperty());
+                                player4.setText("Player 4 : " + TourPlayerProfile.getPlayerName() + " his cash: " + TourPlayerProfile.getCash() + "$" + " standing on: " + actualNEWProperty.getNameProperty());
                             }
 
                             gridMapImages = new GridMapImages(propertiesMap,propertiesList,playersList);
@@ -804,7 +1194,7 @@ public class Client2 extends Application {
                     propertyInformation.setText("It's your home!");
                 }
                 else{
-                    if(playersList.get(actualProperty.getOwnerID()-1).getIsInJail()){
+                    if(playersList.get(actualNEWProperty.getOwnerID()-1).getIsInJail()){
                         readyTour.setVisible(true);
                         propertyInformation.setText("Owner is in prison you dont have to pay! Hurra!");
                     }
@@ -813,20 +1203,19 @@ public class Client2 extends Application {
                         NoBuyPropertyBtn.setVisible(false);
                         buyingPopertyBox.setVisible(false);
                         readyTour.setVisible(true);
-                        Player oponent = playersList.get(actualProperty.getOwnerID()-1);
+                        Player oponent = playersList.get(actualNEWProperty.getOwnerID()-1);
                         Properties actualPropertyPlayer = propertiesList.get(position-1);
                         if(position == 6 || position == 16 || position == 26 || position == 36){
                             int ownedStations = 0;
-                            int oponentId = oponent.getPlayerNumber();
-                            int owner6 = propertiesList.get(7).getOwnerID();
-                            int owner16 = propertiesList.get(17).getOwnerID();
-                            int owner26 = propertiesList.get(27).getOwnerID();
-                            int owner36 = propertiesList.get(37).getOwnerID();
-                            int stationOwners[] = {owner6,owner16,owner26,owner36};
-                            for(int i : stationOwners){
-                                if(i == oponentId)
-                                    ownedStations++;
+                            for(Properties prop : propertiesList){
+                                if(prop.getIDproperty() == 6 || prop.getIDproperty() == 16 ||prop.getIDproperty() == 26 ||prop.getIDproperty() == 36){
+                                    if(prop.getOwnerID() == oponent.getPlayerNumber()){
+                                        ownedStations++;
+                                    }
+                                }
                             }
+                            System.out.println("This property owns: " + actualPropertyPlayer.getOwnerID());
+                            System.out.println("This player owned Stations: " + ownedStations);
                             if(ownedStations == 1){
                                 TourPlayerProfile.setCash(TourPlayerProfile.getCash() - actualPropertyPlayer.getPaymentForStay());
                                 oponent.setCash(oponent.getCash() + actualPropertyPlayer.getPaymentForStay());
@@ -851,12 +1240,12 @@ public class Client2 extends Application {
                         else if(position == 13 || position == 29){
                             int sumDices = dice1 + dice2;
                             int ownedPW = 0;
-                            int owner13 = propertiesList.get(14).getOwnerID();
-                            int owner29 = propertiesList.get(29).getOwnerID();
-                            int ownersPW[] = {owner13,owner29};
-                            for(int i : ownersPW){
-                                if(oponent.getPlayerNumber() == i)
-                                    ownedPW++;
+                            for(Properties prop : propertiesList){
+                                if(prop.getIDproperty() == 13 || prop.getIDproperty() == 29){
+                                    if(prop.getOwnerID() == oponent.getPlayerNumber()){
+                                        ownedPW++;
+                                    }
+                                }
                             }
                             if(ownedPW == 1){
                                 int fine = sumDices * 10;
@@ -872,10 +1261,10 @@ public class Client2 extends Application {
                             }
                         }
                         else{
-                            System.out.println( TourPlayerProfile.getPlayerName() + " paying to " + playersList.get(actualProperty.getOwnerID()-1).getPlayerName());
-                            TourPlayerProfile.setCash(TourPlayerProfile.getCash() - actualProperty.getPaymentForStay());
-                            playersList.get(actualProperty.getOwnerID()-1).setCash(playersList.get(actualProperty.getOwnerID()-1).getCash() + actualProperty.getPaymentForStay());
-                            propertyInformation.setText("This property have owner: " + playersList.get(actualProperty.getOwnerID()-1).getPlayerName() + " you have to pay him " + actualProperty.getPaymentForStay() + "$");
+                            System.out.println( TourPlayerProfile.getPlayerName() + " paying to " + playersList.get(actualNEWProperty.getOwnerID()-1).getPlayerName());
+                            TourPlayerProfile.setCash(TourPlayerProfile.getCash() - actualNEWProperty.getPaymentForStay());
+                            playersList.get(actualNEWProperty.getOwnerID()-1).setCash(playersList.get(actualNEWProperty.getOwnerID()-1).getCash() + actualNEWProperty.getPaymentForStay());
+                            propertyInformation.setText("This property have owner: " + playersList.get(actualNEWProperty.getOwnerID()-1).getPlayerName() + " you have to pay him " + actualNEWProperty.getPaymentForStay() + "$");
                         }
                     }
                 }
@@ -1088,11 +1477,14 @@ public class Client2 extends Application {
     }
     public void SendPlayerTourReadyCurrentPlayer(){
         try{
-            dOut.writeUTF("PlayerTourReady 0 0 0 " + isInPrisonMessage + " " + playerPayedFinePrison + " " + buyPropertyMessage + " " + TourPlayerProfile.getPlayerNumber() + " " + position);
+            dOut.writeUTF("PlayerTourReady " + boughtHouses + " " + passedStart + " " +  cardNumber + " " + isInPrisonMessage + " " + playerPayedFinePrison + " " + buyPropertyMessage + " " + TourPlayerProfile.getPlayerNumber() + " " + position);
         }
         catch (Exception ex){
 
         }
+        boughtHouses = 0;
+        passedStart = 0;
+        cardNumber = '0';
         isInPrisonMessage = 0;
         playerPayedFinePrison = 0;
         buyPropertyMessage = 0;
@@ -1213,4 +1605,135 @@ public class Client2 extends Application {
             }
         }
     }
+
+    public void ifMorePropertiesThan40DeleteUnsessesery(){
+        Iterator itr = propertiesList.iterator();
+        int i = 1;
+        while(itr.hasNext()){
+            Properties x = (Properties)itr.next();
+            if(i > 40){
+                itr.remove();
+            }
+            i++;
+        }
+        System.out.println("Size of properties list is: " + propertiesList.size());
+    }
+
+    public static char cardId4Server(int cardID){
+        switch (cardID){
+            case 1: return '1';
+            case 2: return '2';
+            case 3: return '3';
+            case 4: return '4';
+            case 5: return '5';
+            case 6: return '6';
+            case 7: return '7';
+            case 8: return '8';
+            case 9: return '9';
+            case 10: return 'a';
+            case 11: return 'b';
+            case 12: return 'c';
+            case 13: return 'd';
+            case 14: return 'e';
+            case 15: return 'f';
+            case 16: return 'g';
+        }
+        return '0';
+    }
+
+    public static int card4ClientFromServer(char cardID){
+        switch (cardID){
+            case '1': return 1;
+            case '2': return 2;
+            case '3': return 3;
+            case '4': return 4;
+            case '5': return 5;
+            case '6': return 6;
+            case '7': return 7;
+            case '8': return 8;
+            case '9': return 9;
+            case 'a': return 10;
+            case 'b': return 11;
+            case 'c': return 12;
+            case 'd': return 13;
+            case 'e': return 14;
+            case 'f': return 15;
+            case 'g': return 16;
+        }
+        return 0;
+    }
+
+    public ArrayList<String> allCountriesPlayers(ArrayList<Properties> propertiesList,Player player) {
+        ArrayList<String> countries = new ArrayList<>();
+        boolean g = true,i = true,s = true,e = true,b = true,S = true,r = true,a = true;
+        int Greece = 0;
+        int Italy = 0;
+        int Spain = 0;
+        int England = 0;
+        int Benelux = 0;
+        int Sweden = 0;
+        int RFN = 0;
+        int Austria = 0;
+        for (Properties p : propertiesList) {
+            if (p.getCountryName().equals("Grecja")) {
+                if (player.getPlayerNumber() == p.getOwnerID())
+                    Greece++;
+                if (Greece == 2 && g){
+                    countries.add("Grecja");
+                    g = false;
+                }
+            } else if (p.getCountryName().equals("Włochy")) {
+                if (player.getPlayerNumber() == p.getOwnerID())
+                    Italy++;
+                if (Italy == 3 && i){
+                    countries.add("Włochy");
+                    i = false;
+                }
+            } else if (p.getCountryName().equals("Hiszpania")) {
+                if (player.getPlayerNumber() == p.getOwnerID())
+                    Spain++;
+                if (Spain == 3 && s){
+                    countries.add("Hiszpania");
+                    s = false;
+                }
+            } else if (p.getCountryName().equals("Anglia")) {
+                if (player.getPlayerNumber() == p.getOwnerID())
+                    England++;
+                if (England == 3 && e){
+                    countries.add("Anglia");
+                    e = false;
+                }
+            } else if (p.getCountryName().equals("Benelux")) {
+                if (player.getPlayerNumber() == p.getOwnerID())
+                    Benelux++;
+                if (Benelux == 3 && b){
+                    countries.add("Benelux");
+                    b = false;
+                }
+            } else if (p.getCountryName().equals("Szwecja")) {
+                if (player.getPlayerNumber() == p.getOwnerID())
+                    Sweden++;
+                if (Sweden == 3 && S){
+                    countries.add("Szwecja");
+                    S = false;
+                }
+            } else if (p.getCountryName().equals("RFN")) {
+                if (player.getPlayerNumber() == p.getOwnerID())
+                    RFN++;
+                if (RFN == 3 && r){
+                    countries.add("RFN");
+                    r = false;
+                }
+            } else if (p.getCountryName().equals("Austria")) {
+                if (player.getPlayerNumber() == p.getOwnerID())
+                    Austria++;
+                if (Austria == 2 && a){
+                    countries.add("Austria");
+                    a = false;
+                }
+            }
+        }
+        return countries;
+    }
+
 }
