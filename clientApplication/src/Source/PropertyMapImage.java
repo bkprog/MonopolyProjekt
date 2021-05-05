@@ -8,8 +8,8 @@ public class PropertyMapImage {
     private ImageView propertyView = new ImageView(property);
 
     public PropertyMapImage(){
-        propertyView.setFitHeight(25);
-        propertyView.setFitWidth(50);
+        propertyView.setFitHeight(30);
+        propertyView.setFitWidth(60);
     }
 
     public ImageView getPropertyView() {

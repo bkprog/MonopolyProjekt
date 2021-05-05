@@ -17,10 +17,11 @@ public class PropertyMapImages {
     private HBox box2 = new HBox();
     private HBox box3 = new HBox();
     private HBox box4 = new HBox();
+    private HBox box5 = new HBox();
     private VBox mainBox = new VBox();
 
     public PropertyMapImages(String nickname){
-        this.nickname.setText(nickname);
+        this.nickname.setText("Własności gracza o nazwie: " + nickname);
         initializeImagesMap();
     }
 
@@ -29,33 +30,39 @@ public class PropertyMapImages {
             imageProperty = new PropertyMapImage();
             imagesList.add(imageProperty);
         }
-        for(int i=0;i<7;i++){
+        for(int i=0;i<6;i++){
             box1.getChildren().add(imagesList.get(i).getPropertyView());
         }
-        for(int i=7;i<14;i++){
+        for(int i=6;i<12;i++){
             box2.getChildren().add(imagesList.get(i).getPropertyView());
         }
-        for(int i=14;i<21;i++){
+        for(int i=12;i<18;i++){
             box3.getChildren().add(imagesList.get(i).getPropertyView());
         }
-        for(int i=21;i<28;i++){
+        for(int i=18;i<24;i++){
             box4.getChildren().add(imagesList.get(i).getPropertyView());
+        }
+        for(int i=24;i<28;i++){
+            box5.getChildren().add(imagesList.get(i).getPropertyView());
         }
         mainBox.getChildren().add(nickname);
         mainBox.getChildren().add(box1);
         mainBox.getChildren().add(box2);
         mainBox.getChildren().add(box3);
         mainBox.getChildren().add(box4);
+        mainBox.getChildren().add(box5);
         mainBox.setAlignment(Pos.CENTER);
-        mainBox.setSpacing(5);
+        mainBox.setSpacing(2);
         box1.setAlignment(Pos.CENTER);
-        box1.setSpacing(5);
+        box1.setSpacing(2);
         box2.setAlignment(Pos.CENTER);
-        box2.setSpacing(5);
+        box2.setSpacing(2);
         box3.setAlignment(Pos.CENTER);
-        box3.setSpacing(5);
+        box3.setSpacing(2);
         box4.setAlignment(Pos.CENTER);
-        box4.setSpacing(5);
+        box4.setSpacing(2);
+        box5.setAlignment(Pos.CENTER);
+        box5.setSpacing(2);
     }
 
     public VBox getMainBox() {

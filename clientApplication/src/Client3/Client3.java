@@ -1,21 +1,21 @@
-package Client2;
+package Client3;
 
 import Source.*;
 import javafx.application.Application;
 import javafx.application.Platform;
+import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
-import javafx.scene.control.Button;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
-import javafx.geometry.Pos;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
-import javafx.collections.ObservableList;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
@@ -27,7 +27,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 
-public class Client2 extends Application {
+public class Client3 extends Application {
     ArrayList<Player> playersList = new ArrayList<>();
     ArrayList<Properties> propertiesList = new ArrayList<>();
     public static DataInputStream dIn;

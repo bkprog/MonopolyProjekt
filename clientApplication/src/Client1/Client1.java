@@ -522,7 +522,7 @@ public class Client1 extends Application {
                                 String text = "Player 1 : " + player.getPlayerName() + " his cash: " + player.getCash() + "$" + " standing on: " + propertyName;
                                 //System.out.println(text);
                                 player1.setText(text);
-                                p1.setText(text);
+                                p1.setText(player1.getText());
                                 player1.setVisible(true);
                             }
 
@@ -530,7 +530,7 @@ public class Client1 extends Application {
                                 String text = "Player 2 : " + player.getPlayerName() + " his cash: " + player.getCash() + "$" + " standing on: " + propertyName;
                                 //System.out.println(text);
                                 player2.setText(text);
-                                p2.setText(text);
+                                p2.setText(player2.getText());
                                 player2.setVisible(true);
                             }
 
@@ -538,7 +538,7 @@ public class Client1 extends Application {
                                 String text = "Player 3 : " + player.getPlayerName() + " his cash: " + player.getCash() + "$" + " standing on: " + propertyName;
                                 //System.out.println(text);
                                 player3.setText(text);
-                                p3.setText(text);
+                                p3.setText(player3.getText());
                                 player3.setVisible(true);
                             }
 
@@ -546,7 +546,7 @@ public class Client1 extends Application {
                                 String text = "Player 4 : " + player.getPlayerName() + " his cash: " + player.getCash() + "$" + " standing on: " + propertyName;
                                 //System.out.println(text);
                                 player4.setText(text);
-                                p4.setText(text);
+                                p4.setText(player4.getText());
                                 player4.setVisible(true);
                             }
 
@@ -786,7 +786,7 @@ public class Client1 extends Application {
         grp.add(panelTourPlayerInJail,1,0);
         grp.add(propertiesMap,2,0);
         propertiesMap.setAlignment(Pos.CENTER);
-        propertiesMap.setSpacing(40);
+        propertiesMap.setSpacing(10);
         grp.setAlignment(Pos.CENTER);
         grp.setHgap(50);
         box.setSpacing(10);
@@ -1180,15 +1180,19 @@ public class Client1 extends Application {
 
                             if(TourPlayerProfile.getPlayerNumber() == 1){
                                 player1.setText("Player 1 : " + TourPlayerProfile.getPlayerName() + " his cash: " + TourPlayerProfile.getCash() + "$" + " standing on: " + actualNEWProperty.getNameProperty());
+                                p1.setText(player1.getText());
                             }
                             else if(TourPlayerProfile.getPlayerNumber() == 2){
                                 player2.setText("Player 2 : " + TourPlayerProfile.getPlayerName() + " his cash: " + TourPlayerProfile.getCash() + "$" + " standing on: " + actualNEWProperty.getNameProperty());
+                                p2.setText(player2.getText());
                             }
                             else if(TourPlayerProfile.getPlayerNumber() == 3){
                                 player3.setText("Player 3 : " + TourPlayerProfile.getPlayerName() + " his cash: " + TourPlayerProfile.getCash() + "$" + " standing on: " + actualNEWProperty.getNameProperty());
+                                p3.setText(player3.getText());
                             }
                             else if(TourPlayerProfile.getPlayerNumber() == 4){
                                 player4.setText("Player 4 : " + TourPlayerProfile.getPlayerName() + " his cash: " + TourPlayerProfile.getCash() + "$" + " standing on: " + actualNEWProperty.getNameProperty());
+                                p4.setText(player4.getText());
                             }
 
                             if(playersList.size() >= 2){
@@ -1363,6 +1367,10 @@ public class Client1 extends Application {
         panelOponents.setAlignment(Pos.CENTER);
 
         ObservableList list = panelOponents.getChildren();
+        p1.setText(player1.getText());
+        p2.setText(player2.getText());
+        p3.setText(player3.getText());
+        p4.setText(player4.getText());
         list.addAll(p1,p2,p3,p4,oponentsMoveInfo,informationOponentPanel,GetReadyTourButton);
 
         panelOponents.setSpacing(10);
@@ -1423,15 +1431,19 @@ public class Client1 extends Application {
 
                 if(TourPlayerProfile.getPlayerNumber() == 1){
                     player1.setText("Player 1 : " + TourPlayerProfile.getPlayerName() + " his cash: " + TourPlayerProfile.getCash() + "$" + " standing on: " + propertiesList.get(10).getNameProperty());
+                    p1.setText(player1.getText());
                 }
                 else if(TourPlayerProfile.getPlayerNumber() == 2){
                     player2.setText("Player 2 : " + TourPlayerProfile.getPlayerName() + " his cash: " + TourPlayerProfile.getCash() + "$" + " standing on: " + propertiesList.get(10).getNameProperty());
+                    p2.setText(player2.getText());
                 }
                 else if(TourPlayerProfile.getPlayerNumber() == 3){
                     player3.setText("Player 3 : " + TourPlayerProfile.getPlayerName() + " his cash: " + TourPlayerProfile.getCash() + "$" + " standing on: " + propertiesList.get(10).getNameProperty());
+                    p3.setText(player3.getText());
                 }
                 else if(TourPlayerProfile.getPlayerNumber() == 4){
                     player4.setText("Player 4 : " + TourPlayerProfile.getPlayerName() + " his cash: " + TourPlayerProfile.getCash() + "$" + " standing on: " + propertiesList.get(10).getNameProperty());
+                    p4.setText(player4.getText());
                 }
 
                 PrisonReady.setVisible(true);
@@ -1609,6 +1621,7 @@ public class Client1 extends Application {
                     player1.setText("Player 1 : " + p.getPlayerName() + " his cash: " + p.getCash() + "$" + " standing on: " + actualPlayerProperty.getNameProperty());
                 pawnView1.setX(cordsPlayersMap.getCorXProperty(actualPlayerProperty.getIDproperty(),p.getPlayerNumber()));
                 pawnView1.setY(cordsPlayersMap.getCorYProperty(actualPlayerProperty.getIDproperty(),p.getPlayerNumber()));
+                p1.setText(player1.getText());
             }
             else if(p.getPlayerNumber() == 2){
                 if(p.getIsInJail())
@@ -1617,6 +1630,7 @@ public class Client1 extends Application {
                     player2.setText("Player 2 : " + p.getPlayerName() + " his cash: " + p.getCash() + "$" + " standing on: " + actualPlayerProperty.getNameProperty());
                 pawnView2.setX(cordsPlayersMap.getCorXProperty(actualPlayerProperty.getIDproperty(),p.getPlayerNumber()));
                 pawnView2.setY(cordsPlayersMap.getCorYProperty(actualPlayerProperty.getIDproperty(),p.getPlayerNumber()));
+                p2.setText(player2.getText());
             }
             else if(p.getPlayerNumber() == 3){
                 if(p.getIsInJail())
@@ -1625,6 +1639,7 @@ public class Client1 extends Application {
                     player3.setText("Player 3 : " + p.getPlayerName() + " his cash: " + p.getCash() + "$" + " standing on: " + actualPlayerProperty.getNameProperty());
                 pawnView3.setX(cordsPlayersMap.getCorXProperty(actualPlayerProperty.getIDproperty(),p.getPlayerNumber()));
                 pawnView3.setY(cordsPlayersMap.getCorYProperty(actualPlayerProperty.getIDproperty(),p.getPlayerNumber()));
+                p3.setText(player3.getText());
             }
             else if(p.getPlayerNumber() == 4){
                 if(p.getIsInJail())
@@ -1633,6 +1648,7 @@ public class Client1 extends Application {
                     player4.setText("Player 4 : " + p.getPlayerName() + " his cash: " + p.getCash() + "$" + " standing on: " + actualPlayerProperty.getNameProperty());
                 pawnView4.setX(cordsPlayersMap.getCorXProperty(actualPlayerProperty.getIDproperty(),p.getPlayerNumber()));
                 pawnView4.setY(cordsPlayersMap.getCorYProperty(actualPlayerProperty.getIDproperty(),p.getPlayerNumber()));
+                p4.setText(player4.getText());
             }
         }
     }
