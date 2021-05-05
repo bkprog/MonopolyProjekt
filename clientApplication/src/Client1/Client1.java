@@ -99,8 +99,6 @@ public class Client1 extends Application {
     Label prisonInfo5 = new Label("");
     Label prisonInfo6 = new Label("");
     int bankrupt = 0;
-    GridMapImages gridMapImages;
-    GridMapImages gridMapImages1;
     GridPane propertiesMap = new GridPane();
     boolean propertiesMapFlag = true;
     boolean diceFlag = true;
@@ -212,8 +210,6 @@ public class Client1 extends Application {
                             System.out.println("Player: " + TourPlayerProfile.getPlayerName() + " Bought property: " + propertiesList.get(propId-1).getNameProperty());
                             propertiesList.get(propId-1).setOwnerID(TourPlayerProfile.getPlayerNumber());
 //                            gridMapImages.setOwnerGrid(propertiesList,playersList);
-                            gridMapImages = new GridMapImages(propertiesMap,propertiesList,playersList);
-                            propertiesMap = gridMapImages.getPanelMapGrid();
                         }
                         else if(respond.startsWith("InPrison ")){
                             //Player oponent = playersList.get(Integer.parseInt(respond.substring(9)));
@@ -360,15 +356,6 @@ public class Client1 extends Application {
                             }
                         }
                         else if(respond.startsWith("StartGame") && playersReady == NubmerOfPlayersInGame){
-
-
-
-
-                            if(propertiesMapFlag){
-                                gridMapImages = new GridMapImages(propertiesMap,propertiesList,playersList);
-                                propertiesMap = gridMapImages.getPanelMapGrid();
-                                propertiesMapFlag = false;
-                            }
 
                             int playerId = Integer.parseInt(respond.substring(10));
                             TourPlayerProfile = playersList.get(playerId-1);
@@ -1168,8 +1155,6 @@ public class Client1 extends Application {
                                 player4.setText("Player 4 : " + TourPlayerProfile.getPlayerName() + " his cash: " + TourPlayerProfile.getCash() + "$" + " standing on: " + actualNEWProperty.getNameProperty());
                             }
 
-                            gridMapImages = new GridMapImages(propertiesMap,propertiesList,playersList);
-                            propertiesMap = gridMapImages.getPanelMapGrid();
                         });
                         NoBuyPropertyBtn.setOnAction(actionEvent -> {
                             BuyPoropertyInfo.setText("");
