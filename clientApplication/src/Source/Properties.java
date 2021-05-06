@@ -1,5 +1,7 @@
 package Source;
 
+import java.util.ArrayList;
+
 public class Properties {
     private String Name;
     private int paymentForStay;
@@ -38,7 +40,7 @@ public class Properties {
         this.lvl0 = this.paymentForStay;
         this.countryName = countryName;
         this.buyCost = buyCost;
-        this.ownerID = 0;
+        this.ownerID = 1;
         this.propertyLVL = 0;
         this.lvl1 = lvl1;
         this.lvl2 = lvl2;
@@ -187,5 +189,6 @@ public class Properties {
     public void setOwnerID(int ownerID){
         this.ownerID = ownerID;
     }
+
 
 }

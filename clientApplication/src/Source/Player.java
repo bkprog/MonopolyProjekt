@@ -8,6 +8,10 @@ public class Player {
     int propertyId = 0;
     boolean bankroupt = false;
 
+    public boolean isBankroupt() {
+        return bankroupt;
+    }
+
     public void makeBankropt(){
         this.bankroupt = true;
     }

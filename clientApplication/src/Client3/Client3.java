@@ -28,86 +28,86 @@ import java.util.Iterator;
 
 
 public class Client3 extends Application {
-    ArrayList<Player> playersList = new ArrayList<>();
-    ArrayList<Properties> propertiesList = new ArrayList<>();
+    private ArrayList<Player> playersList = new ArrayList<>();
+    private ArrayList<Properties> propertiesList = new ArrayList<>();
     public static DataInputStream dIn;
     public static DataOutputStream dOut;
     private static Socket socket = null;
     public String playerNickname;
-    int NubmerOfPlayersInGame;
+    private int NubmerOfPlayersInGame;
     public int playersReady = 0;
     public int PlayerToursReady = 0;
-    Player player = new Player();
-    Properties property = new Properties();
-    String respondServer = new String();
-    Button readyButton = new Button("Ready");
-    Label readyCheckInfo = new Label("Click on ready button when you are ready");
-    Label clientConnected = new Label();
-    Label player1 = new Label();
-    Label player2 = new Label();
-    Label player3 = new Label();
-    Label player4 = new Label();
-    Label p1 = new Label();
-    Label p2 = new Label();
-    Label p3 = new Label();
-    Label p4 = new Label();
-    Image pawnPlayer1 = new Image("/images/Pawns/pawn-1.png");
-    Image pawnPlayer2 = new Image("/images/Pawns/pawn-2.png");
-    Image pawnPlayer3 = new Image("/images/Pawns/pawn-3.png");
-    Image pawnPlayer4 = new Image("/images/Pawns/pawn-4.png");
-    ImageView pawnView1 = new ImageView(pawnPlayer1);
-    ImageView pawnView2 = new ImageView(pawnPlayer2);
-    ImageView pawnView3 = new ImageView(pawnPlayer3);
-    ImageView pawnView4 = new ImageView(pawnPlayer4);
-    VBox panelOponents = new VBox();
-    VBox panelTourPlayer = new VBox();
-    VBox panelTourPlayerInJail = new VBox();
-    VBox box = new VBox();
-    Button dicing = new Button("Dice!");
-    VBox BuyingHousesBox = new VBox();
-    HBox HousesBox = new HBox();
-    Label buyingHousesinfo = new Label("Ile domków chcesz kupić?");
-    Button BuyHouse1 = new Button("1");
-    Button BuyHouse2 = new Button("2");
-    Button BuyHouse3 = new Button("3");
-    Button BuyHouse4 = new Button("4");
-    Button readyTour = new Button("Ready");
-    Label info = new Label("Click button to dice");
-    Label diceedInfo = new Label();
-    Button GetReadyTourButton = new Button("Get ready!");
-    Label informationOponentPanel = new Label();
-    HBox DiceBox = new HBox();
-    Image blankDice = new Image("images/Dice/dice" + 0 + ".png");
-    ImageView viewDice1 = new ImageView(blankDice);
-    ImageView viewDice2 = new ImageView(blankDice);
-    Dice dice = new Dice();
-    PawnCords cordsPlayersMap = new PawnCords();
-    Player TourPlayerProfile;
-    int position = 1;
-    VBox propertyInfo = new VBox();
-    DataReaderCards dataReaderCards = new DataReaderCards();
-    ArrayList <BlueRedCards> questionMarkList;
-    int buyPropertyMessage = 0;
-    int isInPrisonMessage = 0;
-    int playerPayedFinePrison = 0;
-    Button diceButtonPrison = new Button("Dice!");
-    Button payButton = new Button("Pay!");
-    Button PrisonReady = new Button("Ready");
-    Image dice1image = new Image("/images/Dice/dice0.png");
-    Image dice2image = new Image("/images/Dice/dice0.png");
-    ImageView dice1ViewPrison = new ImageView(dice1image);
-    ImageView dice2ViewPrison = new ImageView(dice2image);
-    Label prisonInfo5 = new Label("");
-    Label prisonInfo6 = new Label("");
-    int bankrupt = 0;
-    boolean propertiesMapFlag = true;
-    boolean diceFlag = true;
-    int passedStart = 0;
-    char cardNumber = '0';
-    HousesOnPropertiesVertical hv;
-    HousesOnPropertiesHorizontal hh;
-    ArrayList<String> countries_player;
-    Boolean standingOnCountry = false;
+    private Player player = new Player();
+    private Properties property = new Properties();
+    private String respondServer = new String();
+    private Button readyButton = new Button("Ready");
+    private Label readyCheckInfo = new Label("Click on ready button when you are ready");
+    private Label clientConnected = new Label();
+    private Label player1 = new Label();
+    private Label player2 = new Label();
+    private Label player3 = new Label();
+    private Label player4 = new Label();
+    private  Label p1 = new Label();
+    private Label p2 = new Label();
+    private Label p3 = new Label();
+    private Label p4 = new Label();
+    private Image pawnPlayer1 = new Image("/images/Pawns/pawn-1.png");
+    private Image pawnPlayer2 = new Image("/images/Pawns/pawn-2.png");
+    private Image pawnPlayer3 = new Image("/images/Pawns/pawn-3.png");
+    private Image pawnPlayer4 = new Image("/images/Pawns/pawn-4.png");
+    private ImageView pawnView1 = new ImageView(pawnPlayer1);
+    private ImageView pawnView2 = new ImageView(pawnPlayer2);
+    private ImageView pawnView3 = new ImageView(pawnPlayer3);
+    private ImageView pawnView4 = new ImageView(pawnPlayer4);
+    private VBox panelOponents = new VBox();
+    private VBox panelTourPlayer = new VBox();
+    private VBox panelTourPlayerInJail = new VBox();
+    private VBox box = new VBox();
+    private Button dicing = new Button("Dice!");
+    private VBox BuyingHousesBox = new VBox();
+    private HBox HousesBox = new HBox();
+    private Label buyingHousesinfo = new Label("Ile domków chcesz kupić?");
+    private Button BuyHouse1 = new Button("1");
+    private Button BuyHouse2 = new Button("2");
+    private Button BuyHouse3 = new Button("3");
+    private Button BuyHouse4 = new Button("4");
+    private Button readyTour = new Button("Ready");
+    private Label info = new Label("Click button to dice");
+    private Label diceedInfo = new Label();
+    private Button GetReadyTourButton = new Button("Get ready!");
+    private Label informationOponentPanel = new Label();
+    private HBox DiceBox = new HBox();
+    private Image blankDice = new Image("images/Dice/dice" + 0 + ".png");
+    private ImageView viewDice1 = new ImageView(blankDice);
+    private ImageView viewDice2 = new ImageView(blankDice);
+    private Dice dice = new Dice();
+    private PawnCords cordsPlayersMap = new PawnCords();
+    private Player TourPlayerProfile;
+    private int position = 1;
+    private VBox propertyInfo = new VBox();
+    private DataReaderCards dataReaderCards = new DataReaderCards();
+    private ArrayList <BlueRedCards> questionMarkList;
+    private int buyPropertyMessage = 0;
+    private int isInPrisonMessage = 0;
+    private int playerPayedFinePrison = 0;
+    private Button diceButtonPrison = new Button("Dice!");
+    private Button payButton = new Button("Pay!");
+    private Button PrisonReady = new Button("Ready");
+    private Image dice1image = new Image("/images/Dice/dice0.png");
+    private Image dice2image = new Image("/images/Dice/dice0.png");
+    private ImageView dice1ViewPrison = new ImageView(dice1image);
+    private ImageView dice2ViewPrison = new ImageView(dice2image);
+    private Label prisonInfo5 = new Label("");
+    private Label prisonInfo6 = new Label("");
+    private int bankrupt = 0;
+    private boolean propertiesMapFlag = true;
+    private boolean diceFlag = true;
+    private int passedStart = 0;
+    private char cardNumber = '0';
+    private HousesOnPropertiesVertical hv;
+    private HousesOnPropertiesHorizontal hh;
+    private ArrayList<String> countries_player;
+    private Boolean standingOnCountry = false;
     private int previousPosition;
     private int boughtHouses = 0;
     private VBox propertiesMap = new VBox();
@@ -115,6 +115,7 @@ public class Client3 extends Application {
     private PropertyMapImages player2Map;
     private PropertyMapImages player3Map;
     private PropertyMapImages player4Map;
+    private VBox PlayerBankroupt = new VBox();
 
     public void startTask(){
         Runnable task = new Runnable() {
@@ -828,6 +829,14 @@ public class Client3 extends Application {
         Scene scena = new Scene(grp,1200,800);
         stage.setScene(scena);
         stage.show();
+        stage.setOnCloseRequest(e -> {
+            try{
+                socket.close();
+            }
+            catch (IOException ex){
+                System.out.println(ex.getMessage());
+            }
+        });
     }
 
     public void TourPlayerScene(){
@@ -1571,46 +1580,6 @@ public class Client3 extends Application {
             return false;
         else
             return true;
-    }
-
-    public static ArrayList<BlueRedCards> initializeRandomCards(){
-        ArrayList<BlueRedCards> blueRedCardsInitial = new ArrayList<>();
-
-        BlueRedCards card1 = new BlueRedCards(1,"Wracasz do Mardrytu",0,0,0,0,15);
-        BlueRedCards card2 = new BlueRedCards(2,"Bank wyplaca ci procenty w wysokosci 100$",100,0,0,0,0);
-        BlueRedCards card3 = new BlueRedCards(3,"Idziesz do Kolei Wschodnich, jezeli przechodzisz przez start otrymujesz 400$!",0,0,0,0,16);
-        BlueRedCards card4 = new BlueRedCards(4,"Bank wyplaca ci nalezne odsetki w wyskości 300$",300,0,0,0,0);
-        BlueRedCards card5 = new BlueRedCards(5,"Idziesz do Brukseli, jezeli przechodzisz przez start otrzymujesz 400$",0,0,0,0,24);
-        BlueRedCards card6 = new BlueRedCards(6,"Piles w czasie pracy placisz 40$",0,40,0,0,0);
-        BlueRedCards card7 = new BlueRedCards(7,"Idziesz do Neapolu, jezeli przechodzisz przez start otrzymujesz 400$",0,0,0,0,7);
-        BlueRedCards card8 = new BlueRedCards(8,"Placisz oplate za szkole 300$",0,300,0,0,0);
-        BlueRedCards card9 = new BlueRedCards(9,"Idziesz do wiezienia!",0,0,0,0,31);
-        BlueRedCards card10 = new BlueRedCards(10,"Rozwiazales dobrze krzyzowke otrzymujesz 200$",200,0,0,0,0);
-        BlueRedCards card11 = new BlueRedCards(11,"Wracasz na Start",0,0,0,0,1);
-        BlueRedCards card12 = new BlueRedCards(12,"Cofasz sie o 3 pola.",0,0,0,3,0);
-        BlueRedCards card13 = new BlueRedCards(13,"Idziesz 3 pola dalej",0,0,3,0,0);
-        BlueRedCards card14 = new BlueRedCards(14,"Mandat za szybka jazde 30$.",0,30,0,0,0);
-        BlueRedCards card15 = new BlueRedCards(15,"Bank pomylil sie na twoja korzysc otrzymujesz 400$.",400,0,0,0,0);
-        BlueRedCards card16 = new BlueRedCards(16,"Wracasz do Wiednia",0,0,0,0,40);
-
-        blueRedCardsInitial.add(card1);
-        blueRedCardsInitial.add(card2);
-        blueRedCardsInitial.add(card3);
-        blueRedCardsInitial.add(card4);
-        blueRedCardsInitial.add(card5);
-        blueRedCardsInitial.add(card6);
-        blueRedCardsInitial.add(card7);
-        blueRedCardsInitial.add(card8);
-        blueRedCardsInitial.add(card9);
-        blueRedCardsInitial.add(card10);
-        blueRedCardsInitial.add(card11);
-        blueRedCardsInitial.add(card12);
-        blueRedCardsInitial.add(card13);
-        blueRedCardsInitial.add(card14);
-        blueRedCardsInitial.add(card15);
-        blueRedCardsInitial.add(card16);
-
-        return blueRedCardsInitial;
     }
 
     public void makeUpdateMapANdTables(){

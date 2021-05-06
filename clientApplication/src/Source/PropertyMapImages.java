@@ -259,4 +259,10 @@ public class PropertyMapImages {
         Image propertyImage = new Image(pathImage + property.getIDproperty() + ".png");
         imagesList.get(i).setPropertyView(propertyImage);
     }
+
+    public void BankrouptInfoUpdate(boolean isBanktoupt){
+        if(isBanktoupt){
+            mainBox.setVisible(false);
+        }
+    }
 }

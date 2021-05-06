@@ -9,6 +9,7 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class Session extends Thread {
     private ArrayList<Socket> socketPlayers;
@@ -17,8 +18,11 @@ public class Session extends Thread {
     private Socket client;
     private int playerNumber;
     private int numberOfPlayersInGame;
+    private int playingPlayers;
     private int playersReady = 0;
     private int playersTourReady = 0;
+    private int banktouptNumbers[] = {0,0,0,0};
+    private int recentBankroupt = 0;
 
 
     public Session(Socket client, ArrayList<Socket> socketArray,int np,int numberOfPlayers,ArrayList<Player> playersList,ArrayList<Properties> propertiesList){
@@ -26,6 +30,7 @@ public class Session extends Thread {
         this.socketPlayers = socketArray;
         playerNumber = np;
         numberOfPlayersInGame = numberOfPlayers;
+        playingPlayers = numberOfPlayers;
         this.playersList = playersList;
         //this.properties = new DataReaderProperties();
         this.propertiesList = propertiesList;
@@ -42,7 +47,7 @@ public class Session extends Thread {
                 Player newPlayer = new Player();
                 newPlayer.setPlayerName(playerName);
                 newPlayer.setPlayerNumber(playerNumber);
-                newPlayer.setCash(3000);
+                newPlayer.setCash(0);
                 newPlayer.setPropertyId(0);
                 playersList.add(newPlayer);
 
@@ -50,7 +55,6 @@ public class Session extends Thread {
                 if(playerNumber>0 && playerNumber<numberOfPlayersInGame){
                     System.out.println("Server is waiting for clients connection :)");
                 }
-                //gui working to this moment
                 else
                     System.out.println("All clients connected great!!!");
 
@@ -83,63 +87,128 @@ public class Session extends Thread {
             int playerTourIndex = 1;
             int i = 1;
 
-            while(true){
-                System.out.println("Tura numer: " + i);
-                if(firstTour){
-                    sendStartGame(socketPlayers,playerTourIndex);
-                    firstTour = false;
+            while(numberOfPlayersInGame >= 2 && client.isConnected()){
+                if(!client.isConnected()){
+                    client.close();
                 }
-                String clientResponse = socketIn.readUTF();
-                if(clientResponse.startsWith("PlayerTourReady")){
-                    if(clientResponse.length() > 15){
-                        int prisionDecion = Character.getNumericValue(clientResponse.charAt(22));
-                        int prisionBuy = Character.getNumericValue(clientResponse.charAt(24));
-                        int propBuy = Character.getNumericValue(clientResponse.charAt(26));
-                        char cardId = clientResponse.charAt(20);
-                        int passedStrat = Character.getNumericValue(clientResponse.charAt(18));
-                        int boughtHouses = Character.getNumericValue(clientResponse.charAt(16));
-                        System.out.println("Player Bought " + boughtHouses + " Houses!");
-                        if(prisionDecion != 0){
-                            prisonDecisionUpdate(socketPlayers,playerTourIndex);
-                            System.out.println("Player is in jail!");
-                        }
-                        if(prisionBuy != 0){
-                            prisonPayFine(socketPlayers,playerTourIndex);
-                        }
-                        if(cardId != '0'){
-                            System.out.println("Card " + cardId);
-                            CardMessage(socketPlayers,cardId,passedStrat);
-                        }
-                        String playerMove = clientResponse.substring(30);
-                        if (propBuy != 0){
-                            System.out.println("Player bought this property");
-                            BuyPorpertyMessage(socketPlayers,playerMove);
-                        }
-                        updateMove(socketPlayers,playerMove);
-                        if(boughtHouses != 0)
-                            BuyHouseMessage(socketPlayers,boughtHouses);
+                else{
+                    System.out.println("Tura numer: " + i);
+                    if(firstTour){
+                        sendStartGame(socketPlayers,playerTourIndex);
+                        firstTour = false;
                     }
-                    System.out.println(clientResponse);
-                    BroadcastReadyToOtherClientsTour(socketPlayers);
+                    String clientResponse = socketIn.readUTF();
+                    if(clientResponse.startsWith("PlayerTourReady")){
+                        if(clientResponse.length() > 15){
+                            int isBankroupt = Character.getNumericValue(clientResponse.charAt(20));
+                            int otherBankroupt = Character.getNumericValue(clientResponse.charAt(18));
+                            recentBankroupt = Character.getNumericValue(clientResponse.charAt(16));
+                            if(otherBankroupt == 1){
+                                playingPlayers--;
+                                for(int s=0;s<4;s++){
+                                    System.out.println(banktouptNumbers[s]);
+                                }
+                                banktouptNumbers[recentBankroupt-1] = recentBankroupt;
+                                System.out.println("Playing players: " + playingPlayers);
+                            }
+                            if(isBankroupt != 0){
+                                playingPlayers--;
+                                banktouptNumbers[playerTourIndex-1] = playerTourIndex;
+                                recentBankroupt = playerTourIndex;
+                                for(int s=0;s<4;s++){
+                                    System.out.println(banktouptNumbers[s]);
+                                }
+                                System.out.println("PlayerBankroupt is: " + playerTourIndex);
+                                System.out.println("Playing players: " + playingPlayers);
+                                sendPlayerIsBankroupt(socketPlayers);
+                                System.out.println("Player " + playerTourIndex + " is now bankroupt!");
+                                if(playingPlayers < 2)
+                                    break;
+                            }
+                            int prisionDecion = Character.getNumericValue(clientResponse.charAt(28));
+                            int prisionBuy = Character.getNumericValue(clientResponse.charAt(30));
+                            int propBuy = Character.getNumericValue(clientResponse.charAt(32));
+                            char cardId = clientResponse.charAt(24);
+                            int passedStrat = Character.getNumericValue(clientResponse.charAt(26));
+                            int boughtHouses = Character.getNumericValue(clientResponse.charAt(22));
+                            System.out.println("Player Bought " + boughtHouses + " Houses!");
+                            if(prisionDecion != 0){
+                                prisonDecisionUpdate(socketPlayers,playerTourIndex);
+                                System.out.println("Player is in jail!");
+                            }
+                            if(prisionBuy != 0){
+                                prisonPayFine(socketPlayers,playerTourIndex);
+                            }
+                            if(cardId != '0'){
+                                System.out.println("Card " + cardId);
+                                CardMessage(socketPlayers,cardId,passedStrat);
+                            }
+                            String playerMove = clientResponse.substring(36);
+                            if (propBuy != 0){
+                                System.out.println("Player bought this property");
+                                BuyPorpertyMessage(socketPlayers,playerMove);
+                            }
+                            updateMove(socketPlayers,playerMove);
+                            if(boughtHouses != 0)
+                                BuyHouseMessage(socketPlayers,boughtHouses);
+                        }
+                        System.out.println(clientResponse);
+                        BroadcastReadyToOtherClientsTour(socketPlayers);
+                    }
+                    playerTourIndex++;
+                    if(playerTourIndex > numberOfPlayersInGame){
+                        playerTourIndex = 1;
+                    }
+                    String clientResponse1 = socketIn.readUTF();
+                    if(clientResponse1.equals("allPlayersTourReady")){
+                        System.out.println(clientResponse1);
+                        sendStartGame(socketPlayers,playerTourIndex);
+                    }
+                    i++;
                 }
-                playerTourIndex++;
-                if(playerTourIndex > numberOfPlayersInGame){
-                    playerTourIndex = 1;
-                }
-                String clientResponse1 = socketIn.readUTF();
-                if(clientResponse1.equals("allPlayersTourReady")){
-                    System.out.println(clientResponse1);
-                    sendStartGame(socketPlayers,playerTourIndex);
-//                    sendStartGameToClient(socketPlayers,playerTourIndex);
-                }
-                i++;
             }
+            sendPlayerNumberWon(socketPlayers);
         }
         catch(IOException ex){
             System.out.println("Session error: " + ex.getMessage());
         }
         catch(Exception ex){
             System.out.println("Session error: " + ex.getMessage());
+        }
+    }
+
+    public void sendPlayerNumberWon(ArrayList<Socket> socketPlayers){
+        int wonPlayer = 0;
+        int playerNumber = 1;
+        if(numberOfPlayersInGame >= 2){
+            if(banktouptNumbers[0] == 0){
+                wonPlayer = 1;
+            }
+            else if(banktouptNumbers[1] == 0){
+                wonPlayer = 2;
+            }
+            if(numberOfPlayersInGame >= 3){
+                if(banktouptNumbers[2] == 0){
+                    wonPlayer = 3;
+                }
+                if(numberOfPlayersInGame == 4){
+                    if(banktouptNumbers[3] != 0){
+                        wonPlayer = 4;
+                    }
+                }
+            }
+        }
+        System.out.println("Player Won " + wonPlayer);
+        try{
+            for (Socket s : socketPlayers){
+                DataOutputStream socketOut = new DataOutputStream(s.getOutputStream());
+//                if (s != client){
+                    socketOut.writeUTF("WonPlayer " + wonPlayer);
+//                }
+            }
+        }
+        catch(Exception e){
+            System.out.println("Error Won Player: " + e.getMessage());
         }
     }
 
@@ -159,6 +228,19 @@ public class Session extends Thread {
         }
     }
 
+    public void sendPlayerIsBankroupt(ArrayList<Socket> socketPlayers){
+        try{
+            for(Socket s : socketPlayers){
+                if(s != client){
+                    DataOutputStream socketOut = new DataOutputStream(s.getOutputStream());
+                    socketOut.writeUTF("TourPlayerBankroupt");
+                }
+            }
+        }
+        catch(Exception ex){
+            System.out.println("Error sending info about Bankruption: " + ex.getMessage());
+        }
+    }
 
     public void prisonPayFine(ArrayList<Socket> socketPlayers,int playerindex){
         try{
