@@ -1,8 +1,11 @@
 package Server;
 
 import Server.Session;
+import Source.DataReaderProperties;
 import Source.Properties;
 import Source.Player;
+
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.*;
 import java.util.*;
@@ -13,8 +16,9 @@ public class Server {
     //    private static int port = 2115;
     private static ArrayList<Player> playersList = new ArrayList<>();
     private static ArrayList<Properties> propertiesList = new ArrayList<>();
+    private static DataReaderProperties readerProperties = new DataReaderProperties();
 
-    public static void main(String[] args){
+    public static void main(String[] args) throws IOException, FileNotFoundException {
 
         while(true){
             Scanner scanner = new Scanner(System.in);
@@ -38,7 +42,7 @@ public class Server {
                     Socket client = serverSocket.accept();
                     socketList.add(client);
                     System.out.println( i+1 + " Client connected!");
-                    Session ss = new Session(client,socketList,i+1,numberOfPlayers,playersList,propertiesList);
+                    Session ss = new Session(client,socketList,i+1,numberOfPlayers,playersList,readerProperties.getPropertieslist());
                     ss.start();
                 }
 

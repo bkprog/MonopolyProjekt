@@ -21,6 +21,7 @@ import javafx.stage.Stage;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.Socket;
 import java.util.ArrayList;
@@ -85,7 +86,8 @@ public class Client1 extends Application {
     Player TourPlayerProfile;
     int position = 1;
     VBox propertyInfo = new VBox();
-    ArrayList <BlueRedCards> questionMarkList = initializeRandomCards();
+    DataReaderCards dataReaderCards = new DataReaderCards();
+    ArrayList <BlueRedCards> questionMarkList;
     int buyPropertyMessage = 0;
     int isInPrisonMessage = 0;
     int playerPayedFinePrison = 0;
@@ -141,6 +143,12 @@ public class Client1 extends Application {
                         if(respond.startsWith("ReadyCheck")){
                             readyButton.setVisible(true);
                             readyCheckInfo.setVisible(true);
+                            try{
+                                questionMarkList = dataReaderCards.getBlueRedCardslist();
+                            }
+                            catch (IOException e){
+                                System.out.println(e.getMessage());
+                            }
                         }
                         else if(respond.startsWith("You"))
                             clientConnected.setText(respond);
@@ -632,6 +640,7 @@ public class Client1 extends Application {
     }
 
     public void showLogin(){
+
         Stage stage = new Stage();
         stage.setTitle("DolarBussines Client");
         stage.getIcons().add(new Image("images/DolarBussines.png"));
