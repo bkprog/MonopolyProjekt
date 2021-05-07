@@ -1,5 +1,6 @@
 package Server;
 
+import Source.BestPlayers;
 import Source.DataReaderProperties;
 import Source.Player;
 import Source.Properties;
@@ -12,6 +13,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 public class Session extends Thread {
+    private ArrayList<Player> BestPlayers;
     private ArrayList<Socket> socketPlayers;
     private ArrayList<Player> playersList;
     private ArrayList<Properties> propertiesList;
@@ -23,6 +25,7 @@ public class Session extends Thread {
     private int playersTourReady = 0;
     private int banktouptNumbers[] = {0,0,0,0};
     private int recentBankroupt = 0;
+    private ArrayList<Player> bestPlayersArray;
 
 
     public Session(Socket client, ArrayList<Socket> socketArray,int np,int numberOfPlayers,ArrayList<Player> playersList,ArrayList<Properties> propertiesList){
@@ -47,7 +50,7 @@ public class Session extends Thread {
                 Player newPlayer = new Player();
                 newPlayer.setPlayerName(playerName);
                 newPlayer.setPlayerNumber(playerNumber);
-                newPlayer.setCash(0);
+                newPlayer.setCash(5);
                 newPlayer.setPropertyId(0);
                 playersList.add(newPlayer);
 
@@ -167,7 +170,29 @@ public class Session extends Thread {
                     i++;
                 }
             }
+            SendEndGame(socketPlayers);
+            String getNameWonPlayer = socketIn.readUTF();
+            String getCashWonPlayer = socketIn.readUTF();
+            Player wonPlayer = new Player();
+            wonPlayer.setCash(Integer.parseInt(getCashWonPlayer));
+            wonPlayer.setPlayerName(getNameWonPlayer);
+            BestPlayers bestPlayers = new BestPlayers();
+            bestPlayersArray = bestPlayers.getBestPlayersList();
+            bestPlayersArray.add(wonPlayer);
+            bestPlayers.saveBestPlayers(bestPlayersArray);
+            bestPlayersArray = bestPlayers.getBestPlayersList();
+            boolean flag = true;
+            if(flag){
+                for(Player player : bestPlayersArray){
+                    SendBestPlayersArray(player);
+                }
+                flag = false;
+            }
             sendPlayerNumberWon(socketPlayers);
+
+            //wysle liste najlepszych graczy
+
+
         }
         catch(IOException ex){
             System.out.println("Session error: " + ex.getMessage());
@@ -177,9 +202,38 @@ public class Session extends Thread {
         }
     }
 
-    public void sendPlayerNumberWon(ArrayList<Socket> socketPlayers){
+    public void SendEndGame(ArrayList<Socket> socketPlayers){
+        try{
+            for (Socket s : socketPlayers){
+                DataOutputStream socketOut = new DataOutputStream(s.getOutputStream());
+//                if (s != client){
+                socketOut.writeUTF("EndGame");
+//                }
+            }
+        }
+        catch(Exception e){
+            System.out.println("Error Won Player: " + e.getMessage());
+        }
+    }
+
+    public void SendBestPlayersArray(Player bPlayer){
+        try{
+            for (Socket s : socketPlayers){
+                DataOutputStream socketOut = new DataOutputStream(s.getOutputStream());
+//                if (s != client) {
+                    socketOut.writeUTF("BestPlayerNickname " + bPlayer.getPlayerName());
+                    String cash = String.valueOf(bPlayer.getCash());
+                    socketOut.writeUTF("BestPlayerCash " + cash);
+
+            }
+        }
+        catch(Exception e){
+            System.out.println("Error Won Player: " + e.getMessage());
+        }
+    }
+
+    public int getWonPlayer(){
         int wonPlayer = 0;
-        int playerNumber = 1;
         if(numberOfPlayersInGame >= 2){
             if(banktouptNumbers[0] == 0){
                 wonPlayer = 1;
@@ -198,6 +252,13 @@ public class Session extends Thread {
                 }
             }
         }
+        return wonPlayer;
+    }
+
+    public void sendPlayerNumberWon(ArrayList<Socket> socketPlayers){
+        int wonPlayer = 0;
+        int playerNumber = 1;
+        wonPlayer = getWonPlayer();
         System.out.println("Player Won " + wonPlayer);
         try{
             for (Socket s : socketPlayers){

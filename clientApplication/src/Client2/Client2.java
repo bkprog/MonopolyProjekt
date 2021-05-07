@@ -6,6 +6,7 @@ import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.scene.control.Button;
 import javafx.scene.Scene;
+import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.geometry.Pos;
@@ -19,10 +20,13 @@ import javafx.collections.ObservableList;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
+import java.awt.*;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Iterator;
 
@@ -127,6 +131,17 @@ public class Client2 extends Application {
     private boolean sendOnceReadyTour = false;
     private boolean sendOnceReadyALLTour = false;
     private boolean endGameEvaluete = false;
+    private ArrayList<Player> bestPlayers = new ArrayList<>();
+    private boolean fikusnaFlaga = true;
+    private Player bPlayer = new Player();
+    private Label bestPlayer = new Label("Najlepsi gracze: ");
+    private Label bestPlayer1 = new Label();
+    private Label bestPlayer2 = new Label();
+    private Label bestPlayer3 = new Label();
+    private Label bestPlayer4 = new Label();
+    private Label bestPlayer5 = new Label();
+    private String bPlayername = new String();
+    private Hyperlink githubLink = new Hyperlink("GithubProjekt.com");
 
     public void startTask(){
         Runnable task = new Runnable() {
@@ -163,20 +178,66 @@ public class Client2 extends Application {
                         }
                         else if(respond.startsWith("You"))
                             clientConnected.setText(respond);
-                        else if(respond.startsWith("WonPlayer ")){
+                        else if(respond.startsWith("BestPlayerNickname ")){
+                            bPlayername = respond.substring(19);
+                            System.out.println("player " + bPlayername);
+                        }
+                        else if(respond.startsWith("BestPlayerCash ")){
+                            bPlayer.setPlayerName(bPlayername);
+                            System.out.println("Player " + bPlayer.getPlayerName());
+                            bPlayer.setCash(Integer.parseInt(respond.substring(15)));
+                            System.out.println("his cash " + bPlayer.getCash());
+                            bestPlayers.add(bPlayer);
+                            bPlayer = null;
+                            bPlayer = new Player();
+                        }
+                        else if(respond.startsWith("EndGame")){
                             box.setVisible(false);
                             panelOponents.setVisible(false);
                             panelTourPlayer.setVisible(false);
                             panelTourPlayerInJail.setVisible(false);
                             PlayerBankroupt.setVisible(false);
-                            int playerWonNumber = 0;// = Character.getNumericValue(respond.charAt(10));
+                            int playerWonNumber = 0;
                             for(Player pl : playersList){
                                 if(!pl.isBankroupt()){
                                     playerWonNumber = pl.getPlayerNumber();
                                 }
                             }
+                            String cash = String.valueOf(playersList.get(playerWonNumber-1).getCash());
+                            try{
+                                dOut.writeUTF(playersList.get(playerWonNumber-1).getPlayerName());
+                                dOut.writeUTF(cash);
+                            }
+                            catch (IOException ex){
+                                System.out.println("ErrorSending wonPlayer info: " + ex.getMessage());
+                            }
+
+                        }
+                        else if(respond.startsWith("WonPlayer ")){
+
+                            int playerWonNumber = 0;
+                            for(Player pl : playersList){
+                                if(!pl.isBankroupt()){
+                                    playerWonNumber = pl.getPlayerNumber();
+                                }
+                            }
+
+                            bestPlayer1.setText("1. " + bestPlayers.get(0).getPlayerName() + " jego Pieniądze: " + bestPlayers.get(0).getCash()+"$");
+                            bestPlayer2.setText("2. " + bestPlayers.get(1).getPlayerName() + " jego Pieniądze: " + bestPlayers.get(1).getCash()+"$");
+                            bestPlayer3.setText("3. " + bestPlayers.get(2).getPlayerName() + " jego Pieniądze: " + bestPlayers.get(2).getCash()+"$");
+                            bestPlayer4.setText("4. " + bestPlayers.get(3).getPlayerName() + " jego Pieniądze: " + bestPlayers.get(3).getCash()+"$");
+                            bestPlayer5.setText("5. " + bestPlayers.get(4).getPlayerName() + " jego Pieniądze: " + bestPlayers.get(4).getCash()+"$");
+                            endGameBox.getChildren().add(bestPlayer);
+                            endGameBox.getChildren().add(bestPlayer1);
+                            endGameBox.getChildren().add(bestPlayer2);
+                            endGameBox.getChildren().add(bestPlayer3);
+                            endGameBox.getChildren().add(bestPlayer4);
+                            endGameBox.getChildren().add(bestPlayer5);
+                            endGameBox.getChildren().add(githubLink);
+                            endGameBox.setSpacing(10);
                             endGameInfoLabel.setText("Gracz " + playersList.get(playerWonNumber-1).getPlayerName() + " wygrał grę Gratulacje!!");
                             endGameBox.setVisible(true);
+
                         }
                         else if(respond.startsWith("TourPlayerBankroupt")){
                             playersReady--;
@@ -886,6 +947,19 @@ public class Client2 extends Application {
         panelTourPlayerInJail.setVisible(false);
         PlayerBankroupt.setVisible(false);
         endGameBox.setVisible(false);
+
+        githubLink.setOnAction(actionEvent -> {
+            if(Desktop.isDesktopSupported())
+            {
+                try {
+                    Desktop.getDesktop().browse(new URI("https://github.com/bkprog/MonopolyProjekt"));
+                } catch (IOException e1) {
+                    e1.printStackTrace();
+                } catch (URISyntaxException e1) {
+                    e1.printStackTrace();
+                }
+            }
+        });
 
         grp.add(MapPane,0,0);
         grp.add(box,1,0);
