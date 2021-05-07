@@ -179,6 +179,9 @@ public class Client2 extends Application {
                             endGameBox.setVisible(true);
                         }
                         else if(respond.startsWith("TourPlayerBankroupt")){
+                            playersReady--;
+                            PlayerToursReady--;
+                            NubmerOfPlayersInGame--;
                             TourPlayerProfile.makeBankropt();
                             getBankuptOtherPlayer = 1;
                             recentBankrouptPlayer = TourPlayerProfile.getPlayerNumber();
@@ -557,8 +560,8 @@ public class Client2 extends Application {
                                     if(PlayerSesionBankroupt == 1){
                                         if(sendOnceReadyBankroupt){
                                             PlayerBankroupt.setVisible(true);
-                                            SendPlayerTourReady();
-                                            sendOnceReadyBankroupt =false;
+//                                            SendPlayerTourReady();
+//                                            sendOnceReadyBankroupt =false;
                                         }
 
                                     }
@@ -1014,14 +1017,14 @@ public class Client2 extends Application {
             hh.updateHousesOnMap(propertiesList);
 
             buyingPopertyBox.setVisible(true);
-            int randomCard = 6;//dice.throwQuestionMarkCard();
+            int randomCard = dice.throwQuestionMarkCard();
 
             dice = new Dice();
             int dice1 = dice.throwfunction();
             int dice2 = dice.throwfunction();
 
 
-            position = 2;//position + dice1 + dice2;
+            position = position + dice1 + dice2;
 
             if(position > 40){
                 position = position - 40;
