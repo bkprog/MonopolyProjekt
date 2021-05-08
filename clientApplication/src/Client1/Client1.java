@@ -45,8 +45,8 @@ public class Client1 extends Application {
     private Player player = new Player();
     private Properties property = new Properties();
     private String respondServer = new String();
-    private Button readyButton = new Button("Ready");
-    private Label readyCheckInfo = new Label("Click on ready button when you are ready");
+    private Button readyButton = new Button("Jestem gotowy!");
+    private Label readyCheckInfo = new Label("Kliknij jestem gotowy kiedy bedziesz gotowy");
     private Label clientConnected = new Label();
     private Label player1 = new Label();
     private Label player2 = new Label();
@@ -68,7 +68,7 @@ public class Client1 extends Application {
     private VBox panelTourPlayer = new VBox();
     private VBox panelTourPlayerInJail = new VBox();
     private VBox box = new VBox();
-    private Button dicing = new Button("Dice!");
+    private Button dicing = new Button("Rzuć kośćmi!");
     private VBox BuyingHousesBox = new VBox();
     private HBox HousesBox = new HBox();
     private Label buyingHousesinfo = new Label("Ile domków chcesz kupić?");
@@ -77,10 +77,10 @@ public class Client1 extends Application {
     private Button BuyHouse3 = new Button("3");
     private Button BuyHouse4 = new Button("4");
     private Button noBuyHouse = new Button("Nie kupuję!");
-    private Button readyTour = new Button("Ready");
+    private Button readyTour = new Button("Jestem gotowy!");
     private Label info = new Label("Click button to dice");
     private Label diceedInfo = new Label();
-    private Button GetReadyTourButton = new Button("Get ready!");
+    private Button GetReadyTourButton = new Button("Jestem gotowy!");
     private Label informationOponentPanel = new Label();
     private HBox DiceBox = new HBox();
     private Image blankDice = new Image("images/Dice/dice" + 0 + ".png");
@@ -96,9 +96,9 @@ public class Client1 extends Application {
     private int buyPropertyMessage = 0;
     private int isInPrisonMessage = 0;
     private int playerPayedFinePrison = 0;
-    private Button diceButtonPrison = new Button("Dice!");
-    private Button payButton = new Button("Pay!");
-    private Button PrisonReady = new Button("Ready");
+    private Button diceButtonPrison = new Button("Rzuć kośćmi!");
+    private Button payButton = new Button("Zapłać!");
+    private Button PrisonReady = new Button("Jestem gotowy!");
     private Image dice1image = new Image("/images/Dice/dice0.png");
     private Image dice2image = new Image("/images/Dice/dice0.png");
     private ImageView dice1ViewPrison = new ImageView(dice1image);
@@ -141,6 +141,8 @@ public class Client1 extends Application {
     private Label bestPlayer3 = new Label();
     private Label bestPlayer4 = new Label();
     private Label bestPlayer5 = new Label();
+    private Label Autor1 = new Label("Jakub Czajkowski");
+    private Label Autor2 = new Label("Bartosz Kuta");
     private String bPlayername = new String();
     private Hyperlink githubLink = new Hyperlink("GithubProjekt.com");
 
@@ -181,13 +183,13 @@ public class Client1 extends Application {
                             clientConnected.setText(respond);
                         else if(respond.startsWith("BestPlayerNickname ")){
                             bPlayername = respond.substring(19);
-                            System.out.println("player " + bPlayername);
+                            //System.out.println("player " + bPlayername);
                         }
                         else if(respond.startsWith("BestPlayerCash ")){
                             bPlayer.setPlayerName(bPlayername);
-                            System.out.println("Player " + bPlayer.getPlayerName());
+                            //System.out.println("Player " + bPlayer.getPlayerName());
                             bPlayer.setCash(Integer.parseInt(respond.substring(15)));
-                            System.out.println("his cash " + bPlayer.getCash());
+                            //System.out.println("his cash " + bPlayer.getCash());
                             bestPlayers.add(bPlayer);
                             bPlayer = null;
                             bPlayer = new Player();
@@ -234,6 +236,8 @@ public class Client1 extends Application {
                             endGameBox.getChildren().add(bestPlayer3);
                             endGameBox.getChildren().add(bestPlayer4);
                             endGameBox.getChildren().add(bestPlayer5);
+                            endGameBox.getChildren().add(Autor1);
+                            endGameBox.getChildren().add(Autor2);
                             endGameBox.getChildren().add(githubLink);
                             endGameBox.setSpacing(10);
                             endGameInfoLabel.setText("Gracz " + playersList.get(playerWonNumber-1).getPlayerName() + " wygrał grę Gratulacje!!");
@@ -275,8 +279,6 @@ public class Client1 extends Application {
                         }
                         else if(respond.startsWith("HouseBought")){
                             int houseBought = Character.getNumericValue(respond.charAt(12));
-//                            System.out.println(TourPlayerProfile.getPlayerName() + " bought " + houseBought + " houses!\n" +
-//                                    "On property " + propertiesList.get(previousPosition-1).getNameProperty());
                             switch (houseBought){
                                 case 1:{
                                     propertiesList.get(previousPosition-1).buildHouseOnProperty();
@@ -340,7 +342,7 @@ public class Client1 extends Application {
                         else if(respond.startsWith("Purchase Property ")){
                             int propId = Integer.parseInt(respond.substring(18));
                             TourPlayerProfile.setCash(TourPlayerProfile.getCash() - propertiesList.get(propId-1).getBuyCost());
-                            System.out.println("Player: " + TourPlayerProfile.getPlayerName() + " Bought property: " + propertiesList.get(propId-1).getNameProperty());
+                            System.out.println("Gracz: " + TourPlayerProfile.getPlayerName() + " kupił posiadłość: " + propertiesList.get(propId-1).getNameProperty());
                             propertiesList.get(propId-1).setOwnerID(TourPlayerProfile.getPlayerNumber());
                             if(playersList.size() >= 2){
                                 player1Map.updatePropertiesMap(propertiesList,playersList.get(0));
@@ -358,27 +360,27 @@ public class Client1 extends Application {
                             //Player oponent = playersList.get(Integer.parseInt(respond.substring(9)));
                             Player oponent = TourPlayerProfile;
                             oponent.setInJail(true);
-                            System.out.println(oponent.getPlayerName() + " is in prison you don't have to pay him");
+                            System.out.println(oponent.getPlayerName() + " jest w więzieniu więc nie musisz mu płacić");
                         }
                         else if(respond.startsWith("PrisonPayFine ")){
                             //Player oponent = playersList.get(Integer.parseInt(respond.substring(14)));
                             Player oponent = TourPlayerProfile;
                             oponent.setCash(oponent.getCash() - 400);
                             oponent.setInJail(false);
-                            System.out.println(oponent.getPlayerName() + " payed 400$ to get out from jail!");
+                            System.out.println(oponent.getPlayerName() + " zapłacił 400$ aby wyjść z więzienia!");
                         }
                         else if(respond.startsWith("UpdateMove ")){
                             int newPositionPlayer = Integer.parseInt(respond.substring(11));
-                            System.out.println(TourPlayerProfile.getPlayerName() + " movead to property ID: " + newPositionPlayer);
+                            //System.out.println(TourPlayerProfile.getPlayerName() + " movead to property ID: " + newPositionPlayer);
                             previousPosition = TourPlayerProfile.getPropertyId();
                             TourPlayerProfile.setPropertyId(newPositionPlayer);
                             Properties actualProperty = propertiesList.get(newPositionPlayer-1);
-                            System.out.println(TourPlayerProfile.getPlayerName() + "standing on: " + actualProperty.getNameProperty());
+                            //System.out.println(TourPlayerProfile.getPlayerName() + "standing on: " + actualProperty.getNameProperty());
 
                             if(previousPosition > newPositionPlayer){
                                 if(!TourPlayerProfile.getIsInJail()){
                                     TourPlayerProfile.setCash(TourPlayerProfile.getCash() + 400);
-                                    info.setText(TourPlayerProfile.getPlayerName() + " passed Start and get reward 400$!");
+                                    info.setText(TourPlayerProfile.getPlayerName() + " przeszedł przez start i otrzymał 400$!");
                                 }
                             }
 
@@ -416,7 +418,7 @@ public class Client1 extends Application {
                                     }
                                     else if(newPositionPlayer == 13 || newPositionPlayer == 29){
                                         int sumDices = newPositionPlayer - previousPosition;
-                                        System.out.println(sumDices);
+                                        //System.out.println(sumDices);
                                         int ownedPW = 0;
                                         for(Properties prop : propertiesList){
                                             if(prop.getIDproperty() == 13 || prop.getIDproperty() == 29){
@@ -439,8 +441,8 @@ public class Client1 extends Application {
                                         }
                                     }
                                     else{
-                                        info.setText(TourPlayerProfile.getPlayerName() + " paying to " + playersList.get(propertiesList.get(newPositionPlayer-1).getOwnerID()-1).getPlayerName());
-                                        System.out.println( TourPlayerProfile.getPlayerName() + " paying to " + playersList.get(propertiesList.get(newPositionPlayer-1).getOwnerID()-1).getPlayerName());
+                                        info.setText(TourPlayerProfile.getPlayerName() + " płaci graczowi " + playersList.get(propertiesList.get(newPositionPlayer-1).getOwnerID()-1).getPlayerName());
+                                        System.out.println( TourPlayerProfile.getPlayerName() + " płaci graczowi  " + playersList.get(propertiesList.get(newPositionPlayer-1).getOwnerID()-1).getPlayerName());
                                         TourPlayerProfile.setCash(TourPlayerProfile.getCash() - propertiesList.get(newPositionPlayer-1).getPaymentForStay());
                                         playersList.get(propertiesList.get(newPositionPlayer-1).getOwnerID()-1).setCash(playersList.get(propertiesList.get(newPositionPlayer-1).getOwnerID()-1).getCash() + propertiesList.get(newPositionPlayer-1).getPaymentForStay());
 
@@ -508,7 +510,7 @@ public class Client1 extends Application {
 
                             if(propertiesMapFlag){
                                 if(playersList.size() >= 2){
-                                    System.out.println("elo");
+                                    //System.out.println("elo");
                                     player1Map = new PropertyMapImages(playersList.get(0).getPlayerName());
                                     player2Map = new PropertyMapImages(playersList.get(1).getPlayerName());
                                     propertiesMap.getChildren().add(player1Map.getMainBox());
@@ -540,15 +542,15 @@ public class Client1 extends Application {
                             if(true){
                                 countries_player = allCountriesPlayers(propertiesList,TourPlayerProfile);
 
-                                System.out.println(countries_player.size());
-                                for(String s : countries_player){
-                                    System.out.println(s);
-                                }
-
-                                System.out.println(tplayerNick);
-                                System.out.println(playerNickname);
-                                System.out.println(playersList.get(0).getPlayerNumber() + " nick: " + playersList.get(0).getPlayerName());
-                                System.out.println(playersList.get(1).getPlayerNumber() + " nick: " + playersList.get(1).getPlayerName());
+                                //System.out.println(countries_player.size());
+//                                for(String s : countries_player){
+//                                    System.out.println(s);
+//                                }
+//
+//                                System.out.println(tplayerNick);
+//                                System.out.println(playerNickname);
+//                                System.out.println(playersList.get(0).getPlayerNumber() + " nick: " + playersList.get(0).getPlayerName());
+//                                System.out.println(playersList.get(1).getPlayerNumber() + " nick: " + playersList.get(1).getPlayerName());
 
 
 
@@ -649,12 +651,12 @@ public class Client1 extends Application {
                             }
                         }
                         else if(respond.startsWith("PlayerReady")){
-                            String respondPlayerReady = respond.substring(11) + " Is ready now!";
+                            String respondPlayerReady = respond.substring(11) + " Jest gotowy!";
                             playersReady++;
                             clientConnected.setText(respondPlayerReady);
                             if(playersReady == NubmerOfPlayersInGame){
                                 clientConnected.setVisible(false);
-                                readyCheckInfo.setText("All players get ready game is starting...");
+                                readyCheckInfo.setText("Wszyscy gracze są gotowi do gry...");
                                 readyCheckInfo.setTextFill(Color.GREEN);
                             }
                         }
@@ -678,7 +680,7 @@ public class Client1 extends Application {
                             String propertyName = propertiesList.get(player.getPropertyId()).getNameProperty();
 
                             if(player.getPlayerNumber() == 1){
-                                String text = "Player 1 : " + player.getPlayerName() + " his cash: " + player.getCash() + "$" + " standing on: " + propertyName;
+                                String text = "Gracz 1 : " + player.getPlayerName() + " jego pieniądze: " + player.getCash() + "$" + " stoi na: " + propertyName;
                                 //System.out.println(text);
                                 player1.setText(text);
                                 p1.setText(player1.getText());
@@ -686,7 +688,7 @@ public class Client1 extends Application {
                             }
 
                             if(player.getPlayerNumber() == 2){
-                                String text = "Player 2 : " + player.getPlayerName() + " his cash: " + player.getCash() + "$" + " standing on: " + propertyName;
+                                String text = "Gracz 2 : " + player.getPlayerName() + " jego pieniądze: " + player.getCash() + "$" + " stoi na: " + propertyName;
                                 //System.out.println(text);
                                 player2.setText(text);
                                 p2.setText(player2.getText());
@@ -694,7 +696,7 @@ public class Client1 extends Application {
                             }
 
                             if(player.getPlayerNumber() == 3){
-                                String text = "Player 3 : " + player.getPlayerName() + " his cash: " + player.getCash() + "$" + " standing on: " + propertyName;
+                                String text = "Gracz 3 : " + player.getPlayerName() + " jego pieniądze: " + player.getCash() + "$" + " stoi na: " + propertyName;
                                 //System.out.println(text);
                                 player3.setText(text);
                                 p3.setText(player3.getText());
@@ -702,7 +704,7 @@ public class Client1 extends Application {
                             }
 
                             if(player.getPlayerNumber() == 4){
-                                String text = "Player 4 : " + player.getPlayerName() + " his cash: " + player.getCash() + "$" + " standing on: " + propertyName;
+                                String text = "Gracz 4 : " + player.getPlayerName() + " jego pieniądze: " + player.getCash() + "$" + " stoi na: " + propertyName;
                                 //System.out.println(text);
                                 player4.setText(text);
                                 p4.setText(player4.getText());
@@ -796,28 +798,28 @@ public class Client1 extends Application {
         stage.setTitle("DolarBussines Client");
         stage.getIcons().add(new Image("images/DolarBussines.png"));
 
-        TextField tx = new TextField("Player 1");
+        TextField tx = new TextField("Gracz 1");
         tx.setAlignment(Pos.CENTER);
         tx.setMaxWidth(200);
         tx.setPadding(new Insets(10,0,10,0));
 
         Label info = new Label("");
         info.setTextFill(Color.RED);
-        Label label = new Label("Enter your nickname");
+        Label label = new Label("Wpisz swój pseudonim");
 
-        Button b = new Button("Submit and Connect");
+        Button b = new Button("Podsumuj i połącz!");
         b.setAlignment(Pos.CENTER);
 
         b.setOnAction(e->{
             createConnection();
             if(socket != null){
                 this.playerNickname = tx.getText();
-                info.setText("You entered: " + this.playerNickname + " and sucessfully connected");
+                info.setText("Wpisałeś: " + this.playerNickname + " i połączenie udało się!");
                 showGame();
                 stage.close();
             }
             else{
-                info.setText("Failure connected\nEnsure server is working.");
+                info.setText("Połączenie nie udało się\nSprawdź czy serwer działa.");
             }
 
         });
@@ -975,17 +977,17 @@ public class Client1 extends Application {
         grp.setAlignment(Pos.CENTER);
         grp.setHgap(50);
         box.setSpacing(10);
-        Label label = new Label("You connected successfully! Welcone Sir " + this.playerNickname);
+        Label label = new Label("Udało się połączyć! Witaj przedsiębiorco " + this.playerNickname);
         label.setTextFill(Color.GREEN);
         ObservableList list = box.getChildren();
         clientConnected.setText(respondServer);
         list.addAll(label,clientConnected,readyCheckInfo,readyButton);
         readyButton.setOnAction(e->{
-            readyCheckInfo.setText("Great you are ready, waiting for other players...");
+            readyCheckInfo.setText("Świetnie! Już jesteś gotowy, oczekuj na gotowość innych graczy...");
             playersReady++;
             if(playersReady == NubmerOfPlayersInGame){
                 clientConnected.setVisible(false);
-                readyCheckInfo.setText("All players get ready game is starting...");
+                readyCheckInfo.setText("Wszyscy gracze są gotowi! Gra się rozpoczyna...");
                 readyCheckInfo.setTextFill(Color.GREEN);
             }
 
@@ -1027,14 +1029,7 @@ public class Client1 extends Application {
         bankrouptInfo.setAlignment(Pos.CENTER);
 
         PlayerBankroupt.getChildren().add(bankrouptInfo);
-//        if(PlayerBankroupt.isVisible()){
-//            PlayerToursReady++;
-//            SendPlayerTourReadyCurrentPlayer();
-//            if(PlayerToursReady == NubmerOfPlayersInGame){
-//                SendAllPlayersReady();
-//                PlayerToursReady = 0;
-//            }
-//        }
+
     }
 
     public void TourPlayerScene(){
@@ -1045,8 +1040,8 @@ public class Client1 extends Application {
         viewDice2.setFitHeight(50);
         viewDice2.setFitWidth(50);
 
-        Button BuyPropertyBtn = new Button("Buy");
-        Button NoBuyPropertyBtn = new Button("No thanks!");
+        Button BuyPropertyBtn = new Button("Kupuje!");
+        Button NoBuyPropertyBtn = new Button("Nie, dziękuję!");
         Label BuyPoropertyInfo = new Label("");
 
         VBox buyingPopertyBox = new VBox();
@@ -1070,7 +1065,7 @@ public class Client1 extends Application {
 
         Image blankProperty = new Image("images/Properties/blank.png");
         ImageView propertyView = new ImageView(blankProperty);
-        Label propertyInformation = new Label("You are ane not standing on Buyable property or payable");
+        Label propertyInformation = new Label("Niestety nie jesteś na polu, które można kupić.\n Nic nie zyskasz i nic nie tracisz!");
         propertyView.setFitWidth(200);
         propertyView.setFitHeight(300);
 
@@ -1104,13 +1099,13 @@ public class Client1 extends Application {
             if(position > 40){
                 position = position - 40;
                 TourPlayerProfile.setCash(TourPlayerProfile.getCash() + 400);
-                info.setText("You passed Start and get reward 400$!");
+                info.setText("Przeszedłeś przez start, zyskujesz 400$!");
                 TourPlayerProfile.setPropertyId(position);
             }
             else{
                 TourPlayerProfile.setPropertyId(position);
             }
-            System.out.println("dice 1: " + position);
+            //System.out.println("dice 1: " + position);
             if(TourPlayerProfile.getPlayerNumber() == 1){
                 pawnView1.setX(cordsPlayersMap.getCorXProperty(position,1));
                 pawnView1.setY(cordsPlayersMap.getCorYProperty(position,1));
@@ -1132,7 +1127,7 @@ public class Client1 extends Application {
             Properties actualProperty = propertiesList.get(position-1);
 
             if(propertyCardLoadImage(position)){
-                propertyInformation.setText("You are standing on buyable property Cost " + actualProperty.getNameProperty() + " is: " + actualProperty.getBuyCost());
+                propertyInformation.setText("Stoisz na polu, które można zakupić o nazwie " + actualProperty.getNameProperty() + ". Koszt zakupu: " + actualProperty.getBuyCost());
                 Image propertyCard = new Image("/images/Properties/property-" + position + ".png");
                 propertyView.setImage(propertyCard);
 
@@ -1159,7 +1154,7 @@ public class Client1 extends Application {
                     }
                     Image prisonCard = new Image("/images/Properties/property-11j.png");
                     propertyView.setImage(prisonCard);
-                    propertyInformation.setText("You go to jail!");
+                    propertyInformation.setText("Idziesz do więzienia!!!");
                     TourPlayerProfile.setInJail(true);
                 }
                 else{
@@ -1179,7 +1174,7 @@ public class Client1 extends Application {
                         else if(randomCard == 3){
                             int destination = 36;
                             if(position >= destination){
-                                System.out.println("Przechodzisz przez start dostajesz 400$");
+                                System.out.println("Przeszedłeś przez start, otrzymujesz 400$!");
                                 TourPlayerProfile.setCash(TourPlayerProfile.getCash() + 400);
                                 passedStart = 1;
                             }
@@ -1191,7 +1186,7 @@ public class Client1 extends Application {
                         else if(randomCard == 5){
                             int destination = 25;
                             if(position >= destination){
-                                System.out.println("Przechodzisz przez start dostajesz 400$");
+                                System.out.println("Przeszedłeś przez start, otrzymujesz 400$!");
                                 TourPlayerProfile.setCash(TourPlayerProfile.getCash() + 400);
                                 passedStart = 1;
                             }
@@ -1203,7 +1198,7 @@ public class Client1 extends Application {
                         else if(randomCard == 7){
                             int destination = 7;
                             if(position >= destination){
-                                System.out.println("Przechodzisz przez start dostajesz 400$");
+                                System.out.println("Przeszedłeś przez start, otrzymujesz 400$!");
                                 TourPlayerProfile.setCash(TourPlayerProfile.getCash() + 400);
                                 passedStart = 1;
                             }
@@ -1231,7 +1226,7 @@ public class Client1 extends Application {
                                 pawnView4.setX(cordsPlayersMap.getCorXProperty(position,4));
                                 pawnView4.setY(cordsPlayersMap.getCorYProperty(position,4));
                             }
-                            propertyInformation.setText("You go to jail!");
+                            propertyInformation.setText("Idziesz do więzienia!!!");
                             TourPlayerProfile.setInJail(true);
                         }
                         else if(randomCard == 10){
@@ -1250,7 +1245,7 @@ public class Client1 extends Application {
                             if(position > 40){
                                 position = position - 40;
                                 TourPlayerProfile.setCash(TourPlayerProfile.getCash() + 400);
-                                info.setText("You passed Start and get reward 400$!");
+                                info.setText("Przeszedłeś przez start, otrzymujesz 400$!");
                                 TourPlayerProfile.setPropertyId(position);
                                 passedStart = 1;
                             }
@@ -1279,7 +1274,7 @@ public class Client1 extends Application {
                         else if(randomCard == 3){
                             int destination = 36;
                             if(position >= destination){
-                                System.out.println("Przechodzisz przez start dostajesz 400$");
+                                System.out.println("Przeszedłeś przez start, otrzymujesz 400$!");
                                 TourPlayerProfile.setCash(TourPlayerProfile.getCash() + 400);
                                 passedStart = 1;
                             }
@@ -1291,7 +1286,7 @@ public class Client1 extends Application {
                         else if(randomCard == 5){
                             int destination = 24;
                             if(position >= destination){
-                                System.out.println("Przechodzisz przez start dostajesz 400$");
+                                System.out.println("Przeszedłeś przez start, otrzymujesz 400$!");
                                 TourPlayerProfile.setCash(TourPlayerProfile.getCash() + 400);
                                 passedStart = 1;
                             }
@@ -1306,7 +1301,7 @@ public class Client1 extends Application {
                         else if(randomCard == 7){
                             int destination = 7;
                             if(position >= destination){
-                                System.out.println("Przechodzisz przez start dostajesz 400$");
+                                System.out.println("Przeszedłeś przez start, otrzymujesz 400$!");
                                 TourPlayerProfile.setCash(TourPlayerProfile.getCash() + 400);
                                 passedStart = 1;
                             }
@@ -1337,7 +1332,7 @@ public class Client1 extends Application {
                                 pawnView4.setX(cordsPlayersMap.getCorXProperty(position,4));
                                 pawnView4.setY(cordsPlayersMap.getCorYProperty(position,4));
                             }
-                            propertyInformation.setText("You go to jail!");
+                            propertyInformation.setText("Idziesz do więzienia!!!");
                             TourPlayerProfile.setInJail(true);
                         }
                         else if(randomCard == 10){
@@ -1356,7 +1351,7 @@ public class Client1 extends Application {
                             if(position > 40){
                                 position = position - 40;
                                 TourPlayerProfile.setCash(TourPlayerProfile.getCash() + 400);
-                                info.setText("You passed Start and get reward 400$!");
+                                info.setText("Przeszedłeś przez start, otrzymujesz 400$!");
                                 TourPlayerProfile.setPropertyId(position);
                                 passedStart = 1;
                             }
@@ -1375,7 +1370,7 @@ public class Client1 extends Application {
                         }
                     }
                     else{
-                        propertyInformation.setText("You are ane not standing on Buyable property or payable");
+                        propertyInformation.setText("Nie jesteś na polu, które możesz kupić. \n Nic nie zyskasz i nic nie tracisz.");
                         propertyView.setImage(blankProperty);
                     }
                 }
@@ -1387,7 +1382,7 @@ public class Client1 extends Application {
                 if(propertiesList.get(position-1).getOwnerID() == 0){
 
                     if(TourPlayerProfile.getCash() >= actualNEWProperty.getBuyCost()){
-                        BuyPoropertyInfo.setText("Do You want to Buy this property?");
+                        BuyPoropertyInfo.setText("Czy chcesz kupić posiadłość?");
                         BuyPropertyBtn.setVisible(true);
                         NoBuyPropertyBtn.setVisible(true);
                         buyingPopertyBox.setVisible(true);
@@ -1400,22 +1395,22 @@ public class Client1 extends Application {
                             NoBuyPropertyBtn.setVisible(false);
                             TourPlayerProfile.setCash(TourPlayerProfile.getCash() - actualNEWProperty.getBuyCost());
                             actualNEWProperty.setOwnerID(TourPlayerProfile.getPlayerNumber());
-                            propertyInformation.setText("You have purchase " + actualNEWProperty.getNameProperty() + " in country " + actualNEWProperty.getCountryName() + " oponents will pay: " + actualNEWProperty.getPaymentForStay() + "$");
+                            propertyInformation.setText("Zakupiłeś " + actualNEWProperty.getNameProperty() + " w kraju " + actualNEWProperty.getCountryName() + ", teraz inny gracz będzie ci płacić: " + actualNEWProperty.getPaymentForStay() + "$");
 
                             if(TourPlayerProfile.getPlayerNumber() == 1){
-                                player1.setText("Player 1 : " + TourPlayerProfile.getPlayerName() + " his cash: " + TourPlayerProfile.getCash() + "$" + " standing on: " + actualNEWProperty.getNameProperty());
+                                player1.setText("Gracz 1 : " + TourPlayerProfile.getPlayerName() + " jego pieniądze: " + TourPlayerProfile.getCash() + "$" + " stoi na: " + actualNEWProperty.getNameProperty());
                                 p1.setText(player1.getText());
                             }
                             else if(TourPlayerProfile.getPlayerNumber() == 2){
-                                player2.setText("Player 2 : " + TourPlayerProfile.getPlayerName() + " his cash: " + TourPlayerProfile.getCash() + "$" + " standing on: " + actualNEWProperty.getNameProperty());
+                                player2.setText("Gracz 2 : " + TourPlayerProfile.getPlayerName() + " jego pieniądze: " + TourPlayerProfile.getCash() + "$" + " stoi na: " + actualNEWProperty.getNameProperty());
                                 p2.setText(player2.getText());
                             }
                             else if(TourPlayerProfile.getPlayerNumber() == 3){
-                                player3.setText("Player 3 : " + TourPlayerProfile.getPlayerName() + " his cash: " + TourPlayerProfile.getCash() + "$" + " standing on: " + actualNEWProperty.getNameProperty());
+                                player3.setText("Gracz 3 : " + TourPlayerProfile.getPlayerName() + " jego pieniądze: " + TourPlayerProfile.getCash() + "$" + " stoi na: " + actualNEWProperty.getNameProperty());
                                 p3.setText(player3.getText());
                             }
                             else if(TourPlayerProfile.getPlayerNumber() == 4){
-                                player4.setText("Player 4 : " + TourPlayerProfile.getPlayerName() + " his cash: " + TourPlayerProfile.getCash() + "$" + " standing on: " + actualNEWProperty.getNameProperty());
+                                player4.setText("Gracz 4 : " + TourPlayerProfile.getPlayerName() + " jego pieniądze: " + TourPlayerProfile.getCash() + "$" + " stoi na: " + actualNEWProperty.getNameProperty());
                                 p4.setText(player4.getText());
                             }
 
@@ -1438,7 +1433,7 @@ public class Client1 extends Application {
                         });
                     }
                     else{
-                        propertyInformation.setText("You can't affor it!");
+                        propertyInformation.setText("Nie stać cię na tą posiadłość!");
                         BuyPropertyBtn.setVisible(false);
                         NoBuyPropertyBtn.setVisible(false);
                         buyingPopertyBox.setVisible(false);
@@ -1450,12 +1445,12 @@ public class Client1 extends Application {
                     NoBuyPropertyBtn.setVisible(false);
                     buyingPopertyBox.setVisible(false);
                     readyTour.setVisible(true);
-                    propertyInformation.setText("It's your home!");
+                    propertyInformation.setText("Jesteś w domu!");
                 }
                 else{
                     if(playersList.get(actualNEWProperty.getOwnerID()-1).getIsInJail()){
                         readyTour.setVisible(true);
-                        propertyInformation.setText("Owner is in prison you dont have to pay! Hurra!");
+                        propertyInformation.setText("Właściciel tego pola jest w więzieniu, nie musisz nic płacić! Hurra!");
                     }
                     else{
                         BuyPropertyBtn.setVisible(false);
@@ -1473,8 +1468,8 @@ public class Client1 extends Application {
                                     }
                                 }
                             }
-                            System.out.println("This property owns: " + actualPropertyPlayer.getOwnerID());
-                            System.out.println("This player owned Stations: " + ownedStations);
+//                            System.out.println("To pole posiada: " + actualPropertyPlayer.getOwnerID());
+//                            System.out.println("This player owned Stations: " + ownedStations);
                             if(ownedStations == 1){
                                 if(TourPlayerProfile.getCash() >= actualPropertyPlayer.getPaymentForStay()){
                                     TourPlayerProfile.setCash(TourPlayerProfile.getCash() - actualPropertyPlayer.getPaymentForStay());
@@ -1550,10 +1545,10 @@ public class Client1 extends Application {
                         }
                         else{
                             if(TourPlayerProfile.getCash() >= actualNEWProperty.getPaymentForStay()){
-                                System.out.println( TourPlayerProfile.getPlayerName() + " paying to " + playersList.get(actualNEWProperty.getOwnerID()-1).getPlayerName());
+                                //System.out.println( TourPlayerProfile.getPlayerName() + " płaci graczowi " + playersList.get(actualNEWProperty.getOwnerID()-1).getPlayerName());
                                 TourPlayerProfile.setCash(TourPlayerProfile.getCash() - actualNEWProperty.getPaymentForStay());
                                 playersList.get(actualNEWProperty.getOwnerID()-1).setCash(playersList.get(actualNEWProperty.getOwnerID()-1).getCash() + actualNEWProperty.getPaymentForStay());
-                                propertyInformation.setText("This property have owner: " + playersList.get(actualNEWProperty.getOwnerID()-1).getPlayerName() + " you have to pay him " + actualNEWProperty.getPaymentForStay() + "$");
+                                propertyInformation.setText("To pole ma właściciela: " + playersList.get(actualNEWProperty.getOwnerID()-1).getPlayerName() + ", musisz mu zapłacić " + actualNEWProperty.getPaymentForStay() + "$");
                             }
                             else
                                 isBankroupt = 1;
@@ -1566,7 +1561,7 @@ public class Client1 extends Application {
             else{
                 if(position == 5){
                     if(TourPlayerProfile.getCash() >= 400){
-                        propertyInformation.setText("You are standing on " + actualProperty.getNameProperty() + " fine is: " + actualProperty.getPaymentForStay() + "$");
+                        propertyInformation.setText("Stoisz na " + actualProperty.getNameProperty() + ", opłata za postój wynosi: " + actualProperty.getPaymentForStay() + "$");
                         TourPlayerProfile.setCash(TourPlayerProfile.getCash() - 400);
                     }
                     else{
@@ -1579,7 +1574,7 @@ public class Client1 extends Application {
                 }
                 else if(position == 39){
                     if(TourPlayerProfile.getCash() >= 200){
-                        propertyInformation.setText("You are standing on " + actualProperty.getNameProperty() + " fine is: " + actualProperty.getPaymentForStay() + "$");
+                        propertyInformation.setText("Stoisz na " + actualProperty.getNameProperty() + ", opłata za postój wynosi: " + actualProperty.getPaymentForStay() + "$");
                         TourPlayerProfile.setCash(TourPlayerProfile.getCash() - 200);
                     }
                     else{
@@ -1594,12 +1589,12 @@ public class Client1 extends Application {
                 readyTour.setVisible(true);
             }
 
-            System.out.println("dice 2: " + position);
+            //System.out.println("dice 2: " + position);
             TourPlayerProfile.setPropertyId(position);
             makeUpdateMapANdTables();
 
             dicing.setVisible(false);
-            String dd = "You have diced: " + dice1 + " and " + dice2 + " sum of dice: " + (dice1+dice2);
+            String dd = "Wyrzuciłeś: " + dice1 + " i " + dice2 + " suma oczek: " + (dice1+dice2);
             Image imageDice1 = new Image("images/Dice/dice" + dice1 + ".png");
             Image imageDice2 = new Image("images/Dice/dice" + dice2 + ".png");
             viewDice1.setImage(imageDice1);
@@ -1623,7 +1618,7 @@ public class Client1 extends Application {
     }
 
     public void oponetsMoveScene(){
-        Label oponentsMoveInfo = new Label("Oponents move click ready button and wait wor your turn!");
+        Label oponentsMoveInfo = new Label("Kolej innego gracza, czekaj na swoją kolej!");
         panelOponents.setAlignment(Pos.CENTER);
 
         ObservableList list = panelOponents.getChildren();
@@ -1635,7 +1630,7 @@ public class Client1 extends Application {
 
         panelOponents.setSpacing(10);
         GetReadyTourButton.setOnAction(e->{
-            informationOponentPanel.setText("Waiting for others...");
+            informationOponentPanel.setText("Oczekiwanie na resztę graczy...");
 //            GetReadyTourButton.setVisible(false);
             PlayerToursReady++;
             SendPlayerTourReady();
@@ -1652,10 +1647,10 @@ public class Client1 extends Application {
     public void TourPlayerInJailScene(){
         PrisonReady.setVisible(false);
         panelTourPlayerInJail.setAlignment(Pos.CENTER);
-        Label prisonInfo1 = new Label("You are in prison!");
-        Label prisonInfo2 = new Label("You have two options Dice or Pay 400$");
-        Label prisonInfo3 = new Label("Dice - if you thow double you will get out jail");
-        Label prisonInfo4 = new Label("Pay - you will pay 400$ and you will get out of jail");
+        Label prisonInfo1 = new Label("Jesteś w więzieniu!");
+        Label prisonInfo2 = new Label("Masz dwie opcje: rzuć kotkami lub zapłać 400$");
+        Label prisonInfo3 = new Label("Rzut kostkami - Jeśli wyrzucisz parę oczek, wychodzisz z więzienia");
+        Label prisonInfo4 = new Label("Zapłata - Płacąc 400$ wychodzisz z więzienia");
 
         prisonInfo5.setTextFill(Color.RED);
 
@@ -1685,24 +1680,24 @@ public class Client1 extends Application {
                 //Properties actualProperty = propertiesList.get(TourPlayerProfile.getPropertyId()-1);
                 payButton.setVisible(false);
                 diceButtonPrison.setVisible(false);
-                prisonInfo6.setText("Great you have payed 400$ and now you are free");
+                prisonInfo6.setText("Świetnie! Zapłaciłeś 400$ i jesteś wolny!");
                 TourPlayerProfile.setCash(TourPlayerProfile.getCash() - 400);
                 TourPlayerProfile.setInJail(false);
 
                 if(TourPlayerProfile.getPlayerNumber() == 1){
-                    player1.setText("Player 1 : " + TourPlayerProfile.getPlayerName() + " his cash: " + TourPlayerProfile.getCash() + "$" + " standing on: " + propertiesList.get(10).getNameProperty());
+                    player1.setText("Gracz 1 : " + TourPlayerProfile.getPlayerName() + " jego pieniądze: " + TourPlayerProfile.getCash() + "$" + " stoi na: " + propertiesList.get(10).getNameProperty());
                     p1.setText(player1.getText());
                 }
                 else if(TourPlayerProfile.getPlayerNumber() == 2){
-                    player2.setText("Player 2 : " + TourPlayerProfile.getPlayerName() + " his cash: " + TourPlayerProfile.getCash() + "$" + " standing on: " + propertiesList.get(10).getNameProperty());
+                    player2.setText("Gracz 2 : " + TourPlayerProfile.getPlayerName() + " jego pieniądze: " + TourPlayerProfile.getCash() + "$" + " stoi na: " + propertiesList.get(10).getNameProperty());
                     p2.setText(player2.getText());
                 }
                 else if(TourPlayerProfile.getPlayerNumber() == 3){
-                    player3.setText("Player 3 : " + TourPlayerProfile.getPlayerName() + " his cash: " + TourPlayerProfile.getCash() + "$" + " standing on: " + propertiesList.get(10).getNameProperty());
+                    player3.setText("Gracz 3 : " + TourPlayerProfile.getPlayerName() + " jego pieniądze: " + TourPlayerProfile.getCash() + "$" + " stoi na: " + propertiesList.get(10).getNameProperty());
                     p3.setText(player3.getText());
                 }
                 else if(TourPlayerProfile.getPlayerNumber() == 4){
-                    player4.setText("Player 4 : " + TourPlayerProfile.getPlayerName() + " his cash: " + TourPlayerProfile.getCash() + "$" + " standing on: " + propertiesList.get(10).getNameProperty());
+                    player4.setText("Gracz 4 : " + TourPlayerProfile.getPlayerName() + " jego pieniądze: " + TourPlayerProfile.getCash() + "$" + " stoi na: " + propertiesList.get(10).getNameProperty());
                     p4.setText(player4.getText());
                 }
 
@@ -1711,7 +1706,7 @@ public class Client1 extends Application {
                 isInPrisonMessage = 0;
             }
             else{
-                prisonInfo5.setText("You don't have 400$ you have to Dice!");
+                prisonInfo5.setText("Nie posiadasz 400$, musisz rzucić kostkami!");
             }
         });
 
@@ -1726,12 +1721,12 @@ public class Client1 extends Application {
             dice2ViewPrison.setImage(dicePrison2);
 
             if(dice1 == dice2){
-                prisonInfo6.setText("You have Double and now you are free");
+                prisonInfo6.setText("Wyrzuciłeś parę oczek, wychodzisz z więzienia");
                 TourPlayerProfile.setInJail(false);
                 isInPrisonMessage = 0;
             }
             else {
-                prisonInfo6.setText("Good luck next time!");
+                prisonInfo6.setText("Może następnym razem...!");
                 isInPrisonMessage = 1;
             }
 
@@ -1870,36 +1865,36 @@ public class Client1 extends Application {
             }
             if(p.getPlayerNumber() == 1){
                 if(p.getIsInJail())
-                    player1.setText("Player 1 : " + p.getPlayerName() + " his cash: " + p.getCash() + "$" + " standing on: JAIL!!!");
+                    player1.setText("Gracz 1 : " + p.getPlayerName() + " jego pieniądze: " + p.getCash() + "$" + " stoi na: Jest w więzieniu!!!");
                 else
-                    player1.setText("Player 1 : " + p.getPlayerName() + " his cash: " + p.getCash() + "$" + " standing on: " + actualPlayerProperty.getNameProperty());
+                    player1.setText("Gracz 1 : " + p.getPlayerName() + " jego pieniądze: " + p.getCash() + "$" + " stoi na: " + actualPlayerProperty.getNameProperty());
                 pawnView1.setX(cordsPlayersMap.getCorXProperty(actualPlayerProperty.getIDproperty(),p.getPlayerNumber()));
                 pawnView1.setY(cordsPlayersMap.getCorYProperty(actualPlayerProperty.getIDproperty(),p.getPlayerNumber()));
                 p1.setText(player1.getText());
             }
             else if(p.getPlayerNumber() == 2){
                 if(p.getIsInJail())
-                    player2.setText("Player 2 : " + p.getPlayerName() + " his cash: " + p.getCash() + "$" + " standing on: JAIL!!!");
+                    player2.setText("Gracz 2 : " + p.getPlayerName() + " jego pieniądze: " + p.getCash() + "$" + " stoi na: Jest w więzieniu!!!");
                 else
-                    player2.setText("Player 2 : " + p.getPlayerName() + " his cash: " + p.getCash() + "$" + " standing on: " + actualPlayerProperty.getNameProperty());
+                    player2.setText("Gracz 2 : " + p.getPlayerName() + " jego pieniądze: " + p.getCash() + "$" + " stoi na: " + actualPlayerProperty.getNameProperty());
                 pawnView2.setX(cordsPlayersMap.getCorXProperty(actualPlayerProperty.getIDproperty(),p.getPlayerNumber()));
                 pawnView2.setY(cordsPlayersMap.getCorYProperty(actualPlayerProperty.getIDproperty(),p.getPlayerNumber()));
                 p2.setText(player2.getText());
             }
             else if(p.getPlayerNumber() == 3){
                 if(p.getIsInJail())
-                    player3.setText("Player 3 : " + p.getPlayerName() + " his cash: " + p.getCash() + "$" + " standing on: JAIL!!!");
+                    player3.setText("Gracz 3 : " + p.getPlayerName() + " jego pieniądze: " + p.getCash() + "$" + " stoi na: Jest w więzieniu!!!");
                 else
-                    player3.setText("Player 3 : " + p.getPlayerName() + " his cash: " + p.getCash() + "$" + " standing on: " + actualPlayerProperty.getNameProperty());
+                    player3.setText("Gracz 3 : " + p.getPlayerName() + " jego pieniądze: " + p.getCash() + "$" + " stoi na: " + actualPlayerProperty.getNameProperty());
                 pawnView3.setX(cordsPlayersMap.getCorXProperty(actualPlayerProperty.getIDproperty(),p.getPlayerNumber()));
                 pawnView3.setY(cordsPlayersMap.getCorYProperty(actualPlayerProperty.getIDproperty(),p.getPlayerNumber()));
                 p3.setText(player3.getText());
             }
             else if(p.getPlayerNumber() == 4){
                 if(p.getIsInJail())
-                    player4.setText("Player 4 : " + p.getPlayerName() + " his cash: " + p.getCash() + "$" + " standing on: JAIL!!!");
+                    player4.setText("Gracz 4 : " + p.getPlayerName() + " jego pieniądze: " + p.getCash() + "$" + " stoi na: Jest w więzieniu!!!");
                 else
-                    player4.setText("Player 4 : " + p.getPlayerName() + " his cash: " + p.getCash() + "$" + " standing on: " + actualPlayerProperty.getNameProperty());
+                    player4.setText("Gracz 4 : " + p.getPlayerName() + " jego pieniądze: " + p.getCash() + "$" + " stoi na: " + actualPlayerProperty.getNameProperty());
                 pawnView4.setX(cordsPlayersMap.getCorXProperty(actualPlayerProperty.getIDproperty(),p.getPlayerNumber()));
                 pawnView4.setY(cordsPlayersMap.getCorYProperty(actualPlayerProperty.getIDproperty(),p.getPlayerNumber()));
                 p4.setText(player4.getText());
@@ -1917,7 +1912,7 @@ public class Client1 extends Application {
             }
             i++;
         }
-        System.out.println("Size of properties list is: " + propertiesList.size());
+        //System.out.println("Size of properties list is: " + propertiesList.size());
     }
 
     public static char cardId4Server(int cardID){
