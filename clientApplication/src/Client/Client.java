@@ -142,10 +142,13 @@ public class Client extends Application {
     private Label bestPlayer3 = new Label();
     private Label bestPlayer4 = new Label();
     private Label bestPlayer5 = new Label();
+    private Label Autor = new Label("Autorzy:");
     private Label Autor1 = new Label("Jakub Czajkowski");
     private Label Autor2 = new Label("Bartosz Kuta");
     private String bPlayername = new String();
     private Hyperlink githubLink = new Hyperlink("GithubProjekt.com");
+    private TextField ipTFServer = new TextField("localhost");
+    private TextField portTFServer = new TextField("2115");
 
     public void startTask(){
         Runnable task = new Runnable() {
@@ -237,6 +240,7 @@ public class Client extends Application {
                             endGameBox.getChildren().add(bestPlayer3);
                             endGameBox.getChildren().add(bestPlayer4);
                             endGameBox.getChildren().add(bestPlayer5);
+                            endGameBox.getChildren().add(Autor);
                             endGameBox.getChildren().add(Autor1);
                             endGameBox.getChildren().add(Autor2);
                             endGameBox.getChildren().add(githubLink);
@@ -803,6 +807,14 @@ public class Client extends Application {
         tx.setAlignment(Pos.CENTER);
         tx.setMaxWidth(200);
         tx.setPadding(new Insets(10,0,10,0));
+        Label ipInfo = new Label("Podaj IP serwera");
+        ipInfo.setAlignment(Pos.CENTER);
+        ipInfo.setMaxWidth(200);
+        ipInfo.setPadding(new Insets(10,0,10,0));
+        Label portInfo = new Label("Podaj port serwera");
+        portInfo.setAlignment(Pos.CENTER);
+        portInfo.setMaxWidth(200);
+        portInfo.setPadding(new Insets(10,0,10,0));
 
         Label info = new Label("");
         info.setTextFill(Color.RED);
@@ -831,12 +843,13 @@ public class Client extends Application {
 
         ObservableList list = vBox.getChildren();
 
-        list.addAll(label, tx, b,info);
+
+        list.addAll(ipInfo,ipTFServer,portInfo,portTFServer,label, tx, b,info);
 
         vBox.setAlignment(Pos.CENTER);
         vBox.setPadding(new Insets(0,40,0,40));
 
-        Scene sc = new Scene(vBox, 600, 300);
+        Scene sc = new Scene(vBox, 600, 400);
 
         stage.setScene(sc);
         stage.show();
@@ -1756,9 +1769,10 @@ public class Client extends Application {
 
     }
 
-    public static void createConnection(){
+    public void createConnection(){
         try {
-            socket = new Socket("localhost", 2115);
+            int portServer = Integer.parseInt(portTFServer.getText());
+            socket = new Socket(ipTFServer.getText(), portServer);
             dOut = new DataOutputStream(socket.getOutputStream());
             dIn = new DataInputStream(socket.getInputStream());
 

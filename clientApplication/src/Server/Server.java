@@ -23,6 +23,11 @@ public class Server {
         while(true){
             Scanner scanner = new Scanner(System.in);
             String input;
+            String portServer;
+            System.out.println("IP servera to: " + InetAddress.getLocalHost());
+//            ipServer = scanner.nextLine();
+            System.out.println("Podaj port servera:");
+            portServer = scanner.nextLine();
             do{
 
                 System.out.println("Enter number of players: ");
@@ -32,7 +37,7 @@ public class Server {
 
             System.out.println("Number of slots in game: " + input);
 
-            try(ServerSocket serverSocket = new ServerSocket(2115)){
+            try(ServerSocket serverSocket = new ServerSocket(Integer.parseInt(portServer))){
                 int numberOfPlayers = Integer.parseInt(input);
                 for(int i = 0; i<numberOfPlayers; i++){
                     if(i==0){

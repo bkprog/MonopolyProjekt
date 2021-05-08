@@ -50,7 +50,7 @@ public class Session extends Thread {
                 Player newPlayer = new Player();
                 newPlayer.setPlayerName(playerName);
                 newPlayer.setPlayerNumber(playerNumber);
-                newPlayer.setCash(5);
+                newPlayer.setCash(3000);
                 newPlayer.setPropertyId(0);
                 playersList.add(newPlayer);
 
