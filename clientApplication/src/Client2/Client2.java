@@ -251,6 +251,8 @@ public class Client2 extends Application {
                             playersReady--;
                             PlayerToursReady--;
                             NubmerOfPlayersInGame--;
+                            hh.updateHousesOnMap(propertiesList);
+                            hv.updateHousesOnMap(propertiesList);
                             TourPlayerProfile.makeBankropt();
                             getBankuptOtherPlayer = 1;
                             recentBankrouptPlayer = TourPlayerProfile.getPlayerNumber();
@@ -1799,6 +1801,9 @@ public class Client2 extends Application {
 
             }
             if(isBankroupt == 1){
+                UpdatePropetiesWhenBankroupt(propertiesList,TourPlayerProfile.getPlayerNumber());
+                hh.updateHousesOnMap(propertiesList);
+                hv.updateHousesOnMap(propertiesList);
                 TourPlayerProfile.makeBankropt();
                 PlayerSesionBankroupt = 1;
                 if(TourPlayerProfile.getPlayerNumber() == 1){
@@ -2048,6 +2053,7 @@ public class Client2 extends Application {
     public void UpdatePropetiesWhenBankroupt(ArrayList<Properties> propertiesArrayList, int playerNumber){
         for(Properties property : propertiesArrayList){
             if(property.getOwnerID() == playerNumber){
+                property.destroyHouses();
                 property.setOwnerID(0);
             }
         }
