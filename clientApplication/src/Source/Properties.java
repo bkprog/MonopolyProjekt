@@ -1,6 +1,6 @@
 package Source;
 
-import java.util.ArrayList;
+
 
 public class Properties {
     private String Name;

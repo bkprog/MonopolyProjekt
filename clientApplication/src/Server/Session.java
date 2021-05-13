@@ -35,7 +35,7 @@ public class Session extends Thread {
         numberOfPlayersInGame = numberOfPlayers;
         playingPlayers = numberOfPlayers;
         this.playersList = playersList;
-        //this.properties = new DataReaderProperties();
+
         this.propertiesList = propertiesList;
     }
 
@@ -220,7 +220,7 @@ public class Session extends Thread {
         try{
             for (Socket s : socketPlayers){
                 DataOutputStream socketOut = new DataOutputStream(s.getOutputStream());
-//                if (s != client) {
+
                     socketOut.writeUTF("BestPlayerNickname " + bPlayer.getPlayerName());
                     String cash = String.valueOf(bPlayer.getCash());
                     socketOut.writeUTF("BestPlayerCash " + cash);
@@ -445,8 +445,7 @@ public class Session extends Thread {
             for(Socket s : socketPlayers){
                 DataOutputStream socketOut = new DataOutputStream(s.getOutputStream());
                 socketOut.writeUTF("PlayersInGame " + numberOfPlayersInGame);
-//                socketOut.writeUTF("PlayersInGame");
-//                socketOut.writeInt(numberOfPlayersInGame);
+
             }
         }
         catch(Exception ex){
