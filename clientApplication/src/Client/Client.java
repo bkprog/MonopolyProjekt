@@ -347,7 +347,7 @@ public class Client extends Application {
                                 TourPlayerProfile.setCash(TourPlayerProfile.getCash() + 400);
                             }
                         }
-                        else if(respond.equals("PassedStart")){
+                        else if(respond.startsWith("PassedStart")){
                             TourPlayerProfile.setCash(TourPlayerProfile.getCash() + 400);
                         }
                         else if(respond.startsWith("Purchase Property ")){
@@ -1108,6 +1108,7 @@ public class Client extends Application {
                 TourPlayerProfile.setCash(TourPlayerProfile.getCash() + 400);
                 info.setText("Przeszedłeś przez start, zyskujesz 400$!");
                 TourPlayerProfile.setPropertyId(position);
+                passedStart = 1;
             }
             else{
                 TourPlayerProfile.setPropertyId(position);

@@ -140,6 +140,7 @@ public class Session extends Thread {
                                 System.out.println("Player is in jail!");
                             }
                             if(passedStrat != 0){
+                                System.out.println("Player passed start!");
                                 SendPassedStart(socketPlayers);
                             }
                             if(prisionBuy != 0){
