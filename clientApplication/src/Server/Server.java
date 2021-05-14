@@ -13,7 +13,7 @@ import java.util.*;
 public class Server {
 
     private static ArrayList<Socket> socketList = new ArrayList<Socket>();
-    //    private static int port = 2115;
+
     private static ArrayList<Player> playersList = new ArrayList<>();
     private static ArrayList<Properties> propertiesList = new ArrayList<>();
     private static DataReaderProperties readerProperties = new DataReaderProperties();
@@ -25,7 +25,7 @@ public class Server {
             String input;
             String portServer;
             System.out.println("IP servera to: " + InetAddress.getLocalHost());
-//            ipServer = scanner.nextLine();
+
             System.out.println("Podaj port servera:");
             portServer = scanner.nextLine();
             do{
