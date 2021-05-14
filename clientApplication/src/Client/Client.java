@@ -1196,7 +1196,7 @@ public class Client extends Application {
                             TourPlayerProfile.setCash(TourPlayerProfile.getCash() + 300);
                         }
                         else if(randomCard == 5){
-                            int destination = 25;
+                            int destination = 24;
                             if(position >= destination){
                                 System.out.println("Przeszedłeś przez start, otrzymujesz 400$!");
                                 TourPlayerProfile.setCash(TourPlayerProfile.getCash() + 400);
