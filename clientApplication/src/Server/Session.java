@@ -131,13 +131,16 @@ public class Session extends Thread {
                             int prisionDecion = Character.getNumericValue(clientResponse.charAt(28));
                             int prisionBuy = Character.getNumericValue(clientResponse.charAt(30));
                             int propBuy = Character.getNumericValue(clientResponse.charAt(32));
-                            char cardId = clientResponse.charAt(24);
-                            int passedStrat = Character.getNumericValue(clientResponse.charAt(26));
+                            char cardId = clientResponse.charAt(26);
+                            int passedStrat = Character.getNumericValue(clientResponse.charAt(24));
                             int boughtHouses = Character.getNumericValue(clientResponse.charAt(22));
                             System.out.println("Player Bought " + boughtHouses + " Houses!");
                             if(prisionDecion != 0){
                                 prisonDecisionUpdate(socketPlayers,playerTourIndex);
                                 System.out.println("Player is in jail!");
+                            }
+                            if(passedStrat != 0){
+                                SendPassedStart(socketPlayers);
                             }
                             if(prisionBuy != 0){
                                 prisonPayFine(socketPlayers,playerTourIndex);
@@ -199,6 +202,20 @@ public class Session extends Thread {
         }
         catch(Exception ex){
             System.out.println("Session error: " + ex.getMessage());
+        }
+    }
+
+    public void SendPassedStart(ArrayList<Socket> socketPlayers){
+        try{
+            for (Socket s : socketPlayers){
+                DataOutputStream socketOut = new DataOutputStream(s.getOutputStream());
+                if (s != client){
+                    socketOut.writeUTF("PassedStart");
+                }
+            }
+        }
+        catch(Exception e){
+            System.out.println("Error Won Player: " + e.getMessage());
         }
     }
 

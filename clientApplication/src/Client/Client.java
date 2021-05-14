@@ -149,6 +149,7 @@ public class Client extends Application {
     private Hyperlink githubLink = new Hyperlink("GithubProjekt.com");
     private TextField ipTFServer = new TextField("localhost");
     private TextField portTFServer = new TextField("2115");
+    private boolean BlueredcardFlag = false;
 
     public void startTask(){
         Runnable task = new Runnable() {
@@ -336,15 +337,18 @@ public class Client extends Application {
                             else if(cardNumber == 10){
                                 TourPlayerProfile.setCash(TourPlayerProfile.getCash() + 200);
                             }
+                            else if(cardNumber == 11){
+                                BlueredcardFlag = true;
+                            }
                             else if(cardNumber == 14){
                                 TourPlayerProfile.setCash(TourPlayerProfile.getCash() - 30);
                             }
                             else if(cardNumber == 15){
                                 TourPlayerProfile.setCash(TourPlayerProfile.getCash() + 400);
                             }
-                            if (passedStart == 1){
-                                TourPlayerProfile.setCash(TourPlayerProfile.getCash() + 400);
-                            }
+                        }
+                        else if(respond.equals("PassedStart")){
+                            TourPlayerProfile.setCash(TourPlayerProfile.getCash() + 400);
                         }
                         else if(respond.startsWith("Purchase Property ")){
                             int propId = Integer.parseInt(respond.substring(18));
@@ -384,12 +388,12 @@ public class Client extends Application {
                             Properties actualProperty = propertiesList.get(newPositionPlayer-1);
                             //System.out.println(TourPlayerProfile.getPlayerName() + "standing on: " + actualProperty.getNameProperty());
 
-                            if(previousPosition > newPositionPlayer){
-                                if(!TourPlayerProfile.getIsInJail()){
-                                    TourPlayerProfile.setCash(TourPlayerProfile.getCash() + 400);
-                                    info.setText(TourPlayerProfile.getPlayerName() + " przeszedł przez start i otrzymał 400$!");
-                                }
-                            }
+//                            if(previousPosition > newPositionPlayer){
+//                                if(!TourPlayerProfile.getIsInJail()){
+//                                    TourPlayerProfile.setCash(TourPlayerProfile.getCash() + 400);
+//                                    info.setText(TourPlayerProfile.getPlayerName() + " przeszedł przez start i otrzymał 400$!");
+//                                }
+//                            }
 
                             if (propertiesList.get(TourPlayerProfile.getPropertyId() - 1).getOwnerID() != 0
                                     && propertiesList.get(TourPlayerProfile.getPropertyId() - 1).getOwnerID() != TourPlayerProfile.getPlayerNumber()) {
@@ -548,19 +552,6 @@ public class Client extends Application {
 
                             if(true){
                                 countries_player = allCountriesPlayers(propertiesList,TourPlayerProfile);
-
-                                //System.out.println(countries_player.size());
-//                                for(String s : countries_player){
-//                                    System.out.println(s);
-//                                }
-//
-//                                System.out.println(tplayerNick);
-//                                System.out.println(playerNickname);
-//                                System.out.println(playersList.get(0).getPlayerNumber() + " nick: " + playersList.get(0).getPlayerName());
-//                                System.out.println(playersList.get(1).getPlayerNumber() + " nick: " + playersList.get(1).getPlayerName());
-
-
-
                                 if(playerNickname.equals(tplayerNick)){
                                     if(PlayerSesionBankroupt == 1){
                                         PlayerBankroupt.setVisible(true);
