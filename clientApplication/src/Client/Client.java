@@ -373,6 +373,10 @@ public class Client extends Application {
                             oponent.setInJail(true);
                             System.out.println(oponent.getPlayerName() + " jest w więzieniu więc nie musisz mu płacić");
                         }
+                        else if(respond.startsWith("GetOUTPRison")){
+                            Player oponent = TourPlayerProfile;
+                            oponent.setInJail(false);
+                        }
                         else if(respond.startsWith("PrisonPayFine ")){
                             //Player oponent = playersList.get(Integer.parseInt(respond.substring(14)));
                             Player oponent = TourPlayerProfile;

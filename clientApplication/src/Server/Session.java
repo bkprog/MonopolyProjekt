@@ -139,6 +139,9 @@ public class Session extends Thread {
                                 prisonDecisionUpdate(socketPlayers,playerTourIndex);
                                 System.out.println("Player is in jail!");
                             }
+                            else{
+                                prisonDecisionOutOfJail(socketPlayers,playerTourIndex);
+                            }
                             if(passedStrat != 0){
                                 System.out.println("Player passed start!");
                                 SendPassedStart(socketPlayers);
@@ -327,6 +330,20 @@ public class Session extends Thread {
                 if(s != client){
                     DataOutputStream socketOut = new DataOutputStream(s.getOutputStream());
                     socketOut.writeUTF("PrisonPayFine " + playerindex);
+                }
+            }
+        }
+        catch(Exception ex){
+            System.out.println("Error sending info about start game: " + ex.getMessage());
+        }
+    }
+
+    public void prisonDecisionOutOfJail(ArrayList<Socket> socketPlayers,int playerindex){
+        try{
+            for(Socket s : socketPlayers){
+                if(s != client){
+                    DataOutputStream socketOut = new DataOutputStream(s.getOutputStream());
+                    socketOut.writeUTF("GetOUTPRison " + playerindex );
                 }
             }
         }
