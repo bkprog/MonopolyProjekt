@@ -1108,7 +1108,7 @@ public class Client2 extends Application {
             int dice2 = dice.throwfunction();
 
 
-            position = position + dice1 + dice2;
+            position = 40;//position + dice1 + dice2;
 
             if(position > 40){
                 position = position - 40;
