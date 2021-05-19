@@ -62,7 +62,7 @@ public class Properties {
             return 0;
     }
 
-    private boolean ifBuyableHouseproperty(){
+    public boolean ifBuyableHouseproperty(){
         if(this.Name.startsWith("Linie") || this.Name.startsWith("Go")
                 ||this.Name.startsWith("Elektrownia") || this.Name.startsWith("Wodo")
                 || this.Name.startsWith("Red") || this.Name.startsWith("Blue")
