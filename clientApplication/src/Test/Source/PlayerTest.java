@@ -4,21 +4,16 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 public class PlayerTest {
     public void playerDefaultsettingsTest(){
         final Player playertest= new Player();
 
-        if(playertest.getIsInJail()){
-            throw new IllegalStateException("Player is in jail before game start");
-        }
-        if(playertest.isBankroupt()){
-            throw new IllegalStateException("Player is bankroupt before game start");
-        }
-        if(playertest.getPropertyId()!=0)
-        {
-            throw new IllegalStateException("Player PropertyID is not 0 on the start");
-        }
+        assertFalse(playertest.getIsInJail());
+        assertFalse(playertest.isBankroupt());
+        assertEquals(playertest.getPropertyId(),0);
+
     }
 
     @Test
